@@ -1,0 +1,107 @@
+import type { z } from 'zod'
+import type { countrySchema } from './types'
+
+type C = z.input<typeof countrySchema>
+type Cont = C['continent']
+const c = (id: string, name: string, capital: string | null, continent: Cont, aliases: string[] = []): C => ({ id, name, capital, continent, aliases })
+
+/**
+ * Pays présents dans la carte Natural Earth 1:110m (paquet world-atlas, domaine public).
+ * Capitales : uniquement les cas sans ambiguïté (pas de capitale double ou contestée).
+ * Source de référence : https://fr.wikipedia.org/wiki/Liste_des_capitales_du_monde
+ * `capital: null` = pays affiché sur la carte mais exclu des questions de capitale.
+ */
+export const COUNTRIES: C[] = [
+  // Europe
+  c('250', 'France', 'Paris', 'europe', ['French']),
+  c('724', 'Espagne', 'Madrid', 'europe', ['Spain']),
+  c('620', 'Portugal', 'Lisbonne', 'europe'),
+  c('380', 'Italie', 'Rome', 'europe', ['Italy']),
+  c('276', 'Allemagne', 'Berlin', 'europe', ['Germany']),
+  c('616', 'Pologne', 'Varsovie', 'europe', ['Poland', 'Cracovie', 'Krakow']),
+  c('826', 'Royaume-Uni', 'Londres', 'europe', ['United Kingdom', 'UK', 'Britain']),
+  c('372', 'Irlande', 'Dublin', 'europe', ['Ireland']),
+  c('578', 'Norvège', 'Oslo', 'europe', ['Norway']),
+  c('752', 'Suède', 'Stockholm', 'europe', ['Sweden']),
+  c('246', 'Finlande', 'Helsinki', 'europe', ['Finland']),
+  c('300', 'Grèce', 'Athènes', 'europe', ['Greece']),
+  c('804', 'Ukraine', 'Kyiv', 'europe'),
+  c('642', 'Roumanie', 'Bucarest', 'europe', ['Romania']),
+  c('348', 'Hongrie', 'Budapest', 'europe', ['Hungary']),
+  c('040', 'Autriche', 'Vienne', 'europe', ['Austria']),
+  c('756', 'Suisse', 'Berne', 'europe', ['Switzerland']),
+  c('056', 'Belgique', 'Bruxelles', 'europe', ['Belgium']),
+  c('208', 'Danemark', 'Copenhague', 'europe', ['Denmark']),
+  c('203', 'Tchéquie', 'Prague', 'europe', ['Czech Republic', 'République tchèque']),
+  c('100', 'Bulgarie', 'Sofia', 'europe', ['Bulgaria']),
+  c('191', 'Croatie', 'Zagreb', 'europe', ['Croatia']),
+  c('688', 'Serbie', 'Belgrade', 'europe', ['Serbia']),
+  c('352', 'Islande', 'Reykjavik', 'europe', ['Iceland']),
+  c('643', 'Russie', 'Moscou', 'europe', ['Russia']),
+  c('792', 'Turquie', 'Ankara', 'asie', ['Turkey', 'Türkiye']),
+  c('528', 'Pays-Bas', null, 'europe', ['Netherlands']),
+  // Afrique
+  c('818', 'Égypte', 'Le Caire', 'afrique', ['Egypt']),
+  c('504', 'Maroc', 'Rabat', 'afrique', ['Morocco']),
+  c('012', 'Algérie', 'Alger', 'afrique', ['Algeria']),
+  c('788', 'Tunisie', 'Tunis', 'afrique', ['Tunisia']),
+  c('434', 'Libye', 'Tripoli', 'afrique', ['Libya']),
+  c('566', 'Nigeria', 'Abuja', 'afrique'),
+  c('404', 'Kenya', 'Nairobi', 'afrique'),
+  c('231', 'Éthiopie', 'Addis-Abeba', 'afrique', ['Ethiopia']),
+  c('686', 'Sénégal', 'Dakar', 'afrique', ['Senegal']),
+  c('466', 'Mali', 'Bamako', 'afrique'),
+  c('450', 'Madagascar', 'Antananarivo', 'afrique'),
+  c('180', 'République démocratique du Congo', 'Kinshasa', 'afrique', ['RDC', 'DR Congo']),
+  c('288', 'Ghana', 'Accra', 'afrique'),
+  c('024', 'Angola', 'Luanda', 'afrique'),
+  c('729', 'Soudan', 'Khartoum', 'afrique', ['Sudan']),
+  c('148', 'Tchad', "N'Djaména", 'afrique', ['Chad']),
+  c('508', 'Mozambique', 'Maputo', 'afrique'),
+  c('894', 'Zambie', 'Lusaka', 'afrique', ['Zambia']),
+  c('716', 'Zimbabwe', 'Harare', 'afrique'),
+  c('706', 'Somalie', 'Mogadiscio', 'afrique', ['Somalia']),
+  c('710', 'Afrique du Sud', null, 'afrique', ['South Africa']),
+  c('834', 'Tanzanie', null, 'afrique', ['Tanzania']),
+  // Amériques
+  c('840', 'États-Unis', 'Washington', 'ameriques', ['USA', 'US', 'United States', 'Etats-Unis']),
+  c('124', 'Canada', 'Ottawa', 'ameriques'),
+  c('484', 'Mexique', 'Mexico', 'ameriques', ['Mexico']),
+  c('076', 'Brésil', 'Brasília', 'ameriques', ['Brazil']),
+  c('032', 'Argentine', 'Buenos Aires', 'ameriques', ['Argentina']),
+  c('152', 'Chili', 'Santiago', 'ameriques', ['Chile']),
+  c('604', 'Pérou', 'Lima', 'ameriques', ['Peru']),
+  c('170', 'Colombie', 'Bogota', 'ameriques', ['Colombia']),
+  c('862', 'Venezuela', 'Caracas', 'ameriques'),
+  c('192', 'Cuba', 'La Havane', 'ameriques'),
+  c('218', 'Équateur', 'Quito', 'ameriques', ['Ecuador']),
+  c('600', 'Paraguay', 'Asuncion', 'ameriques'),
+  c('858', 'Uruguay', 'Montevideo', 'ameriques'),
+  c('068', 'Bolivie', null, 'ameriques', ['Bolivia']),
+  // Asie
+  c('156', 'Chine', 'Pékin', 'asie', ['China']),
+  c('392', 'Japon', 'Tokyo', 'asie', ['Japan']),
+  c('356', 'Inde', 'New Delhi', 'asie', ['India']),
+  c('586', 'Pakistan', 'Islamabad', 'asie'),
+  c('364', 'Iran', 'Téhéran', 'asie'),
+  c('368', 'Irak', 'Bagdad', 'asie', ['Iraq']),
+  c('682', 'Arabie saoudite', 'Riyad', 'asie', ['Saudi Arabia', 'Saudi']),
+  c('764', 'Thaïlande', 'Bangkok', 'asie', ['Thailand']),
+  c('704', 'Viêt Nam', 'Hanoï', 'asie', ['Vietnam', 'Viet Nam']),
+  c('410', 'Corée du Sud', 'Séoul', 'asie', ['South Korea']),
+  c('496', 'Mongolie', 'Oulan-Bator', 'asie', ['Mongolia']),
+  c('398', 'Kazakhstan', 'Astana', 'asie'),
+  c('004', 'Afghanistan', 'Kaboul', 'asie'),
+  c('608', 'Philippines', 'Manille', 'asie'),
+  c('524', 'Népal', 'Katmandou', 'asie', ['Nepal']),
+  c('760', 'Syrie', 'Damas', 'asie', ['Syria']),
+  c('400', 'Jordanie', 'Amman', 'asie', ['Jordan']),
+  c('887', 'Yémen', 'Sanaa', 'asie', ['Yemen', 'Houthis']),
+  c('376', 'Israël', null, 'asie', ['Israel']),
+  c('360', 'Indonésie', null, 'asie', ['Indonesia']),
+  c('104', 'Birmanie', null, 'asie', ['Myanmar']),
+  // Océanie
+  c('036', 'Australie', 'Canberra', 'oceanie', ['Australia']),
+  c('554', 'Nouvelle-Zélande', 'Wellington', 'oceanie', ['New Zealand', 'Kiwis']),
+  c('598', 'Papouasie-Nouvelle-Guinée', 'Port Moresby', 'oceanie', ['Papua New Guinea']),
+]

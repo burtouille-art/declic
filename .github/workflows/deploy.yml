@@ -1,0 +1,79 @@
+# Collecte des flux RSS puis publication sur GitHub Pages.
+# - toutes les 6 heures (minute 17 pour éviter l'engorgement de l'heure pile)
+# - à chaque push sur main
+# - à la demande : onglet Actions > « Collecte et déploiement » > Run workflow
+name: Collecte et déploiement
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: pages
+        uses: actions/configure-pages@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: pipeline/requirements.txt
+
+      - name: Dépendances Python
+        run: pip install -r pipeline/requirements.txt
+
+      - name: Tests du pipeline
+        run: python -m pytest pipeline/tests -q
+
+      - name: Récupérer les dernières données publiées (filet de sécurité)
+        run: |
+          mkdir -p previous
+          for f in news.json status.json onthisday.json; do
+            curl -fsSL --max-time 20 "${{ steps.pages.outputs.base_url }}/data/$f" -o "previous/$f" || rm -f "previous/$f"
+          done
+          ls -la previous
+
+      - name: Collecte des flux RSS
+        run: python pipeline/run.py --out public/data --previous previous
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - name: Tests unitaires (jeux, contenus, données)
+        run: npm test
+      - name: Build
+        run: npm run build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

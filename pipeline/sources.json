@@ -1,0 +1,40 @@
+{
+  "_comment": "Flux vérifiés le 2026-11-08 (réponse 200, XML RSS/Atom, articles datés du jour ou de la semaine). Ne pas ajouter de flux sans l'avoir testé : voir README > Ajouter une source.",
+  "sources": [
+    { "id": "franceinfo-titres", "name": "franceinfo", "url": "https://www.francetvinfo.fr/titres.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": null, "kind": "news" },
+    { "id": "franceinfo-monde", "name": "franceinfo", "url": "https://www.francetvinfo.fr/monde.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "monde", "kind": "news" },
+    { "id": "franceinfo-politique", "name": "franceinfo", "url": "https://www.francetvinfo.fr/politique.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "france", "kind": "news" },
+    { "id": "franceinfo-societe", "name": "franceinfo", "url": "https://www.francetvinfo.fr/societe.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "societe", "kind": "news" },
+    { "id": "franceinfo-economie", "name": "franceinfo", "url": "https://www.francetvinfo.fr/economie.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "economie", "kind": "news" },
+    { "id": "franceinfo-sciences", "name": "franceinfo", "url": "https://www.francetvinfo.fr/sciences.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "sciences", "kind": "news" },
+    { "id": "franceinfo-tech", "name": "franceinfo", "url": "https://www.francetvinfo.fr/internet.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "technologie", "kind": "news" },
+    { "id": "franceinfo-culture", "name": "franceinfo", "url": "https://www.francetvinfo.fr/culture.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "culture", "kind": "news" },
+    { "id": "franceinfo-sports", "name": "franceinfo", "url": "https://www.francetvinfo.fr/sports.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "sport", "kind": "news" },
+    { "id": "franceinfo-environnement", "name": "franceinfo", "url": "https://www.francetvinfo.fr/monde/environnement.rss", "homepage": "https://www.franceinfo.fr", "lang": "fr", "category": "environnement", "kind": "news" },
+    { "id": "france24", "name": "France 24", "url": "https://www.france24.com/fr/rss", "homepage": "https://www.france24.com/fr/", "lang": "fr", "category": null, "kind": "news" },
+    { "id": "france24-ecotech", "name": "France 24", "url": "https://www.france24.com/fr/%C3%A9co-tech/rss", "homepage": "https://www.france24.com/fr/", "lang": "fr", "category": "economie", "kind": "news" },
+    { "id": "lemonde-une", "name": "Le Monde", "url": "https://www.lemonde.fr/rss/une.xml", "homepage": "https://www.lemonde.fr", "lang": "fr", "category": null, "kind": "news" },
+    { "id": "lemonde-histoire", "name": "Le Monde", "url": "https://www.lemonde.fr/histoire/rss_full.xml", "homepage": "https://www.lemonde.fr/histoire/", "lang": "fr", "category": "histoire", "kind": "news" },
+    { "id": "numerama", "name": "Numerama", "url": "https://www.numerama.com/feed/", "homepage": "https://www.numerama.com", "lang": "fr", "category": "technologie", "kind": "news" },
+    { "id": "reporterre", "name": "Reporterre", "url": "https://reporterre.net/spip.php?page=backend", "homepage": "https://reporterre.net", "lang": "fr", "category": "environnement", "kind": "news" },
+    { "id": "inserm", "name": "Inserm", "url": "https://presse.inserm.fr/feed/", "homepage": "https://presse.inserm.fr", "lang": "fr", "category": "sante", "kind": "institution" },
+    { "id": "20minutes-insolite", "name": "20 Minutes", "url": "https://www.20minutes.fr/feeds/rss-insolite.xml", "homepage": "https://www.20minutes.fr", "lang": "fr", "category": "insolite", "kind": "news" },
+    { "id": "theconversation-fr", "name": "The Conversation France", "url": "https://theconversation.com/fr/articles.atom", "homepage": "https://theconversation.com/fr", "lang": "fr", "category": null, "kind": "analysis" },
+    { "id": "bbc-world", "name": "BBC News", "url": "https://feeds.bbci.co.uk/news/world/rss.xml", "homepage": "https://www.bbc.com/news", "lang": "en", "category": "monde", "kind": "news" },
+    { "id": "bbc-science", "name": "BBC News", "url": "https://feeds.bbci.co.uk/news/science_and_environment/rss.xml", "homepage": "https://www.bbc.com/news", "lang": "en", "category": "sciences", "kind": "news" },
+    { "id": "bbc-tech", "name": "BBC News", "url": "https://feeds.bbci.co.uk/news/technology/rss.xml", "homepage": "https://www.bbc.com/news", "lang": "en", "category": "technologie", "kind": "news" },
+    { "id": "bbc-health", "name": "BBC News", "url": "https://feeds.bbci.co.uk/news/health/rss.xml", "homepage": "https://www.bbc.com/news", "lang": "en", "category": "sante", "kind": "news" },
+    { "id": "nasa-news", "name": "NASA", "url": "https://www.nasa.gov/news-release/feed/", "homepage": "https://www.nasa.gov", "lang": "en", "category": "espace", "kind": "institution", "images": { "allowed": true, "credit": "NASA", "license": "Images NASA : généralement non soumises au droit d'auteur (NASA Images and Media Usage Guidelines)", "hosts": ["www.nasa.gov", "assets.science.nasa.gov", "science.nasa.gov", "images-assets.nasa.gov"] } },
+    { "id": "nasa-all", "name": "NASA", "url": "https://www.nasa.gov/feed/", "homepage": "https://www.nasa.gov", "lang": "en", "category": "espace", "kind": "institution", "images": { "allowed": true, "credit": "NASA", "license": "Images NASA : généralement non soumises au droit d'auteur (NASA Images and Media Usage Guidelines)", "hosts": ["www.nasa.gov", "assets.science.nasa.gov", "science.nasa.gov", "images-assets.nasa.gov"] } },
+    { "id": "jpl", "name": "NASA JPL", "url": "https://www.jpl.nasa.gov/feeds/news/", "homepage": "https://www.jpl.nasa.gov", "lang": "en", "category": "espace", "kind": "institution", "images": { "allowed": true, "credit": "NASA/JPL-Caltech", "license": "JPL Image Use Policy", "hosts": ["www.jpl.nasa.gov", "d2pn8kiwq2w21t.cloudfront.net"] } },
+    { "id": "esa", "name": "ESA", "url": "https://www.esa.int/rssfeed/TopNews", "homepage": "https://www.esa.int", "lang": "en", "category": "espace", "kind": "institution" },
+    { "id": "who", "name": "OMS (WHO)", "url": "https://www.who.int/rss-feeds/news-english.xml", "homepage": "https://www.who.int", "lang": "en", "category": "sante", "kind": "institution" }
+  ],
+  "onThisDay": {
+    "id": "wikipedia-onthisday",
+    "name": "Wikipédia — Éphéméride",
+    "urlTemplate": "https://api.wikimedia.org/feed/v1/wikipedia/fr/onthisday/selected/{mm}/{dd}",
+    "license": "CC BY-SA 4.0",
+    "homepage": "https://fr.wikipedia.org"
+  }
+}

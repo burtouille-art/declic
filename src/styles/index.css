@@ -1,0 +1,281 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/newsreader/opsz.css';
+@import '@fontsource-variable/newsreader/opsz-italic.css';
+@import '@fontsource-variable/dm-sans/index.css';
+
+/* ------------------------------------------------------------------
+   DÉCLIC — design tokens
+   Règle structurante : l'éditorial est à angles vifs (on lit),
+   l'interactif est arrondi (on touche).
+------------------------------------------------------------------- */
+
+:root {
+  --paper: #f7f5ef;
+  --paper-2: #eceae4;
+  --paper-3: #e2dfd6;
+  --ink: #171b1d;
+  --ink-2: #454c4f;
+  --ink-3: #626a6d;
+  --rule: #d6d2c7;
+  --vermilion: #ef6448;      /* aplats, formes, boutons (texte sombre dessus) */
+  --vermilion-ink: #b23e25;  /* texte et liens sur fond clair, 5,2:1 */
+  --petrol: #176b65;
+  --petrol-ink: #145d58;
+  --on-petrol: #f7f5ef;
+  --sun: #f2d978;
+  --sun-ink: #6b5400;
+  --ok: #1d7a4a;
+  --ok-bg: #dcefe3;
+  --ko: #b23e25;
+  --ko-bg: #f8dfd8;
+  --focus: #176b65;
+  --shadow: 0 1px 0 rgb(23 27 29 / 0.06), 0 8px 24px -12px rgb(23 27 29 / 0.25);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --paper: #111615;
+    --paper-2: #1a201f;
+    --paper-3: #242b2a;
+    --ink: #ece9e1;
+    --ink-2: #c0c2bc;
+    --ink-3: #969c97;
+    --rule: #2f3836;
+    --vermilion: #ff7a5e;
+    --vermilion-ink: #ff9a82;
+    --petrol: #1f7d76;
+    --petrol-ink: #6cc6bc;
+    --on-petrol: #f7f5ef;
+    --sun: #f2d978;
+    --sun-ink: #f2d978;
+    --ok: #7fd3a1;
+    --ok-bg: #173628;
+    --ko: #ff9a82;
+    --ko-bg: #3d211b;
+    --focus: #6cc6bc;
+    --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --paper: #111615;
+  --paper-2: #1a201f;
+  --paper-3: #242b2a;
+  --ink: #ece9e1;
+  --ink-2: #c0c2bc;
+  --ink-3: #969c97;
+  --rule: #2f3836;
+  --vermilion: #ff7a5e;
+  --vermilion-ink: #ff9a82;
+  --petrol: #1f7d76;
+  --petrol-ink: #6cc6bc;
+  --on-petrol: #f7f5ef;
+  --sun: #f2d978;
+  --sun-ink: #f2d978;
+  --ok: #7fd3a1;
+  --ok-bg: #173628;
+  --ko: #ff9a82;
+  --ko-bg: #3d211b;
+  --focus: #6cc6bc;
+  --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-rule: var(--rule);
+  --color-vermilion: var(--vermilion);
+  --color-vermilion-ink: var(--vermilion-ink);
+  --color-petrol: var(--petrol);
+  --color-petrol-ink: var(--petrol-ink);
+  --color-on-petrol: var(--on-petrol);
+  --color-sun: var(--sun);
+  --color-sun-ink: var(--sun-ink);
+  --color-ok: var(--ok);
+  --color-ok-bg: var(--ok-bg);
+  --color-ko: var(--ko);
+  --color-ko-bg: var(--ko-bg);
+  --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
+  --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --shadow-lift: var(--shadow);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'kern', 'liga';
+  }
+  ::selection {
+    background: var(--sun);
+    color: #171b1d;
+  }
+  :focus-visible {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  a {
+    color: inherit;
+  }
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+  img {
+    max-width: 100%;
+  }
+}
+
+/* Échelle typographique (rapport ~1,25 côté interface, plus ample côté titres) */
+@utility t-display {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 72;
+  font-weight: 480;
+  font-size: clamp(2.15rem, 1.2rem + 4.6vw, 5.4rem);
+  line-height: 0.98;
+  letter-spacing: -0.025em;
+}
+@utility t-h1 {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 60;
+  font-weight: 500;
+  font-size: clamp(1.85rem, 1.25rem + 2.6vw, 3.4rem);
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+}
+@utility t-h2 {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 36;
+  font-weight: 520;
+  font-size: clamp(1.45rem, 1.15rem + 1.1vw, 2.1rem);
+  line-height: 1.12;
+  letter-spacing: -0.012em;
+}
+@utility t-h3 {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 24;
+  font-weight: 540;
+  font-size: 1.22rem;
+  line-height: 1.22;
+  letter-spacing: -0.005em;
+}
+@utility t-lede {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 16;
+  font-size: 1.14rem;
+  line-height: 1.55;
+}
+@utility t-body {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 14;
+  font-size: 1.09rem;
+  line-height: 1.65;
+}
+@utility t-meta {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+@utility t-label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+@utility wrap {
+  width: 100%;
+  max-width: 82rem;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 640px) {
+    padding-inline: 1.5rem;
+  }
+  @media (min-width: 1024px) {
+    padding-inline: 2.5rem;
+  }
+}
+
+@utility measure {
+  max-width: 38rem;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@layer components {
+  /* Lien éditorial : soulignement fin qui s'épaissit au survol */
+  .link-ed {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+    text-decoration-color: color-mix(in oklab, currentColor 35%, transparent);
+    transition: text-decoration-color 0.15s, text-decoration-thickness 0.15s;
+  }
+  .link-ed:hover {
+    text-decoration-color: currentColor;
+    text-decoration-thickness: 2px;
+  }
+  /* Titre cliquable : toute la carte devient la zone de clic */
+  .stretched::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+  .headline-link:hover .headline {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.12em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Ombre de la barre de navigation mobile + zone de sécurité iOS */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@keyframes shimmer {
+  0% { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--paper-2) 0px, var(--paper-3) 160px, var(--paper-2) 320px);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s linear infinite;
+}

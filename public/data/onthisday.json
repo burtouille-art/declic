@@ -1,0 +1,209 @@
+{
+ "generatedAt": "2026-11-08T19:00:00+00:00",
+ "license": "CC BY-SA 4.0",
+ "days": {
+  "11-08": {
+   "events": [
+    {
+     "id": "otd-9d435d6c09",
+     "year": 535,
+     "text": "ouverture du premier concile de Clermont à Arvernis (future Clermont).",
+     "url": "https://fr.wikipedia.org/wiki/Concile_de_Clermont_(535)",
+     "pageTitle": "Concile de Clermont (535)"
+    },
+    {
+     "id": "otd-015584b820",
+     "year": 1806,
+     "text": "prise de Magdebourg par la Grande Armée opposée à la Prusse lors de la campagne de Prusse et de Pologne.",
+     "url": "https://fr.wikipedia.org/wiki/Si%C3%A8ge_de_Magdebourg_(1806)",
+     "pageTitle": "Siège de Magdebourg (1806)"
+    },
+    {
+     "id": "otd-dccee2fb3e",
+     "year": 1942,
+     "text": "pendant la Seconde Guerre mondiale, les Alliés débarquent en Afrique française du Nord lors de l'opération Torch.",
+     "url": "https://fr.wikipedia.org/wiki/Seconde_Guerre_mondiale",
+     "pageTitle": "Seconde Guerre mondiale"
+    },
+    {
+     "id": "otd-b2f9431806",
+     "year": 1998,
+     "text": "approbation par référendum de l'accord de Nouméa qui prévoit le transfert de certaines compétences de l'État français à la collectivité de Nouvelle-Calédonie.",
+     "url": "https://fr.wikipedia.org/wiki/Accord_de_Noum%C3%A9a",
+     "pageTitle": "Accord de Nouméa"
+    }
+   ],
+   "questions": [
+    {
+     "id": "q-otd-015584b820",
+     "prompt": "En quelle année : prise de Magdebourg par la Grande Armée opposée à la Prusse lors de la campagne de Prusse et de Pologne ?",
+     "options": [
+      "1769",
+      "1794",
+      "1806",
+      "1815"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1806. Pour en savoir plus : l'article Wikipédia « Siège de Magdebourg (1806) ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Si%C3%A8ge_de_Magdebourg_(1806)"
+     }
+    },
+    {
+     "id": "q-otd-dccee2fb3e",
+     "prompt": "En quelle année : pendant la Seconde Guerre mondiale, les Alliés débarquent en Afrique française du Nord lors de l'opération Torch ?",
+     "options": [
+      "1905",
+      "1930",
+      "1942",
+      "1951"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1942. Pour en savoir plus : l'article Wikipédia « Seconde Guerre mondiale ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Seconde_Guerre_mondiale"
+     }
+    },
+    {
+     "id": "q-otd-b2f9431806",
+     "prompt": "En quelle année : approbation par référendum de l'accord de Nouméa qui prévoit le transfert de certaines compétences de l'État français à la collectivité de Nouvelle-Calédonie ?",
+     "options": [
+      "1961",
+      "1986",
+      "1998",
+      "2007"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1998. Pour en savoir plus : l'article Wikipédia « Accord de Nouméa ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Accord_de_Noum%C3%A9a"
+     }
+    }
+   ]
+  },
+  "11-09": {
+   "events": [
+    {
+     "id": "otd-7743b19b44",
+     "year": 1918,
+     "text": "abdication de l'empereur allemand Guillaume II et proclamation à Berlin de la république.",
+     "url": "https://fr.wikipedia.org/wiki/Empereur_allemand",
+     "pageTitle": "Empereur allemand"
+    },
+    {
+     "id": "otd-a3b2a31ef8",
+     "year": 1923,
+     "text": "Adolf Hitler et plusieurs membres du NSDAP sont arrêtés après avoir tenté de prendre le pouvoir à Munich lors du putsch de la Brasserie.",
+     "url": "https://fr.wikipedia.org/wiki/Adolf_Hitler",
+     "pageTitle": "Adolf Hitler"
+    },
+    {
+     "id": "otd-4b163a2016",
+     "year": 1938,
+     "text": "nuit de Cristal, persécutions contre les Juifs organisées par le régime nazi en Allemagne.",
+     "url": "https://fr.wikipedia.org/wiki/Nuit_de_Cristal",
+     "pageTitle": "Nuit de Cristal"
+    },
+    {
+     "id": "otd-27c862f013",
+     "year": 1989,
+     "text": "chute du mur de Berlin.",
+     "url": "https://fr.wikipedia.org/wiki/Chute_du_mur_de_Berlin",
+     "pageTitle": "Chute du mur de Berlin"
+    },
+    {
+     "id": "otd-1efd07ab7d",
+     "year": 1993,
+     "text": "destruction du Stari Most, pont du XVIe siècle, à Mostar en Bosnie-Herzégovine, par le Conseil de défense croate lors de la guerre de Bosnie-Herzégovine.",
+     "url": "https://fr.wikipedia.org/wiki/Stari_Most",
+     "pageTitle": "Stari Most"
+    }
+   ],
+   "questions": [
+    {
+     "id": "q-otd-7743b19b44",
+     "prompt": "En quelle année : abdication de l'empereur allemand Guillaume II et proclamation à Berlin de la république ?",
+     "options": [
+      "1881",
+      "1906",
+      "1918",
+      "1927"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1918. Pour en savoir plus : l'article Wikipédia « Empereur allemand ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Empereur_allemand"
+     }
+    },
+    {
+     "id": "q-otd-a3b2a31ef8",
+     "prompt": "En quelle année : Adolf Hitler et plusieurs membres du NSDAP sont arrêtés après avoir tenté de prendre le pouvoir à Munich lors du putsch de la Brasserie ?",
+     "options": [
+      "1886",
+      "1911",
+      "1923",
+      "1932"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1923. Pour en savoir plus : l'article Wikipédia « Adolf Hitler ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Adolf_Hitler"
+     }
+    },
+    {
+     "id": "q-otd-4b163a2016",
+     "prompt": "En quelle année : nuit de Cristal, persécutions contre les Juifs organisées par le régime nazi en Allemagne ?",
+     "options": [
+      "1901",
+      "1926",
+      "1938",
+      "1947"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1938. Pour en savoir plus : l'article Wikipédia « Nuit de Cristal ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Nuit_de_Cristal"
+     }
+    },
+    {
+     "id": "q-otd-27c862f013",
+     "prompt": "En quelle année : chute du mur de Berlin ?",
+     "options": [
+      "1952",
+      "1977",
+      "1989",
+      "1998"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1989. Pour en savoir plus : l'article Wikipédia « Chute du mur de Berlin ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Chute_du_mur_de_Berlin"
+     }
+    },
+    {
+     "id": "q-otd-1efd07ab7d",
+     "prompt": "En quelle année : destruction du Stari Most, pont du XVIe siècle, à Mostar en Bosnie-Herzégovine, par le Conseil de défense croate lors de la guerre de Bosnie-Herzégovine ?",
+     "options": [
+      "1956",
+      "1981",
+      "1993",
+      "2002"
+     ],
+     "answer": 2,
+     "explanation": "C'était en 1993. Pour en savoir plus : l'article Wikipédia « Stari Most ».",
+     "source": {
+      "label": "Wikipédia — Éphéméride (CC BY-SA)",
+      "url": "https://fr.wikipedia.org/wiki/Stari_Most"
+     }
+    }
+   ]
+  }
+ }
+}
