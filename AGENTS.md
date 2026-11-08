@@ -135,6 +135,10 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
 
+### 2026-11-08 — Claude (Opus) — site en ligne
+- Dépôt passé en public, Pages activé (source : GitHub Actions). Site : **https://burtouille-art.github.io/declic/**
+- Premier déploiement : 385 articles, **28 sources sur 28** (JPL accepte le nouveau User-Agent).
+
 ### 2026-11-08 — Claude (Opus) — mise à jour garantie tous les jours
 - Job `keepalive` dans `deploy.yml` : lors des exécutions planifiées, si le dernier commit a plus de 45 jours, un commit vide (auteur `github-actions[bot]`) empêche GitHub de suspendre le cron après 60 jours d'inactivité. Le site se met donc à jour 4 fois par jour sans intervention.
 
@@ -161,7 +165,7 @@ Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
 
 ## 8. Pistes ouvertes (non faites)
 
-- Vérifier en conditions réelles la première collecte GitHub Actions (le développement s'est fait sans accès réseau aux médias) et ajuster les seuils si une source renvoie 0 article récent.
+- Surveiller la page /#/diagnostic les premières semaines et ajuster les seuils si une source renvoie souvent 0 article récent.
 - Enrichir les banques (objectif : 150 questions, 60 vrai/faux) en gardant une source par entrée.
 - Rapprochement inter-langues (FR/EN) : seulement avec une méthode fiable ; sinon s'abstenir.
 - Images libres supplémentaires (Wikimedia Commons) : uniquement avec licence vérifiée et crédit affiché.
