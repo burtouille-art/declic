@@ -168,12 +168,23 @@ def places_in(titles: list[str]) -> set[str]:
     return out
 
 
+# Mots qui signalent une institution, un événement ou une marque, pas une personne.
+_NOT_PERSON = {
+    "masters", "open", "conseil", "coupe", "grand", "prix", "ligue", "parti", "assemblee", "cour", "tour", "club",
+    "festival", "musee", "union", "banque", "maison", "palais", "ministere", "republique", "etat", "etats", "nations",
+    "federation", "championnat", "jeux", "world", "cup", "league", "party", "house", "court", "council", "bank",
+    "rolex", "airlines", "group", "groupe", "universite", "institut", "agence", "fondation", "senat", "congres",
+}
+
+
 def _shape(ent: str, places: set[str] | None = None) -> str:
     """« personne » pour un nom du type Prénom Nom (sans « de », sans sigle), sinon « autre ».
     Les leurres doivent avoir la même forme que la réponse."""
     if places and fold(ent) in places:
         return "lieu"
     words = ent.split()
+    if any(fold(w).strip("'’") in _NOT_PERSON for w in words):
+        return "autre"
     if 2 <= len(words) <= 3 and all(w[:1].isupper() and not w.isupper() for w in words):
         return "personne"
     return "autre"

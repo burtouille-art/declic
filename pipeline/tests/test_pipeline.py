@@ -382,8 +382,9 @@ def test_quiz_distractors_are_unambiguous_and_same_shape():
     assert _too_close("Gadi Eisenkot", "Gadi Eizenkot")
     assert _too_close("Louis Burton", "Luis Burto")
     assert not _too_close("Gadi Eisenkot", "Donald Trump")
-    assert _shape("Donald Trump") == "personne" and _shape("Maison Blanche") == "personne"
+    assert _shape("Donald Trump") == "personne"
     assert _shape("RC Lens") == "autre" and _shape("Jean de La Fontaine") == "autre"
+    assert _shape("Rolex Paris Masters") == "autre" and _shape("Maison Blanche") == "autre"
     art = _art(1, "Israël : Gadi Eisenkot appelle à l'unité", "Média A")
     others = ["Gadi Eizenkot", "Donald Trump", "Fabien Roussel", "RC Lens", "Tom Laperche", "Raphaël Glucksmann"]
     q = _entity_question(art, others)
