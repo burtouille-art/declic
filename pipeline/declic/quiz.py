@@ -20,6 +20,7 @@ import hashlib
 import json
 import random
 import re
+from difflib import SequenceMatcher
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -141,6 +142,9 @@ def candidate_entities(title: str, known: set[str] | None = None) -> list[str]:
         ent = m.group(1).strip()
         if m.start() == 0 and (known is None or fold(ent) not in known):
             continue
+        # Nom coupé (« XXL de Jean-Luc » suivi de « Mélenchon ») : on n'en fait pas une réponse.
+        if re.match(r"[  ]+[A-ZÉÈÀÂÎÔÛÇ]", title[m.end():]):
+            continue
         first = fold(ent.split()[0]).strip("'’")
         if first in _ENTITY_STOP_FIRST or len(ent) < 6:
             continue
@@ -150,18 +154,61 @@ def candidate_entities(title: str, known: set[str] | None = None) -> list[str]:
     return out
 
 
-def _entity_question(art: dict, others: list[str]) -> dict | None:
+_PLACE_BEFORE = re.compile(r"(?:^|[\s(])(?:à|au|aux|en|vers|depuis)\s+$", re.IGNORECASE)
+
+
+def places_in(titles: list[str]) -> set[str]:
+    """Noms propres précédés de « à », « en », « au »… dans au moins un titre : des lieux."""
+    out = set()
+    for t in titles:
+        for ent in candidate_entities(t):
+            i = t.find(ent)
+            if i > 0 and _PLACE_BEFORE.search(t[:i]):
+                out.add(fold(ent))
+    return out
+
+
+def _shape(ent: str, places: set[str] | None = None) -> str:
+    """« personne » pour un nom du type Prénom Nom (sans « de », sans sigle), sinon « autre ».
+    Les leurres doivent avoir la même forme que la réponse."""
+    if places and fold(ent) in places:
+        return "lieu"
+    words = ent.split()
+    if 2 <= len(words) <= 3 and all(w[:1].isupper() and not w.isupper() for w in words):
+        return "personne"
+    return "autre"
+
+
+def _too_close(a: str, b: str) -> bool:
+    """Deux graphies d'un même nom (« Eisenkot » / « Eizenkot ») ou un mot en commun : ambigu."""
+    fa, fb = fold(a), fold(b)
+    if SequenceMatcher(None, fa, fb).ratio() >= 0.7:
+        return True
+    ta = {w for w in re.findall(r"\w+", fa) if len(w) >= 4}
+    tb = {w for w in re.findall(r"\w+", fb) if len(w) >= 4}
+    return bool(ta & tb)
+
+
+def _entity_question(art: dict, others: list[str], places: set[str] | None = None) -> dict | None:
     ents = candidate_entities(art["title"], {fold(o) for o in others})
     if not ents:
         return None
     ent = ents[0]  # le premier nom propre est en général le sujet du titre
     if art["title"].count(ent) != 1:
         return None
-    pool = sorted({o for o in others if fold(o) != fold(ent) and fold(o) not in fold(art["title"]) and fold(ent) not in fold(o)})
-    if len(pool) < 3:
-        return None
+    places = (places or set()) | places_in([art["title"]])
+    shape = _shape(ent, places)
+    pool = sorted({o for o in others if _shape(o, places) == shape and fold(o) not in fold(art["title"]) and not _too_close(o, ent)})
     rng = random.Random(art["id"] + "qui")
-    distract = rng.sample(pool, 3)
+    rng.shuffle(pool)
+    distract: list[str] = []
+    for o in pool:
+        if all(not _too_close(o, d) for d in distract):
+            distract.append(o)
+        if len(distract) == 3:
+            break
+    if len(distract) < 3:
+        return None
     masked = art["title"].replace(ent, MASK, 1)
     opts, ans = _shuffle([ent, *distract], ent, art["id"] + "qui")
     return {"type": "qui", "prompt": "Qui ou quoi manque dans ce titre ?", "text": masked, "options": opts, "answer": ans, "solution": ent}
@@ -195,7 +242,7 @@ def _coverage(art: dict, clusters_by_id: dict[str, dict], by_id: dict[str, dict]
         a = by_id.get(i)
         if a and a["id"] != art["id"]:
             out.append({"sourceName": a["sourceName"], "sourceCountry": a.get("sourceCountry"), "title": a["title"], "url": a["url"], "lang": a["lang"]})
-    return out
+    return out[:5]  # cinq autres titres suffisent (poids du fichier sur mobile)
 
 
 def _finalize(q: dict, art: dict, clusters_by_id: dict, by_id: dict) -> dict:
@@ -235,7 +282,8 @@ def build_quiz(articles: list[dict], clusters: list[dict], now: datetime, n: int
         q = _angle_question(c, by_id)
         if q:
             pool.append(_finalize(q, q["_article"], clusters_by_id, by_id))
-    makers = [_country_question, lambda x: _entity_question(x, entity_pool), _number_question]
+    places = places_in([a["title"] for a in ranked[:200]])
+    makers = [_country_question, lambda x: _entity_question(x, entity_pool, places), _number_question]
     for k, a in enumerate(ranked[:150]):
         # On fait tourner le type préféré pour ne pas obtenir dix questions « pays ».
         for maker in makers[k % 3:] + makers[: k % 3]:
@@ -274,4 +322,5 @@ def build_quiz(articles: list[dict], clusters: list[dict], now: datetime, n: int
     first_cloze = next((i for i, q in enumerate(chosen) if q["text"]), 0)
     if chosen:
         chosen.insert(0, chosen.pop(first_cloze))
-    return {"questions": chosen, "pool": pool}
+    # Réserve pour le Déclic (rappel d'un des trois titres du jour) : textes à trous seulement, les plus importants.
+    return {"questions": chosen, "pool": [q for q in pool if q["text"]][:30]}

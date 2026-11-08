@@ -351,7 +351,7 @@ def test_quiz_angle_question_uses_cluster_titles():
     ]
     clusters = build_clusters(arts)
     quiz = build_quiz(arts, clusters, NOW)
-    angle = [q for q in quiz["pool"] if q["type"] == "angle"]
+    angle = [q for q in quiz["questions"] if q["type"] == "angle"]
     assert len(angle) == 1
     q = angle[0]
     assert set(q["options"]) == {a["title"] for a in arts}
@@ -375,3 +375,17 @@ def test_opinion_excluded_from_quiz_and_une_but_linked_to_topics():
     assert all(a["kind"] != "opinion" for a in select_une(arts, clusters, now))
     quiz = build_quiz(arts, clusters, now)
     assert all(q["articleId"] != arts[2]["id"] for q in quiz["questions"] + quiz["pool"])
+
+
+def test_quiz_distractors_are_unambiguous_and_same_shape():
+    from declic.quiz import _entity_question, _shape, _too_close
+    assert _too_close("Gadi Eisenkot", "Gadi Eizenkot")
+    assert _too_close("Louis Burton", "Luis Burto")
+    assert not _too_close("Gadi Eisenkot", "Donald Trump")
+    assert _shape("Donald Trump") == "personne" and _shape("Maison Blanche") == "personne"
+    assert _shape("RC Lens") == "autre" and _shape("Jean de La Fontaine") == "autre"
+    art = _art(1, "Israël : Gadi Eisenkot appelle à l'unité", "Média A")
+    others = ["Gadi Eizenkot", "Donald Trump", "Fabien Roussel", "RC Lens", "Tom Laperche", "Raphaël Glucksmann"]
+    q = _entity_question(art, others)
+    assert q and q["solution"] == "Gadi Eisenkot"
+    assert "Gadi Eizenkot" not in q["options"] and "RC Lens" not in q["options"]

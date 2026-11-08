@@ -97,7 +97,7 @@ Un changement est **terminé** quand tout ceci passe :
 ```bash
 npm run typecheck                    # 0 erreur (TS strict, noUncheckedIndexedAccess)
 npm test                             # Vitest : contenus, logique, composants (33 tests)
-python3 -m pytest pipeline/tests -q  # pipeline (31 tests)
+python3 -m pytest pipeline/tests -q  # pipeline (32 tests)
 npm run build
 npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (38 tests)
 ```
@@ -150,7 +150,9 @@ Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
 - **Accueil** : quiz de l'actu juste après la une ; « Ailleurs, le même sujet » sous l'article principal ; « Un sujet, plusieurs regards » ; « Prendre du recul » (Décrypter / Débattre). Vue comparative avec trois questions de lecture active. Nouveau type `opinion` (« Tribune ou débat »), filtre dans Actus.
 - **Thème clair par défaut** (même si le téléphone est en mode sombre) ; « Automatique » et « Sombre » restent au choix dans Mon espace.
 - Tests : typecheck OK, Vitest 33/33, pytest 31/31, Playwright 38/38 (axe compris sur la correction du quiz).
-- À surveiller en ligne : qualité des rapprochements et des leurres du quiz sur les vraies données.
+- Première collecte réelle v1.2 : 600 articles (plafond `TOTAL_MAX`), 35 rapprochements, 43/44 sources (Le Soir : HTTP 403 au robot, à revoir).
+- Corrigé après lecture du quiz en ligne : leurres ambigus (« Gadi Eisenkot » / « Gadi Eizenkot », graphies différentes selon les médias) → `_too_close()` ; leurres de forme différente (une personne contre « Maison Blanche ») → `_shape()` (personne / lieu / autre, lieux repérés par « à », « en », « au »… dans les titres) ; noms coupés (« XXL de Jean-Luc » + « Mélenchon ») écartés ; `quiz.json` allégé (réserve = 30 textes à trous, 5 autres titres max par question).
+- Tests : pytest 32/32.
 
 ### 2026-11-08 — Claude (Opus) — flux RSS « À la une » pour widget Android
 - `pipeline/declic/feed.py` produit `public/data/une.xml` (RSS 2.0) : 10 titres en français, sans doublon d'événement, au plus 2 par média et par rubrique au premier passage, hors « Insolite ». Même logique d'importance que `topStories()` côté site. Titre = « Média · titre original », lien = article original, chapô du média inchangé en description.

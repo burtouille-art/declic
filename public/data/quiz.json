@@ -62,10 +62,10 @@
    "prompt": "Qui ou quoi manque dans ce titre ?",
    "text": "Sous la pluie, …… remporte le Grand Prix du Brésil, devant Max Verstappen et Isack Hadjar",
    "options": [
-    "Raphaël Glucksmann",
-    "Gadi Eisenkot",
+    "Carlos Alcaraz",
+    "Donald Trump",
     "Lando Norris",
-    "Donald Trump"
+    "Benyamin Nétanyahou"
    ],
    "answer": 2,
    "solution": "Lando Norris",
@@ -88,9 +88,9 @@
    "text": "Tennis : …… remporte pour la première fois le Masters 1000 de Paris",
    "options": [
     "Carlos Alcaraz",
-    "Raphaël Glucksmann",
-    "Isack Hadjar",
-    "Max Verstappen"
+    "Donald Trump",
+    "Max Verstappen",
+    "Benyamin Nétanyahou"
    ],
    "answer": 0,
    "solution": "Carlos Alcaraz",
@@ -137,10 +137,10 @@
    "prompt": "Qui ou quoi manque dans ce titre ?",
    "text": "Présidentielle : contraint de quitter le cortège parisien jeudi, …… affirme qu'il retournera aux prochaines manifestations de l'intersyndicale",
    "options": [
-    "Isack Hadjar",
-    "Gadi Eisenkot",
+    "Lando Norris",
+    "Max Verstappen",
     "Raphaël Glucksmann",
-    "Benyamin Nétanyahou"
+    "Gadi Eisenkot"
    ],
    "answer": 2,
    "solution": "Raphaël Glucksmann",
@@ -158,51 +158,51 @@
    "coverage": []
   },
   {
-   "type": "qui",
-   "prompt": "Qui ou quoi manque dans ce titre ?",
-   "text": "Débâcle de Trump aux midterms, revendications lycéennes, …… : la semaine en images",
+   "type": "pays",
+   "prompt": "Quel pays manque dans ce titre ?",
+   "text": "…… : bougies, lanternes, et feux d'artifices pour fêter Diwali",
    "options": [
-    "Abu Dhabi",
-    "Raphaël Glucksmann",
-    "Max Verstappen",
-    "JOJ de Dakar"
+    "Arabie saoudite",
+    "Israël",
+    "Inde",
+    "Indonésie"
    ],
-   "answer": 3,
-   "solution": "JOJ de Dakar",
-   "id": "qa-626aac9eeebd",
-   "articleId": "8ea1546e88a76785",
+   "answer": 2,
+   "solution": "Inde",
+   "id": "qa-8daaf42a9690",
+   "articleId": "6259954d5ac51a27",
    "article": {
-    "title": "Débâcle de Trump aux midterms, revendications lycéennes, JOJ de Dakar : la semaine en images",
-    "url": "https://www.france24.com/fr/france/20261108-d%C3%A9b%C3%A2cle-trump-midterms-revendications-lyc%C3%A9ennes-joj-dakar-semaine-images",
+    "title": "Inde : bougies, lanternes, et feux d'artifices pour fêter Diwali",
+    "url": "https://www.france24.com/fr/vid%C3%A9o/20261108-inde-bougies-lanternes-et-feux-d-artifices-pour-f%C3%AAter-diwali",
     "sourceName": "France 24",
     "sourceCountry": "France",
-    "publishedAt": "2026-11-08T15:13:35+00:00",
-    "summary": "Retour sur les temps forts de l'actualité de la semaine écoulée et sur ses images les plus marquantes : la large victoire des démocrates américains aux élections de mi-mandat, la gronde des lycéens qui se poursuit partout en France et les Jeux olympiques de la jeunesse (JOJ) de Dakar.",
-    "category": "france"
+    "publishedAt": "2026-11-08T12:26:00+00:00",
+    "summary": "Les célébrations de Diwali ont débuté dimanche. À Ayodhya, considérée comme le lieu de naissance du seigneur Rama – la divinité vénérée lors de cette fête –, les célébrations comprenaient des spectacles inspirés de l’épopée hindoue « Ramayana », des spectacles de lumières et de lasers, des concerts, des feux d’artifice…",
+    "category": "monde"
    },
    "coverage": []
   },
   {
-   "type": "qui",
-   "prompt": "Qui ou quoi manque dans ce titre ?",
-   "text": "Les Européens, dont la France, seront \"représentés\" lors des négociations sur l'Ukraine à ……, rapporte le ministre des Affaires étrangères",
+   "type": "pays",
+   "prompt": "Quel pays manque dans ce titre ?",
+   "text": "…… : première livraison d'aide médicale du CICR dans la ville de Taëz",
    "options": [
-    "JOJ de Dakar",
-    "Abu Dhabi",
-    "Lando Norris",
-    "Raphaël Glucksmann"
+    "Indonésie",
+    "Yémen",
+    "Israël",
+    "Mongolie"
    ],
    "answer": 1,
-   "solution": "Abu Dhabi",
-   "id": "qa-733831eae631",
-   "articleId": "1596270fddcaab3d",
+   "solution": "Yémen",
+   "id": "qa-6280fe98a9d1",
+   "articleId": "4cbbf996f82875ff",
    "article": {
-    "title": "Les Européens, dont la France, seront \"représentés\" lors des négociations sur l'Ukraine à Abu Dhabi, rapporte le ministre des Affaires étrangères",
-    "url": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-les-europeens-dont-la-france-seront-representes-lors-des-negociations-a-abu-dhabi-rapporte-le-ministre-des-affaires-etrangeres_8273333.html",
-    "sourceName": "franceinfo",
+    "title": "Yémen : première livraison d'aide médicale du CICR dans la ville de Taëz",
+    "url": "https://www.france24.com/fr/vid%C3%A9o/20261108-y%C3%A9men-premi%C3%A8re-livraison-d-aide-m%C3%A9dicale-du-cicr-dans-la-ville-de-ta%C3%ABz",
+    "sourceName": "France 24",
     "sourceCountry": "France",
-    "publishedAt": "2026-11-08T12:48:01+00:00",
-    "summary": "Invité dimanche de RTL-Public Sénat, Jean-Noël Barrot n'a pas précisé qui représenterait Paris durant ces pourparlers, qui doivent se dérouler les 10 et 11 novembre.",
+    "publishedAt": "2026-11-08T14:20:20+00:00",
+    "summary": null,
     "category": "monde"
    },
    "coverage": []
@@ -260,37 +260,6 @@
  ],
  "pool": [
   {
-   "type": "angle",
-   "prompt": "Ces médias ont couvert le même événement. Quel titre a été publié par franceinfo ?",
-   "text": null,
-   "options": [
-    "En Israël, Gadi Eisenkot affirme que le Likoud, parti de Benyamin Nétanyahou, est bienvenu pour former une coalition gouvernementale",
-    "Gadi Eisenkot officiellement chargé de former le prochain gouvernement en Israël"
-   ],
-   "answer": 0,
-   "solution": "En Israël, Gadi Eisenkot affirme que le Likoud, parti de Benyamin Nétanyahou, est bienvenu pour former une coalition gouvernementale",
-   "id": "qa-68012b47048f",
-   "articleId": "01546ce623cde635",
-   "article": {
-    "title": "En Israël, Gadi Eisenkot affirme que le Likoud, parti de Benyamin Nétanyahou, est bienvenu pour former une coalition gouvernementale",
-    "url": "https://www.franceinfo.fr/monde/israel/en-israel-gadi-eisenkot-affirme-que-le-likoud-parti-de-benyamin-netanyahou-est-bienvenu-pour-former-une-coalition-gouvernementale_8273507.html",
-    "sourceName": "franceinfo",
-    "sourceCountry": "France",
-    "publishedAt": "2026-11-08T16:00:51+00:00",
-    "summary": "Le président israélien a officiellement remis dimanche à Gadi Eisenkot, chef du principal bloc d'opposition, le mandat de former le prochain gouvernement.",
-    "category": "monde"
-   },
-   "coverage": [
-    {
-     "sourceName": "France 24",
-     "sourceCountry": "France",
-     "title": "Gadi Eisenkot officiellement chargé de former le prochain gouvernement en Israël",
-     "url": "https://www.france24.com/fr/moyen-orient/20261107-isra%C3%ABl-gadi-eisenkot-rival-de-benjamin-netanyahu-sera-charg%C3%A9-de-former-le-prochain-gouvernement",
-     "lang": "fr"
-    }
-   ]
-  },
-  {
    "type": "pays",
    "prompt": "Quel pays manque dans ce titre ?",
    "text": "En ……, Gadi Eisenkot affirme que le Likoud, parti de Benyamin Nétanyahou, est bienvenu pour former une coalition gouvernementale",
@@ -329,9 +298,9 @@
    "text": "…… officiellement chargé de former le prochain gouvernement en Israël",
    "options": [
     "Gadi Eisenkot",
-    "Donald Trump",
-    "Isack Hadjar",
-    "Carlos Alcaraz"
+    "Benyamin Nétanyahou",
+    "Lando Norris",
+    "Raphaël Glucksmann"
    ],
    "answer": 0,
    "solution": "Gadi Eisenkot",
@@ -401,10 +370,10 @@
    "prompt": "Qui ou quoi manque dans ce titre ?",
    "text": "Sous la pluie, …… remporte le Grand Prix du Brésil, devant Max Verstappen et Isack Hadjar",
    "options": [
-    "Raphaël Glucksmann",
-    "Gadi Eisenkot",
+    "Carlos Alcaraz",
+    "Donald Trump",
     "Lando Norris",
-    "Donald Trump"
+    "Benyamin Nétanyahou"
    ],
    "answer": 2,
    "solution": "Lando Norris",
@@ -427,9 +396,9 @@
    "text": "Tennis : …… remporte pour la première fois le Masters 1000 de Paris",
    "options": [
     "Carlos Alcaraz",
-    "Raphaël Glucksmann",
-    "Isack Hadjar",
-    "Max Verstappen"
+    "Donald Trump",
+    "Max Verstappen",
+    "Benyamin Nétanyahou"
    ],
    "answer": 0,
    "solution": "Carlos Alcaraz",
@@ -451,10 +420,10 @@
    "prompt": "Qui ou quoi manque dans ce titre ?",
    "text": "Présidentielle : contraint de quitter le cortège parisien jeudi, …… affirme qu'il retournera aux prochaines manifestations de l'intersyndicale",
    "options": [
-    "Isack Hadjar",
-    "Gadi Eisenkot",
+    "Lando Norris",
+    "Max Verstappen",
     "Raphaël Glucksmann",
-    "Benyamin Nétanyahou"
+    "Gadi Eisenkot"
    ],
    "answer": 2,
    "solution": "Raphaël Glucksmann",
@@ -467,31 +436,6 @@
     "sourceCountry": "France",
     "publishedAt": "2026-11-08T17:46:22+00:00",
     "summary": "Le candidat social-démocrate à la présidentielle a également déclaré dimanche soir vouloir \"mettre fin à l’hégémonie de Jean-Luc Mélenchon sur la gauche française\".",
-    "category": "france"
-   },
-   "coverage": []
-  },
-  {
-   "type": "qui",
-   "prompt": "Qui ou quoi manque dans ce titre ?",
-   "text": "Débâcle de Trump aux midterms, revendications lycéennes, …… : la semaine en images",
-   "options": [
-    "Abu Dhabi",
-    "Raphaël Glucksmann",
-    "Max Verstappen",
-    "JOJ de Dakar"
-   ],
-   "answer": 3,
-   "solution": "JOJ de Dakar",
-   "id": "qa-626aac9eeebd",
-   "articleId": "8ea1546e88a76785",
-   "article": {
-    "title": "Débâcle de Trump aux midterms, revendications lycéennes, JOJ de Dakar : la semaine en images",
-    "url": "https://www.france24.com/fr/france/20261108-d%C3%A9b%C3%A2cle-trump-midterms-revendications-lyc%C3%A9ennes-joj-dakar-semaine-images",
-    "sourceName": "France 24",
-    "sourceCountry": "France",
-    "publishedAt": "2026-11-08T15:13:35+00:00",
-    "summary": "Retour sur les temps forts de l'actualité de la semaine écoulée et sur ses images les plus marquantes : la large victoire des démocrates américains aux élections de mi-mandat, la gronde des lycéens qui se poursuit partout en France et les Jeux olympiques de la jeunesse (JOJ) de Dakar.",
     "category": "france"
    },
    "coverage": []
@@ -592,31 +536,6 @@
     "sourceCountry": "France",
     "publishedAt": "2026-11-08T12:56:50+00:00",
     "summary": "Dans le désert du Néguev, les habitants bédouins dénoncent les discriminations et les expulsions dont ils sont victimes. Après quatre ans de politique menée par l'extrême droite, ils espèrent que les élections permettront de changer leur quotidien.",
-    "category": "monde"
-   },
-   "coverage": []
-  },
-  {
-   "type": "qui",
-   "prompt": "Qui ou quoi manque dans ce titre ?",
-   "text": "Les Européens, dont la France, seront \"représentés\" lors des négociations sur l'Ukraine à ……, rapporte le ministre des Affaires étrangères",
-   "options": [
-    "JOJ de Dakar",
-    "Abu Dhabi",
-    "Lando Norris",
-    "Raphaël Glucksmann"
-   ],
-   "answer": 1,
-   "solution": "Abu Dhabi",
-   "id": "qa-733831eae631",
-   "articleId": "1596270fddcaab3d",
-   "article": {
-    "title": "Les Européens, dont la France, seront \"représentés\" lors des négociations sur l'Ukraine à Abu Dhabi, rapporte le ministre des Affaires étrangères",
-    "url": "https://www.franceinfo.fr/monde/europe/manifestations-en-ukraine/guerre-en-ukraine-les-europeens-dont-la-france-seront-representes-lors-des-negociations-a-abu-dhabi-rapporte-le-ministre-des-affaires-etrangeres_8273333.html",
-    "sourceName": "franceinfo",
-    "sourceCountry": "France",
-    "publishedAt": "2026-11-08T12:48:01+00:00",
-    "summary": "Invité dimanche de RTL-Public Sénat, Jean-Noël Barrot n'a pas précisé qui représenterait Paris durant ces pourparlers, qui doivent se dérouler les 10 et 11 novembre.",
     "category": "monde"
    },
    "coverage": []
