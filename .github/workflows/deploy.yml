@@ -79,3 +79,25 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # GitHub suspend les workflows planifiés après 60 jours sans activité sur le dépôt.
+  # Si le dernier commit date de plus de 45 jours, un commit vide relance le compteur :
+  # la collecte quotidienne ne s'arrête jamais toute seule.
+  keepalive:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Maintenir la collecte planifiée active
+        run: |
+          last=$(git log -1 --format=%ct)
+          days=$(( ( $(date +%s) - last ) / 86400 ))
+          echo "Dernier commit il y a $days jours"
+          if [ "$days" -ge 45 ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit --allow-empty -m "chore: maintien de la collecte planifiée (aucun commit depuis $days jours)"
+            git push
+          fi

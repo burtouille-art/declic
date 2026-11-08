@@ -94,7 +94,7 @@ Aucune configuration de chemin n'est nécessaire : le build utilise des chemins 
 ### Les tâches planifiées : limites et réactivation
 
 - Le workflow tourne **toutes les 6 heures** (`17 */6 * * *`, en UTC). GitHub peut retarder une exécution planifiée de quelques minutes à une heure en période de charge, voire en sauter une exceptionnellement : le site affiche toujours la date réelle de dernière actualisation.
-- **Dans un dépôt public, GitHub désactive automatiquement les workflows planifiés après 60 jours sans activité sur le dépôt** (aucun commit). Les exécutions planifiées elles-mêmes ne comptent pas comme activité. Pour réactiver : *Actions → Collecte et déploiement → « Enable workflow »*, puis *Run workflow*. Un simple commit (même une modification du README) tous les deux mois évite la désactivation.
+- **Dans un dépôt public, GitHub désactive automatiquement les workflows planifiés après 60 jours sans activité sur le dépôt** (aucun commit). Le workflow s'en protège tout seul : son job `keepalive` fait un commit vide dès que le dernier commit a plus de 45 jours. Si jamais le cron était quand même suspendu : *Actions → Collecte et déploiement → « Enable workflow »*, puis *Run workflow*.
 - Une exécution échouée ne casse pas le site : la version précédemment déployée reste en ligne. GitHub envoie un e-mail en cas d'échec.
 
 ---

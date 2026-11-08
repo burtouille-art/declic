@@ -127,13 +127,16 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 - **Base relative + HashRouter** : ne pas passer à `BrowserRouter` (404 au rechargement sur GitHub Pages) ni à une `base` absolue (casse les sous-chemins).
 - **Sources Wikipédia** : vérifier qu'un titre d'article existe via l'API (`https://fr.wikipedia.org/w/api.php?action=query&format=json&titles=A|B`) ; 5 titres inventés de bonne foi avaient dû être remplacés.
 - **Sandbox sans réseau** : certains environnements d'IA bloquent les requêtes vers les médias. Utiliser l'instantané `pipeline/seed/snapshot.json` (`--seed`) ; ne jamais fabriquer de faux titres pour « remplir ».
-- **GitHub Actions planifiées** : désactivées par GitHub après 60 jours sans commit sur un dépôt public. Réactiver dans l'onglet Actions.
+- **GitHub Actions planifiées** : désactivées par GitHub après 60 jours sans commit sur un dépôt public. Le job `keepalive` de `deploy.yml` l'évite (commit vide après 45 jours d'inactivité) ; ne pas le supprimer. Si malgré tout le cron est suspendu : onglet Actions → Enable workflow.
 
 ---
 
 ## 7. Journal des modifications
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
+
+### 2026-11-08 — Claude (Opus) — mise à jour garantie tous les jours
+- Job `keepalive` dans `deploy.yml` : lors des exécutions planifiées, si le dernier commit a plus de 45 jours, un commit vide (auteur `github-actions[bot]`) empêche GitHub de suspendre le cron après 60 jours d'inactivité. Le site se met donc à jour 4 fois par jour sans intervention.
 
 ### 2026-11-08 — Claude (Opus) — première collecte réelle (GitHub Actions)
 - Résultat : **382 articles, 7 rapprochements, 27 sources sur 28 en ligne**. JPL répond HTTP 403 au robot → User-Agent passé au format standard `Mozilla/5.0 (compatible; DeclicBot/1.0; …)` (le robot reste identifié). franceinfo Environnement, Inserm et OMS : flux valides mais aucun article de moins de 7 jours ce jour-là (normal).
