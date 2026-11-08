@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>DÉCLIC — À la une</title>
+    <link>https://burtouille-art.github.io/declic/</link>
+    <description>Les titres principaux du moment, sélectionnés parmi des médias francophones. Chaque lien ouvre l'article original chez le média.</description>
+    <language>fr</language>
+    <lastBuildDate>Sun, 08 Nov 2026 19:00:00 +0000</lastBuildDate>
+    <ttl>360</ttl>
+    <atom:link href="https://burtouille-art.github.io/declic/data/une.xml" rel="self" type="application/rss+xml" />
+    <image>
+      <url>https://burtouille-art.github.io/declic/icons/icon-192.png</url>
+      <title>DÉCLIC — À la une</title>
+      <link>https://burtouille-art.github.io/declic/</link>
+    </image>
+    <item>
+      <title>franceinfo · En Israël, Gadi Eisenkot affirme que le Likoud, parti de Benyamin Nétanyahou, est bienvenu pour former une coalition gouvernementale</title>
+      <link>https://www.franceinfo.fr/monde/israel/en-israel-gadi-eisenkot-affirme-que-le-likoud-parti-de-benyamin-netanyahou-est-bienvenu-pour-former-une-coalition-gouvernementale_8273507.html</link>
+      <guid isPermaLink="false">declic-01546ce623cde635</guid>
+      <pubDate>Sun, 08 Nov 2026 16:00:51 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>Monde</category>
+      <description>Monde · franceinfo — Le président israélien a officiellement remis dimanche à Gadi Eisenkot, chef du principal bloc d'opposition, le mandat de former le prochain gouvernement.</description>
+    </item>
+    <item>
+      <title>franceinfo · Le ministre de l'Enseignement supérieur exclut tout semestre validé d'office pour les étudiants pendant la mobilisation sociale en cours</title>
+      <link>https://www.franceinfo.fr/societe/education/blocage-des-lycees/le-ministre-de-l-enseignement-superieur-exclut-tout-semestre-valide-d-office-pour-les-etudiants-pendant-la-mobilisation-sociale-en-cours_8273630.html</link>
+      <guid isPermaLink="false">declic-696488dab673f040</guid>
+      <pubDate>Sun, 08 Nov 2026 18:53:06 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>Société</category>
+      <description>Société · franceinfo — Le casse-tête du rattrapage des cours et de la validation des examens est similaire à celui posé pour le baccalauréat chez les lycéens, pour lequel le ministre de l'Education nationale a rejeté toute possibilité de changement de calendrier samedi.</description>
+    </item>
+    <item>
+      <title>France 24 · Tennis : Carlos Alcaraz remporte pour la première fois le Masters 1000 de Paris</title>
+      <link>https://www.france24.com/fr/sports/20261108-tennis-carlos-alcaraz-remporte-pour-la-premi%C3%A8re-fois-le-masters-1000-de-paris</link>
+      <guid isPermaLink="false">declic-c035ec28763e2b9d</guid>
+      <pubDate>Sun, 08 Nov 2026 18:23:18 +0000</pubDate>
+      <source url="https://www.france24.com/fr/">France 24</source>
+      <category>Sport</category>
+      <description>Sport · France 24 — L'Espagnol Carlos Alcaraz, 3e joueur mondial, a décroché dimanche son premier titre au Masters 1000 de Paris en battant l'Américain Ben Shelton en finale. Avec ce 29e titre en carrière, il n'est plus qu'à une victoire d'égaler son grand rival Jannik Sinner, qui compte 30 trophées.</description>
+    </item>
+    <item>
+      <title>France 24 · Débâcle de Trump aux midterms, revendications lycéennes, JOJ de Dakar : la semaine en images</title>
+      <link>https://www.france24.com/fr/france/20261108-d%C3%A9b%C3%A2cle-trump-midterms-revendications-lyc%C3%A9ennes-joj-dakar-semaine-images</link>
+      <guid isPermaLink="false">declic-8ea1546e88a76785</guid>
+      <pubDate>Sun, 08 Nov 2026 15:13:35 +0000</pubDate>
+      <source url="https://www.france24.com/fr/">France 24</source>
+      <category>France</category>
+      <description>France · France 24 — Retour sur les temps forts de l'actualité de la semaine écoulée et sur ses images les plus marquantes : la large victoire des démocrates américains aux élections de mi-mandat, la gronde des lycéens qui se poursuit partout en France et les Jeux olympiques de la jeunesse (JOJ) de Dakar.</description>
+    </item>
+    <item>
+      <title>franceinfo · Sous la pluie, Lando Norris remporte le Grand Prix du Brésil, devant Max Verstappen et Isack Hadjar</title>
+      <link>https://www.franceinfo.fr/sports/auto-moto/formule-1/sous-la-pluie-lando-norris-remporte-le-grand-prix-du-bresil-devant-max-verstappen-et-isack-hadjar_8273651.html</link>
+      <guid isPermaLink="false">declic-db14f80cbd840d7c</guid>
+      <pubDate>Sun, 08 Nov 2026 18:48:03 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>Sport</category>
+      <description>Sport · franceinfo — Le champion du monde 2025 a très bien géré une course rendue difficile par les conditions météorologiques dimanche, après être parti en pole position.</description>
+    </item>
+    <item>
+      <title>franceinfo · Accident mortel dans l'Ain :le chauffeur mis en examen pour "homicide involontaire", annonce le parquet</title>
+      <link>https://www.franceinfo.fr/faits-divers/apres-l-accident-de-car-ayant-cause-la-mort-de-deux-personnes-dans-l-ain-le-chauffeur-mis-en-examen-pour-homicide-involontaire-annonce-le-parquet_8273654.html</link>
+      <guid isPermaLink="false">declic-38859ba245dcd756</guid>
+      <pubDate>Sun, 08 Nov 2026 18:27:07 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>Société</category>
+      <description>Société · franceinfo — Le chauffeur du car, âgé de 26 ans, avait déclaré s'être "assoupi" au volant. Une enfant de 7 ans et un jeune homme de 18 ans sont morts dans cet accident de ca.</description>
+    </item>
+    <item>
+      <title>franceinfo · Présidentielle : contraint de quitter le cortège parisien jeudi, Raphaël Glucksmann affirme qu'il retournera aux prochaines manifestations de l'intersyndicale</title>
+      <link>https://www.franceinfo.fr/politique/direct-politique-je-n-attends-plus-grand-chose-de-ce-gouvernement-a-part-de-le-remplacer-par-nous-memes-tacle-le-depute-lfi-antoine-leaument_8273093.html</link>
+      <guid isPermaLink="false">declic-a9b1c807674098ae</guid>
+      <pubDate>Sun, 08 Nov 2026 17:46:22 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>France</category>
+      <description>France · franceinfo — Le candidat social-démocrate à la présidentielle a également déclaré dimanche soir vouloir "mettre fin à l’hégémonie de Jean-Luc Mélenchon sur la gauche française".</description>
+    </item>
+    <item>
+      <title>franceinfo · La victoire des démocrates est un "gigantesque pas en arrière dans l'histoire" des Etats-Unis, affirme Donald Trump</title>
+      <link>https://www.franceinfo.fr/monde/usa/midterms-2018/la-victoire-des-democrates-est-un-gigantesque-pas-en-arriere-dans-l-histoire-des-etats-unis-affirme-donald-trump_8273432.html</link>
+      <guid isPermaLink="false">declic-9b2ba2cbc7b94ef7</guid>
+      <pubDate>Sun, 08 Nov 2026 15:00:57 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>Monde</category>
+      <description>Monde · franceinfo — Les élections de mi-mandat ont été marquées par une vague bleue, dont l'ampleur a sidéré les observateurs et assommé les républicains.</description>
+    </item>
+    <item>
+      <title>franceinfo · Ce que l'on sait de l'attentat en Pologne</title>
+      <link>https://www.franceinfo.fr/monde/europe/ce-que-l-on-sait-de-l-attentat-en-pologne-qui-a-fait-six-morts-et-quinze-blesses-dans-le-centre-de-cracovie_8273087.html</link>
+      <guid isPermaLink="false">declic-cc3cbb680940cf60</guid>
+      <pubDate>Sun, 08 Nov 2026 14:09:54 +0000</pubDate>
+      <source url="https://www.franceinfo.fr">franceinfo</source>
+      <category>Monde</category>
+      <description>Monde · franceinfo — En plus des six victimes tuées par l'assaillant dans le centre de Cracovie, trois personnes ont été retrouvées mortes à son domicile. Le suspect est un jeune homme "fasciné" par les idées d'extrême droite, selon les autorités.</description>
+    </item>
+    <item>
+      <title>France 24 · La Pologne en deuil confrontée au "terrorisme de l'intérieur"</title>
+      <link>https://www.france24.com/fr/vid%C3%A9o/20261108-la-pologne-en-deuil-confront%C3%A9e-au-terrorisme-de-l-int%C3%A9rieur</link>
+      <guid isPermaLink="false">declic-87125436ac95d360</guid>
+      <pubDate>Sun, 08 Nov 2026 13:39:15 +0000</pubDate>
+      <source url="https://www.france24.com/fr/">France 24</source>
+      <category>Monde</category>
+      <description>Monde · France 24 — La Pologne en deuil s'est réveillée choquée dimanche, au lendemain de la tuerie perpétrée à Cracovie par un jeune "fasciné" par les idées d'extrême droite, qui a abattu six personnes et en a blessé quinze.</description>
+    </item>
+  </channel>
+</rss>

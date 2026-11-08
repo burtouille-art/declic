@@ -42,6 +42,7 @@ Ces règles priment sur toute demande d'« amélioration ». En cas de conflit, 
 | Changer le nettoyage, la fraîcheur, la déduplication | `pipeline/declic/normalize.py`, `sanitize.py`, `build.py` (`MAX_AGE_DAYS`, `MIN_ARTICLES`…) |
 | Changer le classement par rubrique | `pipeline/declic/classify.py` (rubrique du flux > chemin d'URL > mots-clés) |
 | Régler le rapprochement inter-médias | `pipeline/declic/cluster.py` (seuils volontairement stricts) |
+| Changer le flux RSS « À la une » (widget) | `pipeline/declic/feed.py` (+ `FeedCard` côté site) |
 | Ajouter des questions / vrai-faux / événements / pays | `src/content/questions.ts`, `statements.ts`, `events.ts`, `countries.ts` |
 | Ajouter une découverte, une fiche, un parcours | `src/content/discoveries.ts`, `fiches.ts` (`PATHS` en bas) |
 | Ajouter une « question qui fait réfléchir » (Déclic écran 3) | `src/content/reflections.ts` |
@@ -67,6 +68,7 @@ GitHub Actions (cron 17 */6 * * *, push main, manuel)
         → public/data/news.json       articles + clusters + médias
         → public/data/status.json     diagnostic par source (page /#/diagnostic)
         → public/data/onthisday.json  éphéméride Wikipédia (aujourd'hui + demain)
+        → public/data/une.xml         flux RSS « À la une » (widgets d'écran d'accueil)
   └─ npm test && npm run build → dist/ → GitHub Pages
 Navigateur : fetch('./data/news.json') → validation zod (src/lib/news.ts) → UI
 ```
@@ -92,9 +94,9 @@ Un changement est **terminé** quand tout ceci passe :
 ```bash
 npm run typecheck                    # 0 erreur (TS strict, noUncheckedIndexedAccess)
 npm test                             # Vitest : contenus, logique, composants (30 tests)
-python3 -m pytest pipeline/tests -q  # pipeline (23 tests)
+python3 -m pytest pipeline/tests -q  # pipeline (25 tests)
 npm run build
-npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (32 tests)
+npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (34 tests)
 ```
 
 Pour l'e2e : `npx playwright install chromium` une fois. Les tests e2e tournent contre `vite preview` (le build doit exister).
@@ -134,6 +136,13 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 ## 7. Journal des modifications
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
+
+### 2026-11-08 — Claude (Opus) — flux RSS « À la une » pour widget Android
+- `pipeline/declic/feed.py` produit `public/data/une.xml` (RSS 2.0) : 10 titres en français, sans doublon d'événement, au plus 2 par média et par rubrique au premier passage, hors « Insolite ». Même logique d'importance que `topStories()` côté site. Titre = « Média · titre original », lien = article original, chapô du média inchangé en description.
+- `SITE_URL` passé par le workflow (liens absolus du flux) ; `<link rel="alternate">` dans `index.html` pour que les applis RSS trouvent le flux à partir de l'adresse du site.
+- Carte « Les titres de DÉCLIC sur ton écran d'accueil » dans Mon espace (`#/moi#widget`, composant `FeedCard`) avec copie de l'adresse ; liens dans le pied de page.
+- Tests : pytest 25/25, Playwright 34/34 (test du flux ajouté).
+- Suite possible : appli Android native avec widget Jetpack Glance lisant `une.xml` ou `news.json`, APK construit par GitHub Actions (non fait : attendre de voir si le widget RSS est utilisé).
 
 ### 2026-11-08 — Claude (Opus) — site en ligne
 - Dépôt passé en public, Pages activé (source : GitHub Actions). Site : **https://burtouille-art.github.io/declic/**

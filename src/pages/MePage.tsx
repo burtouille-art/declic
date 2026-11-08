@@ -1,9 +1,10 @@
 import { ExternalLink, Trash2 } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
 import { Button } from '../components/ui/Button'
 import { EmptyState, ProgressBar } from '../components/ui/bits'
 import { DeclicRing } from '../components/ui/DeclicRing'
+import { FeedCard } from '../components/ui/FeedCard'
 import { CATEGORIES } from '../content/categories'
 import { COUNTRIES, DISCOVERIES, FICHES, PATHS } from '../content'
 import { BADGES, streak } from '../lib/badges'
@@ -60,6 +61,11 @@ function ItemList({ items, empty }: { items: SavedItem[]; empty: string }) {
 export default function MePage() {
   const state = useAppState((s) => s)
   const [confirmReset, setConfirmReset] = useState(false)
+  const { hash } = useLocation()
+  // HashRouter : « /moi#widget » ne défile pas tout seul vers l'ancre.
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+  }, [hash])
   const st = streak(state.declic)
   const last14 = useMemo(() => {
     const out: { key: string; label: string; v: number }[] = []
@@ -248,6 +254,10 @@ export default function MePage() {
           </div>
           <ItemList items={state.history.slice(0, 30)} empty="Les articles ouverts et les fiches lues apparaîtront ici." />
         </section>
+      </div>
+
+      <div id="widget" className="mt-14 scroll-mt-24">
+        <FeedCard />
       </div>
 
       <section className="mt-14 border-t border-rule pt-6" aria-labelledby="data-title">

@@ -236,3 +236,36 @@ def test_sources_file_is_valid():
     for s in cfg["sources"]:
         assert s["url"].startswith("https://") and s["lang"] in ("fr", "en")
         assert s["kind"] in ("news", "analysis", "institution")
+
+
+# --- flux RSS « À la une » ------------------------------------------------------
+
+def test_une_feed_is_valid_rss_with_original_links(tmp_path):
+    from xml.etree import ElementTree as ET
+
+    from declic.feed import build_rss, select_une
+
+    arts = [
+        dict(_art(i, f"Titre numéro {i} avec <balise> & esperluette", f"Média {i % 4}"), categories=[["monde", "france", "sciences", "sport"][i % 4]], url=f"https://m{i}.example/a")
+        for i in range(14)
+    ]
+    arts.append(dict(_art(99, "Article en anglais très important", "BBC", lang="en"), url="https://bbc.example/x"))
+    arts.append(dict(_art(98, "Une histoire insolite", "20 Minutes"), categories=["insolite"], url="https://20.example/x"))
+    une = select_une(arts, [], NOW)
+    assert len(une) == 10
+    assert all(a["lang"] == "fr" and a["categories"][0] != "insolite" for a in une)
+    xml = build_rss(une, "https://exemple.github.io/declic", NOW)
+    root = ET.fromstring(xml)
+    items = root.findall("channel/item")
+    assert len(items) == 10
+    first = items[0]
+    assert first.findtext("link").startswith("https://m")  # lien vers l'article original
+    assert "<balise>" in first.findtext("title")  # échappé correctement, relu tel quel
+    assert root.find("channel/language").text == "fr"
+
+
+def test_run_writes_une_feed(tmp_path):
+    status = run(_config(3), tmp_path, fetcher=lambda url: _good_feed(int(url[12])), json_fetcher=lambda u: (None, None), now=NOW, site_url="https://x.github.io/declic/")
+    assert (tmp_path / "une.xml").exists()
+    assert status["uneCount"] > 0
+    assert b"https://x.github.io/declic/data/une.xml" in (tmp_path / "une.xml").read_bytes()

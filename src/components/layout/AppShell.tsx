@@ -181,6 +181,8 @@ function Footer() {
             <li><Link className="link-ed" to="/diagnostic">État des sources</Link></li>
             <li><Link className="link-ed" to="/moi">Mes données (stockées sur cet appareil)</Link></li>
             <li><Link className="link-ed" to="/apprendre/frise">La frise du temps</Link></li>
+            <li><a className="link-ed" href="./data/une.xml" type="application/rss+xml">Flux RSS « À la une »</a></li>
+            <li><Link className="link-ed" to="/moi#widget">Les titres en widget sur ton téléphone</Link></li>
           </ul>
         </div>
       </div>

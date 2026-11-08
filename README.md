@@ -35,6 +35,7 @@ Média numérique francophone : actualité sourcée (flux RSS réels), découver
 | Apprendre | `#/apprendre`, `#/apprendre/:id`, `#/apprendre/frise` | 14 mini-fiches en 3 étapes révélées progressivement, 5 parcours, frise du temps interactive (38 repères). |
 | Mon espace | `#/moi` | Calendrier des 14 derniers Déclic, compteurs, parcours, scores, badges, préférences, favoris, historique, effacement des données. |
 | 2 minutes | `#/2-minutes` | Trois titres, une découverte courte, un vrai/faux. |
+| Widget / RSS | `data/une.xml`, `#/moi#widget` | Flux RSS « À la une » (10 titres, liens vers les originaux) à coller dans une appli de widget RSS pour avoir les titres sur l'écran d'accueil du téléphone. |
 | Diagnostic | `#/diagnostic` | État de chaque source à la dernière collecte : succès, erreurs, articles retenus, secours utilisé. |
 
 Contenus éditoriaux embarqués (tous sourcés) : 70 questions, 36 affirmations vrai/faux, 38 événements, 87 pays, 18 découvertes, 14 fiches, 8 problèmes de raisonnement, 2 jeux de données (CO₂ Mauna Loa – NOAA, population mondiale – ONU).

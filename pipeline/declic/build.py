@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Callable
 
 from .cluster import build_clusters
+from .feed import build_rss, select_une
 from .fetch import FetchResult, fetch_feed, fetch_json
 from .normalize import normalize_entry
 from .onthisday import normalize_onthisday, questions_from_events
@@ -99,6 +100,7 @@ def run(
     now: datetime | None = None,
     fetcher: Callable[[str], FetchResult] = fetch_feed,
     json_fetcher: Callable[[str], tuple[dict | None, str | None]] = fetch_json,
+    site_url: str = "",
 ) -> dict:
     started = time.monotonic()
     now = now or datetime.now(timezone.utc)
@@ -230,4 +232,12 @@ def run(
     _write_json(out_dir / "news.json", news)
     _write_json(out_dir / "status.json", status)
     _write_json(out_dir / "onthisday.json", onthisday)
+
+    # Flux RSS « À la une » pour les widgets d'écran d'accueil.
+    une = select_une(news.get("articles", []), news.get("clusters", []), now)
+    tmp = out_dir / "une.xml.tmp"
+    tmp.write_bytes(build_rss(une, site_url, now))
+    tmp.replace(out_dir / "une.xml")
+    status["uneCount"] = len(une)
+    _write_json(out_dir / "status.json", status)
     return status

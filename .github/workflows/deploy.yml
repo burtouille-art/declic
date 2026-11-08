@@ -54,6 +54,8 @@ jobs:
 
       - name: Collecte des flux RSS
         run: python pipeline/run.py --out public/data --previous previous
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}
 
       - uses: actions/setup-node@v4
         with:

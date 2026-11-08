@@ -167,3 +167,14 @@ for (const path of ['', '#/actus', '#/jouer', '#/apprendre/f-pendule', '#/moi', 
     expect(serious.map((v) => `${v.id}: ${v.nodes.slice(0, 3).map((n) => n.target.join(' ')).join(' | ')}`)).toEqual([])
   })
 }
+
+test('flux RSS « À la une » publié et proposé en widget', async ({ page, request }) => {
+  const res = await request.get('./data/une.xml')
+  expect(res.ok()).toBe(true)
+  const xml = await res.text()
+  expect(xml).toContain('<rss version="2.0"')
+  expect((xml.match(/<item>/g) ?? []).length).toBeGreaterThanOrEqual(5)
+  await page.goto('./#/moi#widget')
+  await expect(page.getByRole('heading', { name: /Les titres de DÉCLIC sur ton écran d'accueil/ })).toBeInViewport()
+  await expect(page.getByLabel('Adresse du flux')).toHaveValue(/data\/une\.xml$/)
+})
