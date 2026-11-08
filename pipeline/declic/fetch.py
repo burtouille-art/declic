@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 
 import feedparser
 
-USER_AGENT = "DeclicBot/1.0 (agregateur de titres RSS; +https://github.com/)"
+USER_AGENT = "Mozilla/5.0 (compatible; DeclicBot/1.0; agregateur de titres RSS; +https://github.com/burtouille-art/declic)"
 MAX_BYTES = 5 * 1024 * 1024
 TIMEOUT = 20
 

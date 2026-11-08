@@ -135,6 +135,10 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
 
+### 2026-11-08 — Claude (Opus) — première collecte réelle (GitHub Actions)
+- Résultat : **382 articles, 7 rapprochements, 27 sources sur 28 en ligne**. JPL répond HTTP 403 au robot → User-Agent passé au format standard `Mozilla/5.0 (compatible; DeclicBot/1.0; …)` (le robot reste identifié). franceinfo Environnement, Inserm et OMS : flux valides mais aucun article de moins de 7 jours ce jour-là (normal).
+- Workflow : `configure-pages` en `continue-on-error` pour que la collecte et le build soient vérifiés même avant l'activation de Pages ; le job `deploy` échoue tant que Pages n'est pas activé (Settings → Pages → Source : GitHub Actions). **Pages exige un dépôt public sur un compte gratuit.**
+
 ### 2026-11-08 — Claude (Opus) — v1.1 : passe visuelle + dépôt GitHub
 - Dépôt publié : `github.com/burtouille-art/declic`.
 - **Accueil** : bandeau d'édition (« Dimanche 8 novembre 2026 · Édition n° 312 », n° = jour de l'année) ; nouvelle échelle `t-lead` pour l'article principal (le titre de une reste dominant) ; titre de une légèrement réduit ; carte Déclic repensée (anneau + les 5 étapes nommées avec leur segment, bouton plein) ; boutons d'action empilés proprement sur mobile.
