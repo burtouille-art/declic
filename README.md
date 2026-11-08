@@ -2,6 +2,8 @@
 
 **Cinq minutes par jour pour comprendre le monde, apprendre quelque chose et se faire plaisir.**
 
+> Tu es une IA ou tu reprends le code ? Commence par **[AGENTS.md](AGENTS.md)** : règles à respecter, carte du dépôt, pièges connus et journal des modifications.
+
 Média numérique francophone : actualité sourcée (flux RSS réels), découvertes, mini-fiches, cinq jeux de culture générale et un parcours quotidien, le *Déclic du jour*. Site statique, gratuit à héberger (GitHub Pages), sans compte, sans serveur, sans API payante.
 
 ---

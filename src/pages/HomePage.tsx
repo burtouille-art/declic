@@ -17,6 +17,11 @@ import { GuessTheYear } from './home/GuessTheYear'
 import { QuizTeaser } from './home/QuizTeaser'
 import { ScienceDesk } from './home/ScienceDesk'
 
+/** Numéro d'édition = jour de l'année : un repère de magazine quotidien. */
+function editionNumber(d = new Date()) {
+  return Math.floor((Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()) - Date.UTC(d.getFullYear(), 0, 0)) / 86_400_000)
+}
+
 export function HomePage() {
   const news = useNews()
   const otd = useOnThisDay()
@@ -41,14 +46,17 @@ export function HomePage() {
       {/* ——— Couverture ——— */}
       <section className="wrap pt-6 lg:pt-12" aria-labelledby="home-title">
         <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 border-b border-ink pb-2">
-          <p className="t-label">{formatToday()}</p>
+          <p className="t-label">
+            {formatToday()} {new Date().getFullYear()}
+            <span className="ml-2 font-normal text-ink-3">· Édition n° {editionNumber()}</span>
+          </p>
           {data && (
             <p className="t-meta">
               Actualisé {relativeTime(data.generatedAt)} · {data.articles.length} articles de {new Set(data.articles.map((a) => a.sourceName)).size} médias
             </p>
           )}
         </div>
-        <div className="grid gap-8 pt-5 lg:grid-cols-12 lg:gap-10 lg:pt-8">
+        <div className="grid items-start gap-8 pt-5 lg:grid-cols-12 lg:gap-10 lg:pt-8">
           <h1 id="home-title" className="t-display text-balance lg:col-span-8">
             Aujourd'hui, le monde a encore des choses à t'apprendre.
           </h1>
@@ -69,13 +77,13 @@ export function HomePage() {
           <div className="grid gap-x-10 gap-y-2 lg:grid-cols-12">
             <div className="lg:col-span-7 lg:border-r lg:border-rule lg:pr-10">
               <LeadStory article={lead} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
-              <div className="mt-6 flex flex-wrap gap-3">
-                <ButtonLink to="/declic" variant="accent" size="lg" icon={<DeclicRing size={22} progress={progress} tone="paper" track="paper" />}>
+              <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                <ButtonLink to="/declic" variant="accent" size="lg" className="w-full sm:w-auto" icon={<DeclicRing size={22} progress={progress} tone="paper" track="paper" />}>
                   Comprendre en 5 minutes
                 </ButtonLink>
-                <ButtonLink to="/2-minutes" variant="outline" size="lg" icon={<Timer size={18} aria-hidden />} className="sm:hidden">
-                  2 minutes
-                </ButtonLink>
+                <Link to="/2-minutes" className="inline-flex items-center gap-1.5 t-label text-ink-2 hover:text-ink sm:hidden">
+                  <Timer size={16} aria-hidden /> Je n'ai que 2 minutes
+                </Link>
               </div>
             </div>
             <div className="divide-y divide-rule lg:col-span-5">
@@ -140,22 +148,34 @@ export function HomePage() {
   )
 }
 
+const DECLIC_STEPS = ['Le monde en trois infos', 'Une découverte surprenante', 'Une question pour réfléchir', 'Un défi de mémoire', 'Ton bilan']
+
+/** Carte signature : l'anneau et ses cinq segments, chacun nommé. */
 function DeclicCard({ progress }: { progress: number }) {
   const done = progress >= 5
   return (
-    <Link to="/declic" className="group relative flex items-center gap-5 overflow-hidden rounded-[22px] bg-petrol p-5 text-on-petrol transition-transform hover:-translate-y-0.5 lg:flex-col lg:items-start lg:p-6">
-      <DeclicRing size={76} progress={progress} tone="paper" track="paper" stroke={8} className="shrink-0" />
-      <div>
-        <p className="font-serif text-[1.5rem] leading-tight font-medium" style={{ fontVariationSettings: "'opsz' 36" }}>
-          {done ? 'Déclic du jour : fait !' : progress > 0 ? 'Reprendre ton Déclic' : 'Ton Déclic du jour'}
-        </p>
-        <p className="mt-1 text-[0.9375rem] text-on-petrol/90">
-          {done ? 'Reviens demain, ou refais-le pour réviser.' : 'Trois infos, une découverte, une question, un défi de mémoire. 5 minutes.'}
-        </p>
-        <span className="mt-3 inline-flex items-center gap-1.5 text-[0.9375rem] font-semibold underline-offset-4 group-hover:underline">
-          {done ? 'Voir mon bilan' : progress > 0 ? `Continuer (étape ${progress + 1} sur 5)` : 'Commencer'} <ArrowRight size={16} aria-hidden />
-        </span>
+    <Link to="/declic" className="group relative block overflow-hidden rounded-[24px] bg-petrol p-5 text-on-petrol transition-transform hover:-translate-y-0.5 sm:p-6">
+      <div className="flex items-center gap-4">
+        <DeclicRing size={64} progress={progress} tone="paper" track="paper" stroke={7} className="shrink-0" />
+        <div>
+          <p className="font-serif text-[1.55rem] leading-tight font-medium" style={{ fontVariationSettings: "'opsz' 36" }}>
+            {done ? 'Déclic du jour : fait !' : progress > 0 ? 'Reprendre ton Déclic' : 'Ton Déclic du jour'}
+          </p>
+          <p className="text-[0.875rem] text-on-petrol/90">{done ? 'Reviens demain pour un nouveau parcours.' : '5 minutes, 5 étapes.'}</p>
+        </div>
       </div>
+      <ol className="mt-5 space-y-2 border-t border-on-petrol/25 pt-4">
+        {DECLIC_STEPS.map((label, i) => (
+          <li key={label} className="flex items-center gap-3 text-[0.9375rem]">
+            <span className={`h-1.5 w-7 shrink-0 rounded-full ${i < progress ? 'bg-vermilion' : 'bg-on-petrol/30'}`} aria-hidden />
+            <span className={i < progress ? 'text-on-petrol/75 line-through decoration-on-petrol/40' : ''}>{label}</span>
+            {i < progress && <span className="sr-only">(fait)</span>}
+          </li>
+        ))}
+      </ol>
+      <span className="mt-5 inline-flex h-11 items-center gap-2 rounded-full bg-paper px-5 text-[0.9375rem] font-semibold text-ink group-hover:bg-paper/90">
+        {done ? 'Voir mon bilan' : progress > 0 ? `Continuer, étape ${progress + 1}` : 'Commencer'} <ArrowRight size={16} aria-hidden />
+      </span>
     </Link>
   )
 }

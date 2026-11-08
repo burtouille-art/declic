@@ -1,6 +1,7 @@
 import { ArrowRight, Check } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ProgressBar } from '../components/ui/bits'
+import { ThemeGlyph } from '../components/ui/ThemeGlyph'
 import { FICHE_BY_ID, FICHES, PATHS, type Fiche } from '../content'
 import { useAppState } from '../lib/store'
 
@@ -81,34 +82,53 @@ export default function LearnPage() {
         </div>
       </section>
 
-      {themes.map((t) => {
-        const list = FICHES.filter((f) => f.theme === t)
-        if (!list.length) return null
-        return (
-          <section key={t} className="mt-14" aria-labelledby={`theme-${t}`}>
-            <h2 id={`theme-${t}`} className="border-b border-ink pb-2 t-h2">
-              {THEME_LABEL[t]}
-            </h2>
-            <ul className="grid gap-x-8 sm:grid-cols-2 lg:grid-cols-3">
-              {list.map((f) => (
-                <li key={f.id} className="border-b border-rule">
-                  <Link to={`/apprendre/${f.id}`} className="group flex items-start gap-3 py-4">
-                    <span className="flex-1">
-                      <span className="block font-serif text-[1.2rem] leading-snug group-hover:underline">{f.title}</span>
-                      <span className="t-meta mt-1 block">{f.intro.split('.')[0]}.</span>
-                    </span>
-                    {learned.includes(f.id) && (
-                      <span className="mt-1 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-petrol text-on-petrol">
-                        <Check size={14} strokeWidth={3} aria-label="Fiche terminée" />
+      <section className="mt-16" aria-labelledby="themes-title">
+        <h2 id="themes-title" className="sr-only">
+          Toutes les fiches par thème
+        </h2>
+        {themes.map((t) => {
+          const list = FICHES.filter((f) => f.theme === t)
+          if (!list.length) return null
+          const done = list.filter((f) => learned.includes(f.id)).length
+          return (
+            <section key={t} className="grid gap-x-10 gap-y-4 border-t border-ink py-8 lg:grid-cols-12" aria-labelledby={`theme-${t}`}>
+              <div className="flex items-center gap-4 lg:col-span-4 lg:flex-col lg:items-start">
+                <ThemeGlyph theme={t} size={84} className="shrink-0 lg:size-28" />
+                <div>
+                  <h3 id={`theme-${t}`} className="t-h2">
+                    {THEME_LABEL[t]}
+                  </h3>
+                  <p className="t-meta mt-1">
+                    {list.length} fiche{list.length > 1 ? 's' : ''}
+                    {done > 0 && ` · ${done} terminée${done > 1 ? 's' : ''}`}
+                  </p>
+                </div>
+              </div>
+              <ul className="divide-y divide-rule lg:col-span-8 lg:-mt-4">
+                {list.map((f) => (
+                  <li key={f.id}>
+                    <Link to={`/apprendre/${f.id}`} className="group flex items-start gap-4 py-4">
+                      <span className="flex-1">
+                        <span className="block font-serif text-[1.3rem] leading-snug group-hover:text-vermilion-ink" style={{ fontVariationSettings: "'opsz' 28" }}>
+                          {f.title}
+                        </span>
+                        <span className="mt-1 block text-[0.9375rem] text-ink-2">{f.intro}</span>
                       </span>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-        )
-      })}
+                      {learned.includes(f.id) ? (
+                        <span className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-petrol text-on-petrol">
+                          <Check size={15} strokeWidth={3} aria-label="Fiche terminée" />
+                        </span>
+                      ) : (
+                        <ArrowRight size={20} className="mt-1.5 shrink-0 text-ink-3 transition-transform group-hover:translate-x-1 group-hover:text-ink" aria-hidden />
+                      )}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )
+        })}
+      </section>
     </div>
   )
 }

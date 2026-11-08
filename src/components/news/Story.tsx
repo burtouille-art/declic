@@ -1,9 +1,12 @@
 import { ArrowUpRight, Layers } from 'lucide-react'
-import { useState, type ReactNode } from 'react'
+import { lazy, Suspense, useMemo, useState, type ReactNode } from 'react'
 import { formatDateTime, relativeTime } from '../../lib/format'
+import { countriesIn } from '../../lib/geo'
 import type { Article, Cluster } from '../../lib/news'
 import { actions } from '../../lib/store'
 import { CategoryTag, FavoriteButton } from '../ui/bits'
+
+const LocatorMap = lazy(() => import('../viz/LocatorMap'))
 
 export function articleSaved(a: Article) {
   return { id: `a:${a.id}`, type: 'article' as const, title: a.title, url: a.url, meta: a.sourceName }
@@ -66,12 +69,14 @@ function Photo({ article, className = '' }: { article: Article; className?: stri
 }
 
 /** Article principal : grand titre, chapô du média. */
-export function LeadStory({ article, cluster, onCompare }: { article: Article; cluster?: Cluster; onCompare?: () => void }) {
+export function LeadStory({ article, cluster, onCompare, locator = true }: { article: Article; cluster?: Cluster; onCompare?: () => void; locator?: boolean }) {
+  // Pas de photo de presse sans droits : à la place, une carte de situation quand un pays est cité.
+  const places = useMemo(() => (locator && !article.image ? countriesIn(`${article.title} ${article.summary ?? ''}`).slice(0, 3) : []), [article, locator])
   return (
     <article className="headline-link relative">
       {article.image && <Photo article={article} className="mb-5" />}
       <Meta article={article} trailing={<FavoriteButton item={articleSaved(article)} className="-mr-2" />} />
-      <h3 className="mt-3 t-h2 text-balance lg:t-h1">
+      <h3 className="mt-3 t-lead text-balance">
         <ArticleLink article={article} className="headline stretched">
           {article.title}
         </ArticleLink>
@@ -87,6 +92,13 @@ export function LeadStory({ article, cluster, onCompare }: { article: Article; c
           </button>
         )}
       </div>
+      {places.length > 0 && (
+        <div className="relative z-10 mt-6">
+          <Suspense fallback={<div className="skeleton aspect-[960/330] rounded-[18px]" aria-hidden />}>
+            <LocatorMap ids={places.map((p) => p.id)} names={places.map((p) => p.name)} height={330} />
+          </Suspense>
+        </div>
+      )}
     </article>
   )
 }

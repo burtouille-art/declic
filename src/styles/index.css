@@ -150,7 +150,7 @@
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 72;
   font-weight: 480;
-  font-size: clamp(2.15rem, 1.2rem + 4.6vw, 5.4rem);
+  font-size: clamp(2.15rem, 1.2rem + 4.2vw, 4.9rem);
   line-height: 0.98;
   letter-spacing: -0.025em;
 }
@@ -161,6 +161,15 @@
   font-size: clamp(1.85rem, 1.25rem + 2.6vw, 3.4rem);
   line-height: 1.03;
   letter-spacing: -0.02em;
+}
+/* Titre de l'article principal : grand, mais toujours sous le titre de une */
+@utility t-lead {
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 48;
+  font-weight: 500;
+  font-size: clamp(1.6rem, 1.15rem + 1.5vw, 2.6rem);
+  line-height: 1.07;
+  letter-spacing: -0.018em;
 }
 @utility t-h2 {
   font-family: var(--font-serif);

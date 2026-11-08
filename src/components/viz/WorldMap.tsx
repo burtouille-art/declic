@@ -5,10 +5,10 @@ import type { Feature, FeatureCollection, Geometry } from 'geojson'
 import type { Topology, GeometryCollection } from 'topojson-specification'
 import { Skeleton } from '../ui/bits'
 
-type CountryFeature = Feature<Geometry, { name: string }> & { id: string }
+export type CountryFeature = Feature<Geometry, { name: string }> & { id: string }
 
 let cache: CountryFeature[] | null = null
-async function loadCountries(): Promise<CountryFeature[]> {
+export async function loadCountries(): Promise<CountryFeature[]> {
   if (cache) return cache
   // Natural Earth 1:110m via world-atlas (domaine public), embarqué dans le build.
   const topo = (await import('world-atlas/countries-110m.json')).default as unknown as Topology<{ countries: GeometryCollection<{ name: string }> }>
@@ -63,6 +63,21 @@ function spread(points: ([number, number] | null)[], min: number): ([number, num
 }
 
 /** Centre du plus grand morceau du pays (sinon la France « tombe » dans l'Atlantique à cause de la Guyane). */
+export function mainPolygon(f: CountryFeature): GeoPermissibleObjects {
+  const g = f.geometry
+  if (g.type !== 'MultiPolygon') return f
+  let best = g.coordinates[0]!
+  let bestArea = -1
+  for (const poly of g.coordinates) {
+    const a = geoArea({ type: 'Polygon', coordinates: poly })
+    if (a > bestArea) {
+      bestArea = a
+      best = poly
+    }
+  }
+  return { type: 'Polygon', coordinates: best }
+}
+
 function mainCentroid(f: CountryFeature): [number, number] {
   const g = f.geometry
   if (g.type === 'MultiPolygon') {

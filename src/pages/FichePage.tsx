@@ -4,6 +4,7 @@ import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { Button, ButtonLink } from '../components/ui/Button'
 import { FavoriteButton, ReadingTime, Skeleton } from '../components/ui/bits'
 import { Choices } from '../components/ui/Choices'
+import { ThemeGlyph } from '../components/ui/ThemeGlyph'
 import { FICHE_BY_ID, PATHS } from '../content'
 import { readingMinutes } from '../lib/format'
 import { actions, useAppState } from '../lib/store'
@@ -44,7 +45,10 @@ export default function FichePage() {
         {learned.includes(fiche.id) && <span className="rounded-full bg-ok-bg px-2.5 py-0.5 text-[0.75rem] font-semibold text-ok">Terminée</span>}
         <FavoriteButton item={{ id: `f:${fiche.id}`, type: 'fiche', title: fiche.title }} className="ml-auto" />
       </div>
-      <h1 className="mt-2 t-h1 text-balance">{fiche.title}</h1>
+      <div className="mt-3 flex items-start gap-5">
+        <h1 className="flex-1 t-h1 text-balance">{fiche.title}</h1>
+        <ThemeGlyph theme={fiche.theme} size={88} className="hidden shrink-0 sm:block" />
+      </div>
       <p className="mt-4 t-lede text-ink-2">{fiche.intro}</p>
 
       <ol className="mt-8 space-y-7">
