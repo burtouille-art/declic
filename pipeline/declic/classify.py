@@ -35,6 +35,10 @@ URL_SEGMENTS: dict[str, str] = {
     # Le Monde
     "international": "monde", "planete": "environnement", "pixels": "technologie", "sciences": "sciences",
     "idees": "societe", "education": "societe", "histoire": "histoire", "intelligence-artificielle": "ia",
+    # Le Figaro, Libération, La Croix, Ouest-France, RFI
+    "actualite-france": "france", "conjoncture": "economie", "science": "sciences", "religion": "societe",
+    "debats": "societe", "high-tech": "technologie", "tech": "technologie", "medias": "culture",
+    "economie-et-entreprise": "economie", "climat": "environnement", "afrique-subsaharienne": "monde",
 }
 
 # Mots-clés (comparés sans accents, sur des frontières de mots).

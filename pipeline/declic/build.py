@@ -9,8 +9,9 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Callable
 
-from .cluster import build_clusters
-from .feed import build_rss, select_une
+from .cluster import build_clusters, related_analyses
+from .feed import _importance, build_rss, select_une
+from .quiz import build_quiz
 from .fetch import FetchResult, fetch_feed, fetch_json
 from .normalize import normalize_entry
 from .onthisday import normalize_onthisday, questions_from_events
@@ -160,6 +161,7 @@ def run(
     articles.sort(key=lambda a: a["publishedAt"], reverse=True)
     articles = articles[:TOTAL_MAX]
     clusters = build_clusters(articles)
+    related_analyses(clusters, articles)
     for art in articles:
         art.pop("_specific", None)
         art.pop("canonicalUrl", None)
@@ -172,7 +174,7 @@ def run(
     else:
         sources_meta = {}
         for src in config["sources"]:
-            sources_meta.setdefault(src["name"], {"name": src["name"], "homepage": src.get("homepage"), "lang": src.get("lang"), "kind": src.get("kind", "news")})
+            sources_meta.setdefault(src["name"], {"name": src["name"], "homepage": src.get("homepage"), "lang": src.get("lang"), "kind": src.get("kind", "news"), "country": src.get("country")})
         news = {
             "version": SCHEMA_VERSION,
             "generatedAt": now.isoformat(timespec="seconds"),
@@ -239,5 +241,11 @@ def run(
     tmp.write_bytes(build_rss(une, site_url, now))
     tmp.replace(out_dir / "une.xml")
     status["uneCount"] = len(une)
+
+    # Quiz de l'actu : textes à trous et « angles » construits à partir des titres réels.
+    coverage = {c["id"]: c.get("sourceCount", 1) for c in news.get("clusters", [])}
+    quiz = build_quiz(news.get("articles", []), news.get("clusters", []), now, importance=lambda a: _importance(a, coverage, now))
+    _write_json(out_dir / "quiz.json", {"generatedAt": now.isoformat(timespec="seconds"), **quiz})
+    status["quizCount"] = len(quiz["questions"])
     _write_json(out_dir / "status.json", status)
     return status

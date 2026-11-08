@@ -26,7 +26,7 @@ Ces règles priment sur toute demande d'« amélioration ». En cas de conflit, 
 3. **Aucune image sans droit de réutilisation identifié.** Seules les sources marquées `images.allowed: true` dans `pipeline/sources.json` (NASA, NASA/JPL) peuvent fournir une photo, et uniquement depuis les hôtes listés. Pas de photo de presse, pas d'image Wikimedia non vérifiée. À la place : typographie, couleur, pictogrammes maison (`ThemeGlyph`), cartes (`LocatorMap`).
 4. **Ne pas contourner les paywalls.**
 5. **Aucune étiquette politique attribuée à un média**, ni par algorithme ni à la main. La vue « plusieurs médias » ne montre que les titres originaux.
-6. **Tout contenu pédagogique est sourcé** (question, affirmation, événement, découverte, fiche) avec une URL `https://` réelle. Ne pas ajouter de fait non vérifié. Les questions d'actualité ne sont générées **que** depuis des données structurées (année de l'éphéméride Wikipédia, nom du média d'un titre).
+6. **Tout contenu pédagogique est sourcé** (question, affirmation, événement, découverte, fiche) avec une URL `https://` réelle. Ne pas ajouter de fait non vérifié. Les questions d'actualité ne sont générées **que** depuis des données structurées ou le texte exact des titres : année de l'éphéméride Wikipédia, nom du média, texte à trous dont la réponse est **mot pour mot** dans le titre publié (`pipeline/declic/quiz.py`). Jamais de reformulation ni de question « inventée » sur l'actualité.
 7. **Ne pas ajouter de flux RSS non testé** (réponse 200, XML valide, articles récents). Noter la date de vérification.
 8. **Gratuit pour tous** : pas de dépendance payante, pas de backend, pas de limite quotidienne artificielle.
 9. **Accessibilité WCAG 2.2 AA** : tout se fait au clavier et au doigt, contrastes AA, `prefers-reduced-motion` respecté, états annoncés (`aria-live`). Les tests axe doivent rester verts.
@@ -43,6 +43,8 @@ Ces règles priment sur toute demande d'« amélioration ». En cas de conflit, 
 | Changer le classement par rubrique | `pipeline/declic/classify.py` (rubrique du flux > chemin d'URL > mots-clés) |
 | Régler le rapprochement inter-médias | `pipeline/declic/cluster.py` (seuils volontairement stricts) |
 | Changer le flux RSS « À la une » (widget) | `pipeline/declic/feed.py` (+ `FeedCard` côté site) |
+| Changer le quiz de l'actu (types de questions, leurres) | `pipeline/declic/quiz.py` (+ `pipeline/data/countries.json`, copie synchronisée de `src/content/countries.ts`) ; côté site `actuQuiz()` dans `src/lib/daily.ts`, `ActuCorrection`, `QuizGame` |
+| Points de vue / analyses (accueil, actus) | `components/news/Perspectives.tsx`, `pages/home/Viewpoints.tsx`, `perspectiveClusters()` / `analysisFeed()` dans `src/lib/news.ts` |
 | Ajouter des questions / vrai-faux / événements / pays | `src/content/questions.ts`, `statements.ts`, `events.ts`, `countries.ts` |
 | Ajouter une découverte, une fiche, un parcours | `src/content/discoveries.ts`, `fiches.ts` (`PATHS` en bas) |
 | Ajouter une « question qui fait réfléchir » (Déclic écran 3) | `src/content/reflections.ts` |
@@ -69,13 +71,14 @@ GitHub Actions (cron 17 */6 * * *, push main, manuel)
         → public/data/status.json     diagnostic par source (page /#/diagnostic)
         → public/data/onthisday.json  éphéméride Wikipédia (aujourd'hui + demain)
         → public/data/une.xml         flux RSS « À la une » (widgets d'écran d'accueil)
+        → public/data/quiz.json       quiz de l'actu (textes à trous + « angles »)
   └─ npm test && npm run build → dist/ → GitHub Pages
 Navigateur : fetch('./data/news.json') → validation zod (src/lib/news.ts) → UI
 ```
 
 **Contrat de données** : la forme d'un article est définie **deux fois** et doit rester synchronisée :
 `validate_article()` + `normalize_entry()` (Python) ⇄ `articleSchema` (zod, `src/lib/news.ts`).
-Champs : `id, title, url, sourceId, sourceName, sourceHome, lang ('fr'|'en'), kind ('news'|'analysis'|'institution'), publishedAt (ISO UTC), summary|null, categories[] (la 1re = principale), image {url, credit, license}|null, clusterId|null`.
+Champs : `id, title, url, sourceId, sourceName, sourceHome, sourceCountry, lang ('fr'|'en'), kind ('news'|'analysis'|'opinion'|'institution'), publishedAt (ISO UTC), summary|null, categories[] (la 1re = principale), image {url, credit, license}|null, clusterId|null`.
 Un article invalide est **écarté** côté site (jamais affiché à moitié).
 
 ---
@@ -93,10 +96,10 @@ Un changement est **terminé** quand tout ceci passe :
 
 ```bash
 npm run typecheck                    # 0 erreur (TS strict, noUncheckedIndexedAccess)
-npm test                             # Vitest : contenus, logique, composants (30 tests)
-python3 -m pytest pipeline/tests -q  # pipeline (25 tests)
+npm test                             # Vitest : contenus, logique, composants (33 tests)
+python3 -m pytest pipeline/tests -q  # pipeline (31 tests)
 npm run build
-npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (34 tests)
+npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (38 tests)
 ```
 
 Pour l'e2e : `npx playwright install chromium` une fois. Les tests e2e tournent contre `vite preview` (le build doit exister).
@@ -129,6 +132,10 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 - **Base relative + HashRouter** : ne pas passer à `BrowserRouter` (404 au rechargement sur GitHub Pages) ni à une `base` absolue (casse les sous-chemins).
 - **Sources Wikipédia** : vérifier qu'un titre d'article existe via l'API (`https://fr.wikipedia.org/w/api.php?action=query&format=json&titles=A|B`) ; 5 titres inventés de bonne foi avaient dû être remplacés.
 - **Sandbox sans réseau** : certains environnements d'IA bloquent les requêtes vers les médias. Utiliser l'instantané `pipeline/seed/snapshot.json` (`--seed`) ; ne jamais fabriquer de faux titres pour « remplir ».
+- **Thème** : clair par défaut. `prefs.themeChosen` distingue un « Automatique » choisi par le visiteur de l'ancien défaut implicite (migré en « Clair » par `migrate()` dans `store.ts`). `public/theme-init.js` applique la même règle avant le rendu.
+- **Types de sources** : `opinion` (tribunes) et `analysis` ne sont jamais fusionnés dans un rapprochement (`STEP_BACK` dans `cluster.py`), n'entrent pas dans le quiz de l'actu, et les tribunes ne vont pas « à la une ». Pays d'édition oui, étiquette politique jamais.
+- **Correction du quiz sur fond coloré** : le gris `text-ink-3` des métadonnées ne passe pas AA sur `bg-ko-bg` → `ActuCorrection` le fonce en `text-ink-2`.
+- **Accents dans les réponses** : le quiz affiche « États-Unis » même si le titre écrit « Etats-Unis » ; la mise en évidence compare sans accents (`fold()` dans `ActuCorrection`).
 - **GitHub Actions planifiées** : désactivées par GitHub après 60 jours sans commit sur un dépôt public. Le job `keepalive` de `deploy.yml` l'évite (commit vide après 45 jours d'inactivité) ; ne pas le supprimer. Si malgré tout le cron est suspendu : onglet Actions → Enable workflow.
 
 ---
@@ -136,6 +143,14 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 ## 7. Journal des modifications
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
+
+### 2026-11-08 — Claude (Opus) — v1.2 : quiz de l'actu, points de vue, analyses, thème clair
+- **Quiz de l'actu** (demande de Quentin : le quiz de culture générale « pas lié à l'actu » était inutile). `pipeline/declic/quiz.py` → `quiz.json` : 10 questions à partir des titres d'information des dernières 48 h — titres à trous (pays, nom, chiffre ; réponse = texte exact du titre, leurres du même type pris dans les titres du jour) et questions « angle » (quel titre a publié tel média). Le site l'utilise comme quiz par défaut (onglets Actu / Culture / Révisions), sur l'accueil et à l'écran 4 du Déclic (rappel d'un des trois titres). Correction : titre complet avec la réponse surlignée, média + pays, date, chapô du média, lien, « Ailleurs, le même sujet ». Repli automatique sur le quiz de culture si < 5 questions.
+- **Points de vue** : 11 médias de plus (Figaro, Libération, La Croix, L'Humanité, Ouest-France, RFI, Courrier international, Le Soir, Le Temps, RTS, Radio-Canada) + 5 sources d'analyse et de débat vérifiées le 2026-11-08 vers 23 h 30 (Les Décodeurs, Le Grand Continent, Le Monde Débats, FigaroVox, Libération Idées). Champ `country` (pays d'édition) affiché à côté du média. Rapprochement élargi mais strict (noms propres rares, FR/EN), analyses et tribunes rattachées aux sujets (`analysisIds`).
+- **Accueil** : quiz de l'actu juste après la une ; « Ailleurs, le même sujet » sous l'article principal ; « Un sujet, plusieurs regards » ; « Prendre du recul » (Décrypter / Débattre). Vue comparative avec trois questions de lecture active. Nouveau type `opinion` (« Tribune ou débat »), filtre dans Actus.
+- **Thème clair par défaut** (même si le téléphone est en mode sombre) ; « Automatique » et « Sombre » restent au choix dans Mon espace.
+- Tests : typecheck OK, Vitest 33/33, pytest 31/31, Playwright 38/38 (axe compris sur la correction du quiz).
+- À surveiller en ligne : qualité des rapprochements et des leurres du quiz sur les vraies données.
 
 ### 2026-11-08 — Claude (Opus) — flux RSS « À la une » pour widget Android
 - `pipeline/declic/feed.py` produit `public/data/une.xml` (RSS 2.0) : 10 titres en français, sans doublon d'événement, au plus 2 par média et par rubrique au premier passage, hors « Insolite ». Même logique d'importance que `topStories()` côté site. Titre = « Média · titre original », lien = article original, chapô du média inchangé en description.
@@ -176,6 +191,7 @@ Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
 
 - Surveiller la page /#/diagnostic les premières semaines et ajuster les seuils si une source renvoie souvent 0 article récent.
 - Enrichir les banques (objectif : 150 questions, 60 vrai/faux) en gardant une source par entrée.
+- Appli Android DÉCLIC avec widget d'écran d'accueil (promise à Quentin : gratuite, sans pub, Jetpack Glance lisant `une.xml`/`news.json`, APK construit par GitHub Actions).
 - Rapprochement inter-langues (FR/EN) : seulement avec une méthode fiable ; sinon s'abstenir.
 - Images libres supplémentaires (Wikimedia Commons) : uniquement avec licence vérifiée et crédit affiché.
 - Export / import de la progression (fichier JSON) pour changer d'appareil sans compte.

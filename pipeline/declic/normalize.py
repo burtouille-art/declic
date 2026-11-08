@@ -124,6 +124,7 @@ def normalize_entry(entry: dict, source: dict, now: datetime) -> dict | None:
         "sourceId": source["id"],
         "sourceName": source["name"],
         "sourceHome": source.get("homepage"),
+        "sourceCountry": source.get("country"),
         "lang": source.get("lang", "fr"),
         "kind": source.get("kind", "news"),
         "publishedAt": published.isoformat(timespec="seconds"),

@@ -16,6 +16,7 @@ import { DiscoveryOfTheDay } from './home/DiscoveryOfTheDay'
 import { GuessTheYear } from './home/GuessTheYear'
 import { QuizTeaser } from './home/QuizTeaser'
 import { ScienceDesk } from './home/ScienceDesk'
+import { StepBack, Viewpoints } from './home/Viewpoints'
 
 /** Numéro d'édition = jour de l'année : un repère de magazine quotidien. */
 function editionNumber(d = new Date()) {
@@ -76,7 +77,7 @@ export function HomePage() {
         {data && lead && (
           <div className="grid gap-x-10 gap-y-2 lg:grid-cols-12">
             <div className="lg:col-span-7 lg:border-r lg:border-rule lg:pr-10">
-              <LeadStory article={lead} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
+              <LeadStory article={lead} byId={data.byId} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
               <div className="mt-6 flex flex-col items-start gap-3 sm:flex-row sm:items-center">
                 <ButtonLink to="/declic" variant="accent" size="lg" className="w-full sm:w-auto" icon={<DeclicRing size={22} progress={progress} tone="paper" track="paper" />}>
                   Comprendre en 5 minutes
@@ -109,6 +110,15 @@ export function HomePage() {
         <DeclicCard progress={progress} />
       </section>
 
+      {/* ——— Quiz de l'actu : juste après les titres qu'il fait retenir ——— */}
+      <QuizTeaser otd={otd.data} />
+
+      {/* ——— Points de vue ——— */}
+      {data && <Viewpoints data={data} exclude={lead?.clusterId} onCompare={setCompare} />}
+
+      {/* ——— Analyses et débats ——— */}
+      {data && <StepBack data={data} />}
+
       {/* ——— Rubriques : un index typographique ——— */}
       <section className="mt-16 border-y border-ink bg-paper-2/60 py-8 lg:mt-24 lg:py-10" aria-labelledby="rubriques-title">
         <div className="wrap">
@@ -130,9 +140,6 @@ export function HomePage() {
 
       {/* ——— Découverte inattendue ——— */}
       <DiscoveryOfTheDay />
-
-      {/* ——— Quiz du jour ——— */}
-      <QuizTeaser otd={otd.data} />
 
       {/* ——— Sciences ——— */}
       {data && <ScienceDesk articles={data.articles.filter((a) => inCategory(a, 'sciences') || inCategory(a, 'espace'))} />}

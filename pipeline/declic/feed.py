@@ -30,7 +30,7 @@ def _importance(art: dict, coverage: dict[str, int], now: datetime) -> float:
 def select_une(articles: list[dict], clusters: list[dict], now: datetime, n: int = 10) -> list[dict]:
     """Les n titres principaux en français, sans doublon d'événement, médias et rubriques variés."""
     coverage = {c["id"]: c.get("sourceCount", 1) for c in clusters}
-    pool = [a for a in articles if a.get("lang") == "fr" and a["categories"][0] != "insolite"]
+    pool = [a for a in articles if a.get("lang") == "fr" and a["categories"][0] != "insolite" and a.get("kind") != "opinion"]
     ranked = sorted(pool, key=lambda a: _importance(a, coverage, now), reverse=True)
     out: list[dict] = []
     used_clusters: set[str] = set()

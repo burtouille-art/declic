@@ -15,8 +15,9 @@ export const articleSchema = z.object({
   sourceId: z.string(),
   sourceName: z.string(),
   sourceHome: z.string().nullable().optional(),
+  sourceCountry: z.string().nullable().optional(),
   lang: z.enum(['fr', 'en']),
-  kind: z.enum(['news', 'analysis', 'institution']),
+  kind: z.enum(['news', 'analysis', 'opinion', 'institution']),
   publishedAt: z.string(),
   summary: z.string().nullable(),
   categories: z.array(z.string()).min(1),
@@ -25,7 +26,15 @@ export const articleSchema = z.object({
 })
 export type Article = z.infer<typeof articleSchema> & { categories: CategoryId[] }
 
-const clusterSchema = z.object({ id: z.string(), articleIds: z.array(z.string()), sourceCount: z.number() })
+const clusterSchema = z.object({
+  id: z.string(),
+  articleIds: z.array(z.string()),
+  sourceCount: z.number(),
+  entities: z.array(z.string()).default([]),
+  langs: z.array(z.string()).default([]),
+  countries: z.array(z.string()).default([]),
+  analysisIds: z.array(z.string()).default([]),
+})
 export type Cluster = z.infer<typeof clusterSchema>
 
 const newsSchema = z.object({
@@ -113,7 +122,7 @@ export function parseNews(json: unknown): NewsData {
   articles.sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
   const byId = new Map(articles.map((a) => [a.id, a]))
   const clusters = base.clusters
-    .map((c) => ({ ...c, articleIds: c.articleIds.filter((id) => byId.has(id)) }))
+    .map((c) => ({ ...c, articleIds: c.articleIds.filter((id) => byId.has(id)), analysisIds: c.analysisIds.filter((id) => byId.has(id)) }))
     .filter((c) => c.articleIds.length >= 2)
   return { generatedAt: base.generatedAt, snapshot: !!base.snapshot, articles, clusters, byId, rejected }
 }
@@ -177,7 +186,44 @@ function useResource<T>(file: string, parse: (j: unknown) => T): Resource<T> {
   return { data, error, loading, reload }
 }
 
+/* ---------- quiz de l'actu (généré par le pipeline à partir des titres réels) ---------- */
+
+const coverageSchema = z.object({ sourceName: z.string(), sourceCountry: z.string().nullable().optional(), title: z.string(), url: httpsUrl, lang: z.string() })
+export const newsQuestionSchema = z.object({
+  id: z.string(),
+  type: z.enum(['pays', 'qui', 'nombre', 'angle']),
+  prompt: z.string(),
+  text: z.string().nullable(),
+  options: z.array(z.string()).min(2).max(4),
+  answer: z.number().int().min(0),
+  solution: z.string(),
+  articleId: z.string(),
+  article: z.object({
+    title: z.string(),
+    url: httpsUrl,
+    sourceName: z.string(),
+    sourceCountry: z.string().nullable().optional(),
+    publishedAt: z.string(),
+    summary: z.string().nullable().optional(),
+    category: z.string(),
+  }),
+  coverage: z.array(coverageSchema).default([]),
+})
+export type NewsQuestion = z.infer<typeof newsQuestionSchema>
+export type NewsQuiz = { generatedAt: string; questions: NewsQuestion[]; pool: NewsQuestion[] }
+
+export function parseQuiz(json: unknown): NewsQuiz {
+  const base = z.object({ generatedAt: z.string(), questions: z.array(z.unknown()), pool: z.array(z.unknown()).default([]) }).parse(json)
+  const keep = (arr: unknown[]) =>
+    arr.flatMap((q) => {
+      const r = newsQuestionSchema.safeParse(q)
+      return r.success && r.data.answer < r.data.options.length ? [r.data] : []
+    })
+  return { generatedAt: base.generatedAt, questions: keep(base.questions), pool: keep(base.pool) }
+}
+
 export const useNews = () => useResource('news.json', parseNews)
+export const useNewsQuiz = () => useResource('quiz.json', parseQuiz)
 export const useOnThisDay = () => useResource('onthisday.json', (j) => otdSchema.parse(j))
 export const useStatus = () => useResource('status.json', (j) => statusSchema.parse(j))
 
@@ -201,7 +247,7 @@ export function importance(a: Article, clusters: Map<string, Cluster>, now = Dat
 /** Les N titres principaux, en évitant deux fois le même événement ou la même rubrique quand c'est possible. */
 export function topStories(data: NewsData, n: number, opts: { lang?: 'fr' | 'all'; exclude?: Set<string> } = {}): Article[] {
   const clusters = new Map(data.clusters.map((c) => [c.id, c]))
-  const pool = data.articles.filter((a) => (opts.lang === 'fr' ? a.lang === 'fr' : true) && !opts.exclude?.has(a.id) && a.categories[0] !== 'insolite')
+  const pool = data.articles.filter((a) => (opts.lang === 'fr' ? a.lang === 'fr' : true) && !opts.exclude?.has(a.id) && a.categories[0] !== 'insolite' && a.kind !== 'opinion')
   const ranked = pool
     .map((a) => ({ a, s: importance(a, clusters) }))
     .sort((x, y) => y.s - x.s)
@@ -265,4 +311,36 @@ export function topicTerms(articles: Article[], max = 10): { term: string; count
     .map(([, t]) => t)
     .sort((a, b) => b.count - a.count)
     .slice(0, max)
+}
+
+/**
+ * Sujets à plusieurs regards : les événements couverts par le plus de médias,
+ * en favorisant ceux qui réunissent des médias de pays différents.
+ */
+export function perspectiveClusters(data: NewsData, n = 3, exclude?: Set<string>): Cluster[] {
+  const now = Date.now()
+  const newest = (c: Cluster) => Math.max(...c.articleIds.map((id) => new Date(data.byId.get(id)?.publishedAt ?? 0).getTime()))
+  return data.clusters
+    .filter((c) => c.sourceCount >= 2 && !exclude?.has(c.id) && c.articleIds.every((id) => data.byId.has(id)))
+    .map((c) => ({ c, s: c.sourceCount * 2 + c.countries.length * 1.5 + c.analysisIds.length + (c.langs.length > 1 ? 1 : 0) + Math.max(0, 48 - (now - newest(c)) / 3_600_000) / 12 }))
+    .sort((x, y) => y.s - x.s)
+    .slice(0, n)
+    .map((x) => x.c)
+}
+
+/** Pour prendre du recul : analyses (ou tribunes) liées d'abord à un sujet du moment, puis les plus récentes, un article par média. */
+export function analysisFeed(data: NewsData, n = 4, kind: 'analysis' | 'opinion' = 'analysis'): Article[] {
+  const linked = new Set(data.clusters.flatMap((c) => c.analysisIds))
+  const ranked = data.articles
+    .filter((a) => a.kind === kind && a.lang === 'fr')
+    .sort((x, y) => Number(linked.has(y.id)) - Number(linked.has(x.id)) || y.publishedAt.localeCompare(x.publishedAt))
+  const out: Article[] = []
+  const perSource = new Map<string, number>()
+  for (const a of ranked) {
+    if ((perSource.get(a.sourceName) ?? 0) >= 1) continue
+    perSource.set(a.sourceName, (perSource.get(a.sourceName) ?? 0) + 1)
+    out.push(a)
+    if (out.length >= n) break
+  }
+  return out
 }

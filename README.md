@@ -27,7 +27,7 @@ Média numérique francophone : actualité sourcée (flux RSS réels), découver
 
 | Espace | Route | Ce qu'on y fait |
 |---|---|---|
-| Accueil | `#/` | Une couverture de magazine : la une (1 + 4 titres), le Déclic du jour, l'index des rubriques, une découverte, le quiz du jour jouable sur place, la section Sciences & espace (photo NASA + mini-expérience du pendule), « Ce jour-là » (devine l'année), les sujets selon tes préférences. |
+| Accueil | `#/` | Une couverture de magazine : la une (1 + 4 titres), le Déclic du jour, l'index des rubriques, une découverte, le quiz de l'actu jouable sur place, « Un sujet, plusieurs regards » (titres de plusieurs médias côte à côte), « Prendre du recul » (analyses et tribunes), la section Sciences & espace (photo NASA + mini-expérience du pendule), « Ce jour-là » (devine l'année), les sujets selon tes préférences. |
 | Actualités | `#/actus`, `#/actus/:rubrique` | 14 rubriques, recherche plein texte, filtres (période, langue, type de source), « sujets du moment », carte des pays cités, comparaison des titres quand plusieurs médias couvrent le même événement, contenus explicatifs associés. |
 | Déclic du jour | `#/declic` | 5 écrans : trois infos, une découverte, une question qui fait réfléchir, un défi de mémoire, un bilan. Progression sauvegardée, on peut quitter et reprendre, ou recommencer. |
 | Découvrir | `#/decouvrir` | La machine à curiosités : bouton « Surprends-moi », 18 découvertes sourcées, question d'intuition avant l'explication, mini-expériences (Stroop, tache aveugle, pendule, graphiques). |
@@ -107,13 +107,15 @@ sources.json ─▶ fetch.py ─▶ normalize.py ─▶ classify.py ─▶ build
  (flux vérifiés)  (délai 20 s,   (texte brut,      (rubrique du    (fraîcheur 7 j,   (rapprochement   news.json
                    5 Mo max)      URL sûres,        flux > chemin   dédup., secours   prudent entre    status.json
                                   dates UTC)        URL > mots-clés) par source)      médias)          onthisday.json
+                                                                                     ─▶ feed.py ─▶ une.xml
+                                                                                     ─▶ quiz.py ─▶ quiz.json
 ```
 
 La collecte a lieu **dans GitHub Actions, avant le build** : le navigateur ne fait jamais de requête vers les médias (pas de problème de CORS, pas de traceur tiers).
 
 | Étape | Mise en œuvre |
 |---|---|
-| 1. Flux réellement accessibles | 28 flux listés dans `pipeline/sources.json`, chacun vérifié le 8 novembre 2026 (réponse 200, XML valide, articles du jour ou de la semaine). |
+| 1. Flux réellement accessibles | 44 flux listés dans `pipeline/sources.json`, chacun vérifié le 8 novembre 2026 (réponse 200, XML valide, articles du jour ou de la semaine). Chaque source déclare son type (`news`, `analysis`, `opinion`, `institution`) et son pays d'édition (information factuelle, jamais une étiquette politique). |
 | 2. Validation et normalisation | `normalize.py` : HTML retiré (scripts et iframes compris), caractères de contrôle supprimés, URL `http(s)` uniquement, dates converties en UTC, titres tronqués proprement. Chaque article est revalidé (`validate_article`) puis, côté site, par un schéma zod. |
 | 3. Déduplication | URL canonique (sans paramètres de suivi ni fragment), puis titre identique chez un même média. Les rubriques des doublons sont fusionnées. |
 | 4. Classification | Rubrique du flux thématique en priorité, puis rubrique lisible dans le chemin de l'URL (franceinfo, France 24, Le Monde), puis mots-clés qui ajoutent des rubriques secondaires (IA, Espace, Santé…). Cas pièges testés : « mars » (le mois), « IA » en minuscules. |
@@ -124,11 +126,16 @@ La collecte a lieu **dans GitHub Actions, avant le build** : le navigateur ne fa
 | 9. Dernières données valides | Avant chaque collecte, le workflow télécharge les JSON actuellement en ligne. Une source en panne garde ses articles récents de la collecte précédente (marqués « Secours » dans le diagnostic). Si la collecte entière rapporte moins de 15 articles, les données précédentes sont republiées telles quelles. |
 | 10. Date d'actualisation | Affichée en tête de l'accueil, des rubriques et du diagnostic. |
 
-**Rapprochement entre médias** (`cluster.py`) : deux articles sont rapprochés seulement s'ils viennent de médias différents, sont dans la même langue, ont été publiés à moins de 36 h d'écart et partagent au moins 3 racines de mots significatifs couvrant au moins la moitié du titre le plus court. Les seuils sont volontairement stricts : mieux vaut rater un rapprochement que d'en inventer un. La vue comparative n'affiche que les titres originaux et les liens, sans étiquette de « bord politique ».
+**Rapprochement entre médias** (`cluster.py`) : deux articles de médias différents publiés à moins de 36 h d'écart sont rapprochés s'ils partagent au moins 3 racines de mots couvrant la moitié du titre le plus court, ou au moins 2 noms propres peu courants (cités dans moins de 3 % des titres), ou 1 nom propre rare et 2 autres mots ; entre français et anglais, seulement par un nom propre rare de plusieurs mots à moins de 24 h. Les analyses et tribunes ne sont jamais fusionnées dans un sujet : elles y sont rattachées à part (« Pour prendre du recul »). Les seuils sont volontairement stricts : mieux vaut rater un rapprochement que d'en inventer un. La vue comparative n'affiche que les titres originaux et les liens, sans étiquette de « bord politique ».
+
+**Quiz de l'actu** (`quiz.py` → `quiz.json`) : 10 questions construites à partir des titres d'information des dernières 48 h, sans IA générative. Textes à trous dont la réponse est le texte exact du titre (un pays de la liste du site, un nom propre, un chiffre), avec des leurres du même type tirés des autres titres du jour, et questions « angle » (« quel titre a été publié par tel média ? ») sur les sujets couverts par plusieurs médias. La correction montre le titre complet, le média, la date, le chapô du média et les titres des autres médias sur le même sujet. Si moins de 5 questions sont possibles, le site revient au quiz de culture générale.
 
 ### Sources retenues
 
-Francophones : franceinfo (titres, Monde, Politique, Société, Éco, Sciences, Tech, Culture, Sports, Environnement), France 24 (titres, Éco-Tech), Le Monde (une, Histoire), Numerama, Reporterre, Inserm (salle de presse), 20 Minutes (Insolite), The Conversation France.
+Francophones (France) : franceinfo (titres, Monde, Politique, Société, Éco, Sciences, Tech, Culture, Sports, Environnement), France 24 (titres, Éco-Tech), Le Monde (une, Histoire), Le Figaro, Libération, La Croix, L'Humanité, Ouest-France, RFI, Numerama, Reporterre, Inserm (salle de presse), 20 Minutes (Insolite).
+Francophones (hors de France) : Le Soir (Belgique), Le Temps et RTS (Suisse), Radio-Canada (Canada).
+Analyses : The Conversation France, Courrier international, Les Décodeurs (Le Monde), Le Grand Continent.
+Tribunes et débats : Le Monde (Débats), FigaroVox, Libération (Idées et débats).
 Internationales : BBC News (World, Science & Environment, Technology, Health), NASA (communiqués et flux général), NASA JPL, ESA, OMS.
 Données structurées : API Wikimedia « onthisday » (Wikipédia en français, CC BY-SA).
 
@@ -227,9 +234,9 @@ Réellement exécutés pendant le développement :
 
 | Suite | Résultat |
 |---|---|
-| `pytest pipeline/tests` : nettoyage HTML, URL dangereuses, dates, images, classification, déduplication, rapprochements, éphéméride, secours par source, conservation des données en cas de panne totale, fraîcheur | 23/23 |
-| `npm test` (Vitest) : validité de toutes les banques, sélection quotidienne sans répétition, mélange des options, répétition espacée, logique de la chronologie et du grand voyage, détection des pays, validation des données d'actualité, récupération d'un `localStorage` corrompu, parties complètes de quiz / vrai-faux / chronologie | 30/30 |
-| `npm run test:e2e` (Playwright, Pixel 7 + ordinateur) : accueil, navigation, rubriques + recherche + filtre, Déclic complet avec persistance et recommencement, quiz au clavier, partie complète du grand voyage, découvertes, fiche, favoris, thème sombre, diagnostic, **hors ligne**, **axe-core WCAG 2.2 AA sur 6 pages (aucune violation sérieuse ou critique)** | 32/32 |
+| `pytest pipeline/tests` : nettoyage HTML, URL dangereuses, dates, images, classification, déduplication, rapprochements (dont entre langues), analyses liées, quiz de l'actu, tribunes exclues du quiz et de la une, éphéméride, secours par source, conservation des données en cas de panne totale, fraîcheur | 31/31 |
+| `npm test` (Vitest) : validité de toutes les banques, sélection quotidienne sans répétition, mélange des options, répétition espacée, logique de la chronologie et du grand voyage, détection des pays, validation des données d'actualité, récupération d'un `localStorage` corrompu, parties complètes de quiz (actu et repli culture) / vrai-faux / chronologie, thème clair par défaut, synchronisation des pays site ⇄ pipeline | 33/33 |
+| `npm run test:e2e` (Playwright, Pixel 7 + ordinateur) : accueil, navigation, rubriques + recherche + filtre, Déclic complet avec persistance et recommencement, quiz de l'actu au clavier (avec axe sur la correction), clair par défaut même en mode sombre système, regards croisés, partie complète du grand voyage, découvertes, fiche, favoris, thème sombre, diagnostic, **hors ligne**, **axe-core WCAG 2.2 AA sur 6 pages (aucune violation sérieuse ou critique)** | 38/38 |
 | `npm run typecheck` | sans erreur |
 
 Ce qui n'a pas pu être testé dans l'environnement de développement : la collecte en direct (le réseau sortant vers les médias y était bloqué ; les flux ont été vérifiés par un outil externe et le pipeline par des tests sur flux simulés et sur l'instantané réel), l'affichage des photos NASA (même raison), et le déploiement GitHub Pages lui-même.

@@ -36,7 +36,7 @@ def main() -> int:
     status = run(config, args.out, previous_dir=args.previous, seed=seed, now=now, site_url=args.site_url)
 
     print(f"Articles : {status['articleCount']} — rapprochements : {status['clusterCount']}")
-    print(f"Flux « À la une » : {status.get('uneCount', 0)} titres")
+    print(f"Flux « À la une » : {status.get('uneCount', 0)} titres — quiz de l'actu : {status.get('quizCount', 0)} questions")
     print(f"Sources OK : {status['sourcesOk']}/{status['sourcesTotal']}" + (" (données précédentes conservées)" if status["keptPreviousData"] else ""))
     for s in status["sources"]:
         flag = "OK " if s["ok"] else "ERR"

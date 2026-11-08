@@ -11,6 +11,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T18:53:06+00:00",
@@ -28,6 +29,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T18:48:03+00:00",
@@ -45,6 +47,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T18:27:07+00:00",
@@ -62,6 +65,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T18:23:18+00:00",
@@ -79,6 +83,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-08T18:22:53+00:00",
@@ -96,6 +101,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T17:46:22+00:00",
@@ -113,6 +119,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-08T17:35:13+00:00",
@@ -130,6 +137,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T16:50:00+00:00",
@@ -147,6 +155,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T16:03:00+00:00",
@@ -164,6 +173,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T16:00:51+00:00",
@@ -181,6 +191,7 @@
    "sourceId": "nasa-news",
    "sourceName": "NASA",
    "sourceHome": "https://www.nasa.gov",
+   "sourceCountry": "États-Unis",
    "lang": "en",
    "kind": "institution",
    "publishedAt": "2026-11-08T15:26:38+00:00",
@@ -202,6 +213,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T15:13:35+00:00",
@@ -219,6 +231,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T15:00:57+00:00",
@@ -236,6 +249,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-08T14:42:09+00:00",
@@ -253,6 +267,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T14:20:20+00:00",
@@ -270,6 +285,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T14:09:54+00:00",
@@ -287,6 +303,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T13:39:15+00:00",
@@ -304,6 +321,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-08T13:37:50+00:00",
@@ -321,6 +339,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T13:31:15+00:00",
@@ -338,6 +357,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T12:56:50+00:00",
@@ -355,6 +375,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T12:48:01+00:00",
@@ -372,6 +393,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T12:45:53+00:00",
@@ -389,6 +411,7 @@
    "sourceId": "france24",
    "sourceName": "France 24",
    "sourceHome": "https://www.france24.com/fr/",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T12:26:00+00:00",
@@ -406,6 +429,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T11:55:01+00:00",
@@ -423,6 +447,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T09:00:02+00:00",
@@ -441,6 +466,7 @@
    "sourceId": "franceinfo-titres",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T08:05:40+00:00",
@@ -458,6 +484,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-08T08:00:03+00:00",
@@ -475,6 +502,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-08T04:03:12+00:00",
@@ -492,6 +520,7 @@
    "sourceId": "nasa-news",
    "sourceName": "NASA",
    "sourceHome": "https://www.nasa.gov",
+   "sourceCountry": "États-Unis",
    "lang": "en",
    "kind": "institution",
    "publishedAt": "2026-11-07T22:47:03+00:00",
@@ -513,6 +542,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-07T21:36:16+00:00",
@@ -530,6 +560,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-07T19:17:22+00:00",
@@ -547,6 +578,7 @@
    "sourceId": "nasa-news",
    "sourceName": "NASA",
    "sourceHome": "https://www.nasa.gov",
+   "sourceCountry": "États-Unis",
    "lang": "en",
    "kind": "institution",
    "publishedAt": "2026-11-07T18:11:57+00:00",
@@ -568,6 +600,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-07T15:00:01+00:00",
@@ -586,6 +619,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-07T08:00:03+00:00",
@@ -603,6 +637,7 @@
    "sourceId": "bbc-world",
    "sourceName": "BBC News",
    "sourceHome": "https://www.bbc.com/news",
+   "sourceCountry": "Royaume-Uni",
    "lang": "en",
    "kind": "news",
    "publishedAt": "2026-11-07T06:59:48+00:00",
@@ -620,6 +655,7 @@
    "sourceId": "nasa-news",
    "sourceName": "NASA",
    "sourceHome": "https://www.nasa.gov",
+   "sourceCountry": "États-Unis",
    "lang": "en",
    "kind": "institution",
    "publishedAt": "2026-11-07T05:05:00+00:00",
@@ -641,6 +677,7 @@
    "sourceId": "nasa-news",
    "sourceName": "NASA",
    "sourceHome": "https://www.nasa.gov",
+   "sourceCountry": "États-Unis",
    "lang": "en",
    "kind": "institution",
    "publishedAt": "2026-11-06T16:23:41+00:00",
@@ -662,6 +699,7 @@
    "sourceId": "nasa-news",
    "sourceName": "NASA",
    "sourceHome": "https://www.nasa.gov",
+   "sourceCountry": "États-Unis",
    "lang": "en",
    "kind": "institution",
    "publishedAt": "2026-11-06T05:01:00+00:00",
@@ -683,6 +721,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-05T15:55:28+00:00",
@@ -700,6 +739,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-03T21:33:19+00:00",
@@ -718,6 +758,7 @@
    "sourceId": "franceinfo-sciences",
    "sourceName": "franceinfo",
    "sourceHome": "https://www.franceinfo.fr",
+   "sourceCountry": "France",
    "lang": "fr",
    "kind": "news",
    "publishedAt": "2026-11-03T13:22:12+00:00",
@@ -736,7 +777,18 @@
     "731cb96057bfca79",
     "01546ce623cde635"
    ],
-   "sourceCount": 2
+   "sourceCount": 2,
+   "entities": [
+    "gadi eisenkot",
+    "israel"
+   ],
+   "langs": [
+    "fr"
+   ],
+   "countries": [
+    "France"
+   ],
+   "analysisIds": []
   }
  ],
  "sources": [
@@ -744,79 +796,204 @@
    "name": "franceinfo",
    "homepage": "https://www.franceinfo.fr",
    "lang": "fr",
-   "kind": "news"
+   "kind": "news",
+   "country": "France"
   },
   {
    "name": "France 24",
    "homepage": "https://www.france24.com/fr/",
    "lang": "fr",
-   "kind": "news"
+   "kind": "news",
+   "country": "France"
   },
   {
    "name": "Le Monde",
    "homepage": "https://www.lemonde.fr",
    "lang": "fr",
-   "kind": "news"
+   "kind": "news",
+   "country": "France"
   },
   {
    "name": "Numerama",
    "homepage": "https://www.numerama.com",
    "lang": "fr",
-   "kind": "news"
+   "kind": "news",
+   "country": "France"
   },
   {
    "name": "Reporterre",
    "homepage": "https://reporterre.net",
    "lang": "fr",
-   "kind": "news"
+   "kind": "news",
+   "country": "France"
   },
   {
    "name": "Inserm",
    "homepage": "https://presse.inserm.fr",
    "lang": "fr",
-   "kind": "institution"
+   "kind": "institution",
+   "country": "France"
   },
   {
    "name": "20 Minutes",
    "homepage": "https://www.20minutes.fr",
    "lang": "fr",
-   "kind": "news"
+   "kind": "news",
+   "country": "France"
   },
   {
    "name": "The Conversation France",
    "homepage": "https://theconversation.com/fr",
    "lang": "fr",
-   "kind": "analysis"
+   "kind": "analysis",
+   "country": "France"
+  },
+  {
+   "name": "Le Figaro",
+   "homepage": "https://www.lefigaro.fr",
+   "lang": "fr",
+   "kind": "news",
+   "country": "France"
+  },
+  {
+   "name": "Libération",
+   "homepage": "https://www.liberation.fr",
+   "lang": "fr",
+   "kind": "news",
+   "country": "France"
+  },
+  {
+   "name": "La Croix",
+   "homepage": "https://www.la-croix.com",
+   "lang": "fr",
+   "kind": "news",
+   "country": "France"
+  },
+  {
+   "name": "L'Humanité",
+   "homepage": "https://www.humanite.fr",
+   "lang": "fr",
+   "kind": "news",
+   "country": "France"
+  },
+  {
+   "name": "Ouest-France",
+   "homepage": "https://www.ouest-france.fr",
+   "lang": "fr",
+   "kind": "news",
+   "country": "France"
+  },
+  {
+   "name": "RFI",
+   "homepage": "https://www.rfi.fr/fr/",
+   "lang": "fr",
+   "kind": "news",
+   "country": "France"
+  },
+  {
+   "name": "Courrier international",
+   "homepage": "https://www.courrierinternational.com",
+   "lang": "fr",
+   "kind": "analysis",
+   "country": "International"
+  },
+  {
+   "name": "Les Décodeurs (Le Monde)",
+   "homepage": "https://www.lemonde.fr/les-decodeurs/",
+   "lang": "fr",
+   "kind": "analysis",
+   "country": "France"
+  },
+  {
+   "name": "Le Grand Continent",
+   "homepage": "https://legrandcontinent.eu/fr/",
+   "lang": "fr",
+   "kind": "analysis",
+   "country": "Europe"
+  },
+  {
+   "name": "Le Monde (Débats)",
+   "homepage": "https://www.lemonde.fr/idees/",
+   "lang": "fr",
+   "kind": "opinion",
+   "country": "France"
+  },
+  {
+   "name": "FigaroVox",
+   "homepage": "https://www.lefigaro.fr/vox",
+   "lang": "fr",
+   "kind": "opinion",
+   "country": "France"
+  },
+  {
+   "name": "Libération (Idées et débats)",
+   "homepage": "https://www.liberation.fr/idees-et-debats/",
+   "lang": "fr",
+   "kind": "opinion",
+   "country": "France"
+  },
+  {
+   "name": "Le Soir",
+   "homepage": "https://www.lesoir.be",
+   "lang": "fr",
+   "kind": "news",
+   "country": "Belgique"
+  },
+  {
+   "name": "Le Temps",
+   "homepage": "https://www.letemps.ch",
+   "lang": "fr",
+   "kind": "news",
+   "country": "Suisse"
+  },
+  {
+   "name": "RTS Info",
+   "homepage": "https://www.rts.ch/info/",
+   "lang": "fr",
+   "kind": "news",
+   "country": "Suisse"
+  },
+  {
+   "name": "Radio-Canada",
+   "homepage": "https://ici.radio-canada.ca/info",
+   "lang": "fr",
+   "kind": "news",
+   "country": "Canada"
   },
   {
    "name": "BBC News",
    "homepage": "https://www.bbc.com/news",
    "lang": "en",
-   "kind": "news"
+   "kind": "news",
+   "country": "Royaume-Uni"
   },
   {
    "name": "NASA",
    "homepage": "https://www.nasa.gov",
    "lang": "en",
-   "kind": "institution"
+   "kind": "institution",
+   "country": "États-Unis"
   },
   {
    "name": "NASA JPL",
    "homepage": "https://www.jpl.nasa.gov",
    "lang": "en",
-   "kind": "institution"
+   "kind": "institution",
+   "country": "États-Unis"
   },
   {
    "name": "ESA",
    "homepage": "https://www.esa.int",
    "lang": "en",
-   "kind": "institution"
+   "kind": "institution",
+   "country": "Europe"
   },
   {
    "name": "OMS (WHO)",
    "homepage": "https://www.who.int",
    "lang": "en",
-   "kind": "institution"
+   "kind": "institution",
+   "country": "International"
   }
  ]
 }

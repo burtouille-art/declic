@@ -1,0 +1,675 @@
+{
+ "_comment": "Copie de src/content/countries.ts (noms français + continent) pour le pipeline. Un test Vitest vérifie que les deux listes restent identiques.",
+ "countries": [
+  {
+   "id": "250",
+   "name": "France",
+   "continent": "europe",
+   "aliases": [
+    "French"
+   ]
+  },
+  {
+   "id": "724",
+   "name": "Espagne",
+   "continent": "europe",
+   "aliases": [
+    "Spain"
+   ]
+  },
+  {
+   "id": "620",
+   "name": "Portugal",
+   "continent": "europe",
+   "aliases": []
+  },
+  {
+   "id": "380",
+   "name": "Italie",
+   "continent": "europe",
+   "aliases": [
+    "Italy"
+   ]
+  },
+  {
+   "id": "276",
+   "name": "Allemagne",
+   "continent": "europe",
+   "aliases": [
+    "Germany"
+   ]
+  },
+  {
+   "id": "616",
+   "name": "Pologne",
+   "continent": "europe",
+   "aliases": [
+    "Poland",
+    "Cracovie",
+    "Krakow"
+   ]
+  },
+  {
+   "id": "826",
+   "name": "Royaume-Uni",
+   "continent": "europe",
+   "aliases": [
+    "United Kingdom",
+    "UK",
+    "Britain"
+   ]
+  },
+  {
+   "id": "372",
+   "name": "Irlande",
+   "continent": "europe",
+   "aliases": [
+    "Ireland"
+   ]
+  },
+  {
+   "id": "578",
+   "name": "Norvège",
+   "continent": "europe",
+   "aliases": [
+    "Norway"
+   ]
+  },
+  {
+   "id": "752",
+   "name": "Suède",
+   "continent": "europe",
+   "aliases": [
+    "Sweden"
+   ]
+  },
+  {
+   "id": "246",
+   "name": "Finlande",
+   "continent": "europe",
+   "aliases": [
+    "Finland"
+   ]
+  },
+  {
+   "id": "300",
+   "name": "Grèce",
+   "continent": "europe",
+   "aliases": [
+    "Greece"
+   ]
+  },
+  {
+   "id": "804",
+   "name": "Ukraine",
+   "continent": "europe",
+   "aliases": []
+  },
+  {
+   "id": "642",
+   "name": "Roumanie",
+   "continent": "europe",
+   "aliases": [
+    "Romania"
+   ]
+  },
+  {
+   "id": "348",
+   "name": "Hongrie",
+   "continent": "europe",
+   "aliases": [
+    "Hungary"
+   ]
+  },
+  {
+   "id": "040",
+   "name": "Autriche",
+   "continent": "europe",
+   "aliases": [
+    "Austria"
+   ]
+  },
+  {
+   "id": "756",
+   "name": "Suisse",
+   "continent": "europe",
+   "aliases": [
+    "Switzerland"
+   ]
+  },
+  {
+   "id": "056",
+   "name": "Belgique",
+   "continent": "europe",
+   "aliases": [
+    "Belgium"
+   ]
+  },
+  {
+   "id": "208",
+   "name": "Danemark",
+   "continent": "europe",
+   "aliases": [
+    "Denmark"
+   ]
+  },
+  {
+   "id": "203",
+   "name": "Tchéquie",
+   "continent": "europe",
+   "aliases": [
+    "Czech Republic",
+    "République tchèque"
+   ]
+  },
+  {
+   "id": "100",
+   "name": "Bulgarie",
+   "continent": "europe",
+   "aliases": [
+    "Bulgaria"
+   ]
+  },
+  {
+   "id": "191",
+   "name": "Croatie",
+   "continent": "europe",
+   "aliases": [
+    "Croatia"
+   ]
+  },
+  {
+   "id": "688",
+   "name": "Serbie",
+   "continent": "europe",
+   "aliases": [
+    "Serbia"
+   ]
+  },
+  {
+   "id": "352",
+   "name": "Islande",
+   "continent": "europe",
+   "aliases": [
+    "Iceland"
+   ]
+  },
+  {
+   "id": "643",
+   "name": "Russie",
+   "continent": "europe",
+   "aliases": [
+    "Russia"
+   ]
+  },
+  {
+   "id": "792",
+   "name": "Turquie",
+   "continent": "asie",
+   "aliases": [
+    "Turkey",
+    "Türkiye"
+   ]
+  },
+  {
+   "id": "528",
+   "name": "Pays-Bas",
+   "continent": "europe",
+   "aliases": [
+    "Netherlands"
+   ]
+  },
+  {
+   "id": "818",
+   "name": "Égypte",
+   "continent": "afrique",
+   "aliases": [
+    "Egypt"
+   ]
+  },
+  {
+   "id": "504",
+   "name": "Maroc",
+   "continent": "afrique",
+   "aliases": [
+    "Morocco"
+   ]
+  },
+  {
+   "id": "012",
+   "name": "Algérie",
+   "continent": "afrique",
+   "aliases": [
+    "Algeria"
+   ]
+  },
+  {
+   "id": "788",
+   "name": "Tunisie",
+   "continent": "afrique",
+   "aliases": [
+    "Tunisia"
+   ]
+  },
+  {
+   "id": "434",
+   "name": "Libye",
+   "continent": "afrique",
+   "aliases": [
+    "Libya"
+   ]
+  },
+  {
+   "id": "566",
+   "name": "Nigeria",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "404",
+   "name": "Kenya",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "231",
+   "name": "Éthiopie",
+   "continent": "afrique",
+   "aliases": [
+    "Ethiopia"
+   ]
+  },
+  {
+   "id": "686",
+   "name": "Sénégal",
+   "continent": "afrique",
+   "aliases": [
+    "Senegal"
+   ]
+  },
+  {
+   "id": "466",
+   "name": "Mali",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "450",
+   "name": "Madagascar",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "180",
+   "name": "République démocratique du Congo",
+   "continent": "afrique",
+   "aliases": [
+    "RDC",
+    "DR Congo"
+   ]
+  },
+  {
+   "id": "288",
+   "name": "Ghana",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "024",
+   "name": "Angola",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "729",
+   "name": "Soudan",
+   "continent": "afrique",
+   "aliases": [
+    "Sudan"
+   ]
+  },
+  {
+   "id": "148",
+   "name": "Tchad",
+   "continent": "afrique",
+   "aliases": [
+    "Chad"
+   ]
+  },
+  {
+   "id": "508",
+   "name": "Mozambique",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "894",
+   "name": "Zambie",
+   "continent": "afrique",
+   "aliases": [
+    "Zambia"
+   ]
+  },
+  {
+   "id": "716",
+   "name": "Zimbabwe",
+   "continent": "afrique",
+   "aliases": []
+  },
+  {
+   "id": "706",
+   "name": "Somalie",
+   "continent": "afrique",
+   "aliases": [
+    "Somalia"
+   ]
+  },
+  {
+   "id": "710",
+   "name": "Afrique du Sud",
+   "continent": "afrique",
+   "aliases": [
+    "South Africa"
+   ]
+  },
+  {
+   "id": "834",
+   "name": "Tanzanie",
+   "continent": "afrique",
+   "aliases": [
+    "Tanzania"
+   ]
+  },
+  {
+   "id": "840",
+   "name": "États-Unis",
+   "continent": "ameriques",
+   "aliases": [
+    "USA",
+    "US",
+    "United States",
+    "Etats-Unis"
+   ]
+  },
+  {
+   "id": "124",
+   "name": "Canada",
+   "continent": "ameriques",
+   "aliases": []
+  },
+  {
+   "id": "484",
+   "name": "Mexique",
+   "continent": "ameriques",
+   "aliases": [
+    "Mexico"
+   ]
+  },
+  {
+   "id": "076",
+   "name": "Brésil",
+   "continent": "ameriques",
+   "aliases": [
+    "Brazil"
+   ]
+  },
+  {
+   "id": "032",
+   "name": "Argentine",
+   "continent": "ameriques",
+   "aliases": [
+    "Argentina"
+   ]
+  },
+  {
+   "id": "152",
+   "name": "Chili",
+   "continent": "ameriques",
+   "aliases": [
+    "Chile"
+   ]
+  },
+  {
+   "id": "604",
+   "name": "Pérou",
+   "continent": "ameriques",
+   "aliases": [
+    "Peru"
+   ]
+  },
+  {
+   "id": "170",
+   "name": "Colombie",
+   "continent": "ameriques",
+   "aliases": [
+    "Colombia"
+   ]
+  },
+  {
+   "id": "862",
+   "name": "Venezuela",
+   "continent": "ameriques",
+   "aliases": []
+  },
+  {
+   "id": "192",
+   "name": "Cuba",
+   "continent": "ameriques",
+   "aliases": []
+  },
+  {
+   "id": "218",
+   "name": "Équateur",
+   "continent": "ameriques",
+   "aliases": [
+    "Ecuador"
+   ]
+  },
+  {
+   "id": "600",
+   "name": "Paraguay",
+   "continent": "ameriques",
+   "aliases": []
+  },
+  {
+   "id": "858",
+   "name": "Uruguay",
+   "continent": "ameriques",
+   "aliases": []
+  },
+  {
+   "id": "068",
+   "name": "Bolivie",
+   "continent": "ameriques",
+   "aliases": [
+    "Bolivia"
+   ]
+  },
+  {
+   "id": "156",
+   "name": "Chine",
+   "continent": "asie",
+   "aliases": [
+    "China"
+   ]
+  },
+  {
+   "id": "392",
+   "name": "Japon",
+   "continent": "asie",
+   "aliases": [
+    "Japan"
+   ]
+  },
+  {
+   "id": "356",
+   "name": "Inde",
+   "continent": "asie",
+   "aliases": [
+    "India"
+   ]
+  },
+  {
+   "id": "586",
+   "name": "Pakistan",
+   "continent": "asie",
+   "aliases": []
+  },
+  {
+   "id": "364",
+   "name": "Iran",
+   "continent": "asie",
+   "aliases": []
+  },
+  {
+   "id": "368",
+   "name": "Irak",
+   "continent": "asie",
+   "aliases": [
+    "Iraq"
+   ]
+  },
+  {
+   "id": "682",
+   "name": "Arabie saoudite",
+   "continent": "asie",
+   "aliases": [
+    "Saudi Arabia",
+    "Saudi"
+   ]
+  },
+  {
+   "id": "764",
+   "name": "Thaïlande",
+   "continent": "asie",
+   "aliases": [
+    "Thailand"
+   ]
+  },
+  {
+   "id": "704",
+   "name": "Viêt Nam",
+   "continent": "asie",
+   "aliases": [
+    "Vietnam",
+    "Viet Nam"
+   ]
+  },
+  {
+   "id": "410",
+   "name": "Corée du Sud",
+   "continent": "asie",
+   "aliases": [
+    "South Korea"
+   ]
+  },
+  {
+   "id": "496",
+   "name": "Mongolie",
+   "continent": "asie",
+   "aliases": [
+    "Mongolia"
+   ]
+  },
+  {
+   "id": "398",
+   "name": "Kazakhstan",
+   "continent": "asie",
+   "aliases": []
+  },
+  {
+   "id": "004",
+   "name": "Afghanistan",
+   "continent": "asie",
+   "aliases": []
+  },
+  {
+   "id": "608",
+   "name": "Philippines",
+   "continent": "asie",
+   "aliases": []
+  },
+  {
+   "id": "524",
+   "name": "Népal",
+   "continent": "asie",
+   "aliases": [
+    "Nepal"
+   ]
+  },
+  {
+   "id": "760",
+   "name": "Syrie",
+   "continent": "asie",
+   "aliases": [
+    "Syria"
+   ]
+  },
+  {
+   "id": "400",
+   "name": "Jordanie",
+   "continent": "asie",
+   "aliases": [
+    "Jordan"
+   ]
+  },
+  {
+   "id": "887",
+   "name": "Yémen",
+   "continent": "asie",
+   "aliases": [
+    "Yemen",
+    "Houthis"
+   ]
+  },
+  {
+   "id": "376",
+   "name": "Israël",
+   "continent": "asie",
+   "aliases": [
+    "Israel"
+   ]
+  },
+  {
+   "id": "360",
+   "name": "Indonésie",
+   "continent": "asie",
+   "aliases": [
+    "Indonesia"
+   ]
+  },
+  {
+   "id": "104",
+   "name": "Birmanie",
+   "continent": "asie",
+   "aliases": [
+    "Myanmar"
+   ]
+  },
+  {
+   "id": "036",
+   "name": "Australie",
+   "continent": "oceanie",
+   "aliases": [
+    "Australia"
+   ]
+  },
+  {
+   "id": "554",
+   "name": "Nouvelle-Zélande",
+   "continent": "oceanie",
+   "aliases": [
+    "New Zealand",
+    "Kiwis"
+   ]
+  },
+  {
+   "id": "598",
+   "name": "Papouasie-Nouvelle-Guinée",
+   "continent": "oceanie",
+   "aliases": [
+    "Papua New Guinea"
+   ]
+  }
+ ]
+}

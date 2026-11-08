@@ -83,11 +83,17 @@ test('Déclic du jour : parcours complet, persistance et recommencement', async 
   await expect(page.getByRole('heading', { name: 'Le monde en trois informations' })).toBeVisible()
 })
 
-test('quiz du jour au clavier', async ({ page }) => {
+test('quiz de l’actu au clavier, correction avec l’article d’origine', async ({ page }) => {
   await page.goto('./#/jouer/quiz')
+  await expect(page.getByRole('heading', { name: 'Le quiz de l’actu' })).toBeVisible()
   for (let k = 0; k < 10; k++) {
     await expect(page.getByRole('group').getByRole('button').first()).toBeEnabled()
     await page.keyboard.press('1')
+    await expect(page.getByRole('link', { name: /Lire l’article sur/ })).toHaveAttribute('href', /^https:\/\//)
+    if (k === 0) {
+      const axe = await new AxeBuilder({ page }).withTags(['wcag2a', 'wcag2aa', 'wcag21aa', 'wcag22aa']).analyze()
+      expect(axe.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical').map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(' ') + ' ' + (n.any[0]?.message ?? '')).join(' | ')}`)).toEqual([])
+    }
     const next = page.getByRole('button', { name: k === 9 ? 'Voir mon score' : 'Question suivante' })
     await expect(next).toBeFocused()
     await page.keyboard.press('Enter')
@@ -119,6 +125,19 @@ test('machine à curiosités et fiches', async ({ page }) => {
   await expect(page.getByText('Exactement.')).toBeVisible()
   await page.goto('./#/apprendre')
   await expect(page.getByText('1 fiche terminée sur')).toBeVisible()
+})
+
+test('clair par défaut, même si le téléphone est en mode sombre', async ({ page }) => {
+  await page.emulateMedia({ colorScheme: 'dark' })
+  await page.goto('./')
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(247, 245, 239)')
+})
+
+test('accueil : un sujet, plusieurs regards', async ({ page }) => {
+  await page.goto('./')
+  await expect(page.getByRole('heading', { name: 'Le quiz de l’actu' })).toBeVisible()
+  await expect(page.getByText('Ailleurs, le même sujet').or(page.getByRole('heading', { name: 'Un sujet, plusieurs regards' })).first()).toBeVisible()
 })
 
 test('mon espace : favoris, préférences et thème', async ({ page }) => {

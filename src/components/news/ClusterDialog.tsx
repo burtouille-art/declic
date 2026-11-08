@@ -1,6 +1,7 @@
 import { X } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import type { Article, Cluster } from '../../lib/news'
+import { clusterAnalyses, diversityLine, PerspectiveList } from './Perspectives'
 import { ArticleLink, Meta } from './Story'
 
 /**
@@ -38,9 +39,15 @@ export function ClusterDialog({ cluster, byId, onClose }: { cluster: Cluster | n
               <X size={20} aria-hidden />
             </button>
           </div>
+          <p className="mt-1 t-meta">{diversityLine(cluster)}</p>
           <p className="mt-3 text-[0.9375rem] text-ink-2">
-            Ces titres ont été rapprochés automatiquement parce qu'ils partagent plusieurs termes clés et ont été publiés à moins de 36 heures d'intervalle. Lis-les côte à côte : le choix des mots, l'angle et ce qui est mis en avant diffèrent souvent.
+            Ces titres ont été rapprochés automatiquement : ils citent les mêmes noms propres peu courants ou partagent plusieurs mots clés, à moins de 36 heures d'intervalle. Lis-les côte à côte.
           </p>
+          <ul className="mt-3 space-y-1 rounded-[16px] bg-paper-2 p-3.5 text-[0.9375rem]">
+            <li>Quel fait chaque titre met-il en premier ?</li>
+            <li>Quels mots changent d’un média à l’autre (verbes, adjectifs) ?</li>
+            <li>Qui est cité, et qui ne l’est pas ?</li>
+          </ul>
           <ol className="mt-5 divide-y divide-rule border-y border-rule">
             {articles.map((a) => (
               <li key={a.id} className="headline-link relative py-4">
@@ -53,6 +60,11 @@ export function ClusterDialog({ cluster, byId, onClose }: { cluster: Cluster | n
               </li>
             ))}
           </ol>
+          {cluster.analysisIds.length > 0 && (
+            <div className="mt-2">
+              <PerspectiveList items={[]} analyses={clusterAnalyses(cluster, byId)} />
+            </div>
+          )}
         </div>
       )}
     </dialog>

@@ -1,8 +1,9 @@
 import { Layers, MapPin, Search, X } from 'lucide-react'
 import { lazy, Suspense, useDeferredValue, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { clusterAnalyses, clusterItems, diversityLine, PerspectiveList } from '../components/news/Perspectives'
 import { ClusterDialog } from '../components/news/ClusterDialog'
-import { ArticleLink, LeadStory, StoryCard } from '../components/news/Story'
+import { LeadStory, StoryCard } from '../components/news/Story'
 import { EmptyState, ErrorState, Skeleton } from '../components/ui/bits'
 import { CATEGORIES, CATEGORY_BY_ID, toneClasses } from '../content/categories'
 import { DISCOVERIES, FICHES } from '../content'
@@ -23,6 +24,7 @@ const KINDS = [
   { id: 'all', label: 'Tout' },
   { id: 'news', label: 'Actualité' },
   { id: 'analysis', label: 'Analyses' },
+  { id: 'opinion', label: 'Tribunes et débats' },
   { id: 'institution', label: 'Institutions' },
 ] as const
 
@@ -249,7 +251,7 @@ export function NewsPage() {
         {lead && (
           <div className="grid gap-x-10 gap-y-10 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <LeadStory article={lead} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
+              <LeadStory article={lead} byId={data?.byId} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
             </div>
             <aside className="lg:col-span-4" aria-label="Pour comprendre">
               {(explainers.fiches.length > 0 || explainers.discoveries.length > 0) && (
@@ -284,24 +286,18 @@ export function NewsPage() {
             <h2 id="clusters-title" className="flex items-center gap-2 t-h2">
               <Layers size={22} aria-hidden /> Vu par plusieurs médias
             </h2>
-            <ul className="mt-4 grid gap-4 md:grid-cols-2">
+            <p className="mt-1 t-meta">Les mêmes événements, avec les titres de chaque média tels qu’ils les ont publiés.</p>
+            <ul className="mt-4 grid gap-x-8 gap-y-8 md:grid-cols-2">
               {visibleClusters.map((c) => {
-                const arts = c.articleIds.map((id) => data!.byId.get(id)).filter((a): a is Article => !!a)
+                const items = clusterItems(c, data!.byId)
                 return (
-                  <li key={c.id} className="rounded-[22px] border border-rule p-5">
-                    <p className="t-meta">{c.sourceCount} médias · {arts.map((a) => a.sourceName).join(', ')}</p>
-                    <ul className="mt-2 space-y-2">
-                      {arts.slice(0, 3).map((a) => (
-                        <li key={a.id} className="font-serif text-[1.05rem] leading-snug">
-                          <span className="font-sans text-[0.75rem] font-semibold text-ink-3">{a.sourceName} — </span>
-                          <ArticleLink article={a} className="hover:underline">
-                            {a.title}
-                          </ArticleLink>
-                        </li>
-                      ))}
-                    </ul>
-                    <button type="button" onClick={() => setCompare(c)} className="mt-3 text-[0.875rem] font-semibold underline underline-offset-2">
-                      Comparer les titres
+                  <li key={c.id}>
+                    <p className="t-label text-ink-2">{diversityLine(c)}</p>
+                    <div className="mt-2">
+                      <PerspectiveList compact items={items.slice(0, 3)} analyses={clusterAnalyses(c, data!.byId)} />
+                    </div>
+                    <button type="button" onClick={() => setCompare(c)} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5 text-[0.8125rem] font-semibold hover:bg-paper-3">
+                      <Layers size={14} aria-hidden /> Comparer {items.length > 3 ? `les ${items.length} titres` : 'les titres'}
                     </button>
                   </li>
                 )

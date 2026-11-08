@@ -103,7 +103,7 @@ export function GameResult({
   )
 }
 
-export function Feedback({ ok, explanation, source, onNext, nextLabel = 'Question suivante' }: { ok: boolean; explanation: string; source: { label: string; url: string }; onNext: () => void; nextLabel?: string }) {
+export function Feedback({ ok, explanation, source, onNext, nextLabel = 'Question suivante', detail }: { ok: boolean; explanation: string; source: { label: string; url: string }; onNext: () => void; nextLabel?: string; detail?: ReactNode }) {
   const btn = useRef<HTMLButtonElement>(null)
   // Le focus passe sur « suivant » : on enchaîne au clavier avec Entrée.
   useEffect(() => {
@@ -113,13 +113,17 @@ export function Feedback({ ok, explanation, source, onNext, nextLabel = 'Questio
   return (
     <div className={`mt-5 rounded-[20px] border-l-4 p-5 ${ok ? 'border-ok bg-ok-bg' : 'border-ko bg-ko-bg'}`} aria-live="polite">
       <p className="t-h3">{ok ? 'Exact !' : 'Pas cette fois.'}</p>
-      <p className="mt-1.5 text-[1rem] leading-relaxed">{explanation}</p>
-      <p className="t-meta mt-2">
-        Source :{' '}
-        <a href={source.url} target="_blank" rel="noopener noreferrer" className="link-ed text-ink-2">
-          {source.label}
-        </a>
-      </p>
+      {detail ?? (
+        <>
+          <p className="mt-1.5 text-[1rem] leading-relaxed">{explanation}</p>
+          <p className="t-meta mt-2">
+            Source :{' '}
+            <a href={source.url} target="_blank" rel="noopener noreferrer" className="link-ed text-ink-2">
+              {source.label}
+            </a>
+          </p>
+        </>
+      )}
       <Button ref={btn} className="mt-4" onClick={onNext}>
         {nextLabel}
       </Button>

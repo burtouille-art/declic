@@ -44,6 +44,8 @@ export const stateSchema = z.object({
     categories: z.array(z.enum(CATEGORY_IDS)),
     lang: z.enum(['fr', 'all']),
     theme: z.enum(['system', 'light', 'dark']),
+    /** vrai quand le visiteur a choisi lui-même son apparence (sinon : clair par défaut) */
+    themeChosen: z.boolean().optional(),
     onboarded: z.boolean(),
   }),
   favorites: z.array(savedItem),
@@ -60,7 +62,7 @@ export type AppState = z.infer<typeof stateSchema>
 
 export const defaultState = (): AppState => ({
   version: 1,
-  prefs: { categories: ['sciences', 'espace', 'histoire'], lang: 'all', theme: 'system', onboarded: false },
+  prefs: { categories: ['sciences', 'espace', 'histoire'], lang: 'all', theme: 'light', onboarded: false },
   favorites: [],
   history: [],
   scores: {},
@@ -72,7 +74,17 @@ export const defaultState = (): AppState => ({
   countriesFound: [],
 })
 
+/** Depuis la v1.2, le site est clair par défaut : l'ancien réglage implicite « Automatique » devient « Clair ». */
+function migrate(s: AppState): AppState {
+  if (s.prefs.theme === 'system' && !s.prefs.themeChosen) return { ...s, prefs: { ...s.prefs, theme: 'light' } }
+  return s
+}
+
 function read(): AppState {
+  return migrate(readRaw())
+}
+
+function readRaw(): AppState {
   try {
     const raw = globalThis.localStorage?.getItem(KEY)
     if (!raw) return defaultState()
@@ -177,7 +189,7 @@ export const actions = {
     })
   },
   setPrefs(patch: Partial<AppState['prefs']>) {
-    setState((s) => ({ ...s, prefs: { ...s.prefs, ...patch } }))
+    setState((s) => ({ ...s, prefs: { ...s.prefs, ...patch, ...(patch.theme ? { themeChosen: true } : {}) } }))
     if (patch.theme) applyTheme(patch.theme)
   },
   setDeclic(key: string, patch: Partial<DeclicDay>) {
@@ -205,6 +217,7 @@ export const actions = {
 
 export function applyTheme(theme: AppState['prefs']['theme']) {
   if (typeof document === 'undefined') return
+  // « Automatique » suit le réglage du téléphone ; sinon, thème explicite (clair par défaut).
   if (theme === 'system') delete document.documentElement.dataset.theme
   else document.documentElement.dataset.theme = theme
 }

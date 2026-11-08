@@ -5,6 +5,7 @@ import { countriesIn } from '../../lib/geo'
 import type { Article, Cluster } from '../../lib/news'
 import { actions } from '../../lib/store'
 import { CategoryTag, FavoriteButton } from '../ui/bits'
+import { clusterAnalyses, clusterItems, PerspectiveList } from './Perspectives'
 
 const LocatorMap = lazy(() => import('../viz/LocatorMap'))
 
@@ -33,6 +34,7 @@ export function Meta({ article, showCategory = true, trailing }: { article: Arti
       {showCategory && cat && <CategoryTag id={cat} />}
       <span className="t-meta">
         <span className="font-semibold text-ink-2">{article.sourceName}</span>
+        {article.sourceCountry && article.sourceCountry !== 'France' && <span className="text-ink-3"> ({article.sourceCountry})</span>}
         {' · '}
         <time dateTime={article.publishedAt} title={formatDateTime(article.publishedAt)}>
           {relativeTime(article.publishedAt)}
@@ -44,6 +46,7 @@ export function Meta({ article, showCategory = true, trailing }: { article: Arti
         </span>
       )}
       {article.kind === 'analysis' && <span className="t-meta italic">Analyse</span>}
+      {article.kind === 'opinion' && <span className="t-meta italic">Tribune ou débat</span>}
       {trailing && <span className="-my-2 ml-auto">{trailing}</span>}
     </div>
   )
@@ -69,7 +72,8 @@ function Photo({ article, className = '' }: { article: Article; className?: stri
 }
 
 /** Article principal : grand titre, chapô du média. */
-export function LeadStory({ article, cluster, onCompare, locator = true }: { article: Article; cluster?: Cluster; onCompare?: () => void; locator?: boolean }) {
+export function LeadStory({ article, cluster, onCompare, locator = true, byId }: { article: Article; cluster?: Cluster; onCompare?: () => void; locator?: boolean; byId?: Map<string, Article> }) {
+  const others = useMemo(() => (cluster && byId ? clusterItems(cluster, byId, article.id) : []), [cluster, byId, article.id])
   // Pas de photo de presse sans droits : à la place, une carte de situation quand un pays est cité.
   const places = useMemo(() => (locator && !article.image ? countriesIn(`${article.title} ${article.summary ?? ''}`).slice(0, 3) : []), [article, locator])
   return (
@@ -92,6 +96,14 @@ export function LeadStory({ article, cluster, onCompare, locator = true }: { art
           </button>
         )}
       </div>
+      {others.length > 0 && cluster && byId && (
+        <div className="relative z-10 mt-6">
+          <p className="t-label text-ink-2">Ailleurs, le même sujet</p>
+          <div className="mt-1.5">
+            <PerspectiveList compact items={others.slice(0, 3)} analyses={clusterAnalyses(cluster, byId)} />
+          </div>
+        </div>
+      )}
       {places.length > 0 && (
         <div className="relative z-10 mt-6">
           <Suspense fallback={<div className="skeleton aspect-[960/330] rounded-[18px]" aria-hidden />}>

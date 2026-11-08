@@ -12,7 +12,7 @@ import type { Recall } from '../content'
 import { streak } from '../lib/badges'
 import { dailyDiscovery, dailyReflection } from '../lib/daily'
 import { formatToday } from '../lib/format'
-import { topStories, useNews, type Article } from '../lib/news'
+import { topStories, useNews, useNewsQuiz, type Article, type NewsQuiz } from '../lib/news'
 import { dayKey, hashString, mulberry32, seededShuffle } from '../lib/random'
 import { actions, useAppState } from '../lib/store'
 
@@ -33,11 +33,26 @@ function newsRecall(article: Article, all: Article[], seed: string): MemoryQ | n
   return toMemory('m0', { prompt: `Quel média a publié : « ${article.title} » ?`, options: [article.sourceName, ...picked], answer: 0 }, 'Le monde en trois infos', seed)
 }
 
+/**
+ * Rappel sur l'un des trois titres vus à l'écran 1 : de préférence un titre à trous du quiz de l'actu
+ * (le mot manquant est le texte exact du titre), sinon le nom du média.
+ */
+function clozeRecall(three: Article[], quiz: NewsQuiz | null, seed: string): MemoryQ | null {
+  if (!quiz) return null
+  const all = [...quiz.questions, ...quiz.pool]
+  for (const a of three) {
+    const q = all.find((x) => x.articleId === a.id && x.text)
+    if (q?.text) return toMemory('m0', { prompt: `${q.prompt} « ${q.text} »`, options: q.options, answer: q.answer }, 'Le monde en trois infos', seed)
+  }
+  return null
+}
+
 export default function DeclicPage() {
   const key = dayKey()
   const saved = useAppState((s) => s.declic[key])
   const declic = useAppState((s) => s.declic)
   const news = useNews()
+  const newsQuiz = useNewsQuiz()
   const navigate = useNavigate()
   const step = saved?.completed ? 4 : (saved?.step ?? 0)
   const answers = saved?.answers ?? {}
@@ -52,12 +67,12 @@ export default function DeclicPage() {
   const memory = useMemo(() => {
     const qs: MemoryQ[] = []
     const first = three[0]
-    const nq = first && news.data ? newsRecall(first, news.data.articles, key) : null
+    const nq = clozeRecall(three, newsQuiz.data, key) ?? (first && news.data ? newsRecall(first, news.data.articles, key) : null)
     if (nq) qs.push(nq)
     qs.push(toMemory('m1', discovery.recall, 'La découverte', key))
     qs.push(toMemory('m2', reflection.recall, 'La question du jour', key))
     return qs
-  }, [three, news.data, discovery, reflection, key])
+  }, [three, news.data, newsQuiz.data, discovery, reflection, key])
 
   useEffect(() => {
     headingRef.current?.focus()

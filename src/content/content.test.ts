@@ -61,3 +61,12 @@ describe('banques de contenus', () => {
     expect(unique(COUNTRIES.map((c) => c.id))).toBe(true)
   })
 })
+
+describe('pays : site et pipeline synchronisés', () => {
+  it('pipeline/data/countries.json reprend exactement src/content/countries.ts', async () => {
+    const json = (await import('../../pipeline/data/countries.json')).default as { countries: { id: string; name: string; continent: string }[] }
+    const pipeline = json.countries.map((c) => `${c.id}|${c.name}|${c.continent}`).sort()
+    const site = COUNTRIES.map((c) => `${c.id}|${c.name}|${c.continent}`).sort()
+    expect(pipeline).toEqual(site)
+  })
+})

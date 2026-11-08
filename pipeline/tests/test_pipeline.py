@@ -235,7 +235,7 @@ def test_sources_file_is_valid():
     assert len(ids) == len(set(ids))
     for s in cfg["sources"]:
         assert s["url"].startswith("https://") and s["lang"] in ("fr", "en")
-        assert s["kind"] in ("news", "analysis", "institution")
+        assert s["kind"] in ("news", "analysis", "opinion", "institution")
 
 
 # --- flux RSS « À la une » ------------------------------------------------------
@@ -269,3 +269,109 @@ def test_run_writes_une_feed(tmp_path):
     assert (tmp_path / "une.xml").exists()
     assert status["uneCount"] > 0
     assert b"https://x.github.io/declic/data/une.xml" in (tmp_path / "une.xml").read_bytes()
+
+
+# --- points de vue : entités et rapprochements élargis ------------------------------
+
+def test_entities_skip_title_start_and_punctuation():
+    from declic.cluster import entities
+
+    assert entities("Tennis : Carlos Alcaraz remporte le Masters de Paris") >= {"carlos alcaraz", "paris"}
+    assert "tennis" not in entities("Tennis : Carlos Alcaraz remporte le Masters de Paris")
+    assert "gadi eisenkot" in entities("En Israël, Gadi Eisenkot affirme que le Likoud est bienvenu")
+
+
+def test_cross_language_cluster_needs_two_rare_entities():
+    arts = [
+        _art(1, "En Israël, Gadi Eisenkot chargé de former une coalition avec le Likoud", "franceinfo"),
+        _art(2, "Israel's Gadi Eisenkot asked to form a coalition, Likud welcome", "BBC", lang="en"),
+        _art(3, "Donald Trump s'exprime sur la Chine", "Le Figaro"),
+        _art(4, "Donald Trump et le budget américain", "Libération"),
+    ]
+    clusters = build_clusters(arts)
+    ids = [set(c["articleIds"]) for c in clusters]
+    assert {"a1", "a2"} in ids
+    assert not any({"a3", "a4"} <= s for s in ids)  # une seule entité commune : pas de rapprochement
+    c = next(c for c in clusters if "a1" in c["articleIds"])
+    assert "gadi eisenkot" in c["entities"] and c["langs"] == ["en", "fr"]
+
+
+def test_related_analyses_are_linked_by_entity():
+    from declic.cluster import related_analyses
+
+    arts = [
+        _art(1, "Ukraine : les Européens invités aux négociations d'Abu Dhabi", "franceinfo"),
+        _art(2, "Les Européens à la table des négociations sur l'Ukraine à Abu Dhabi", "Le Monde"),
+        dict(_art(3, "Pourquoi les négociations d'Abu Dhabi divisent les Européens", "The Conversation"), kind="analysis"),
+        dict(_art(4, "Comment les abeilles communiquent", "The Conversation"), kind="analysis"),
+    ]
+    clusters = build_clusters(arts)
+    related_analyses(clusters, arts)
+    c = next(c for c in clusters if "a1" in c["articleIds"])
+    assert c["analysisIds"] == ["a3"]
+
+
+# --- quiz de l'actu --------------------------------------------------------------------
+
+def test_quiz_questions_come_verbatim_from_titles():
+    from declic.quiz import MASK, build_quiz
+
+    titles = [
+        ("Au large du Sénégal, au moins 34 personnes sont mortes dans un naufrage", "France 24"),
+        ("Tennis : Carlos Alcaraz remporte pour la première fois le Masters de Paris", "France 24"),
+        ("Présidentielle : Raphaël Glucksmann affirme qu'il retournera manifester", "franceinfo"),
+        ("Négociations : Gadi Eisenkot reçoit le mandat de former un gouvernement", "Le Monde"),
+        ("Formule 1 : Lando Norris gagne sous la pluie au Brésil", "franceinfo"),
+        ("La Pologne en deuil après l'attaque de Cracovie", "Le Soir"),
+    ]
+    arts = [dict(_art(i, t, s), publishedAt="2026-11-08T18:00:00+00:00") for i, (t, s) in enumerate(titles)]
+    quiz = build_quiz(arts, [], NOW)
+    assert quiz["questions"]
+    by_id = {a["id"]: a for a in arts}
+    for q in quiz["questions"]:
+        art = by_id[q["articleId"]]
+        assert q["article"]["url"] == art["url"]
+        assert 0 <= q["answer"] < len(q["options"]) and len(set(q["options"])) == len(q["options"])
+        if q["text"]:
+            assert MASK in q["text"]
+            # remettre la solution à la place du masque redonne exactement le titre publié
+            restored = q["text"].replace(MASK, q["solution"].split(" ")[0] if q["type"] == "nombre" else q["solution"], 1)
+            if q["type"] == "nombre":
+                assert q["solution"].split(" ")[0].replace(" ", "") in art["title"].replace(" ", "")
+            else:
+                assert restored == art["title"]
+
+
+def test_quiz_angle_question_uses_cluster_titles():
+    from declic.quiz import build_quiz
+
+    arts = [
+        dict(_art(1, "En Israël, Gadi Eisenkot chargé de former une coalition gouvernementale", "franceinfo"), publishedAt="2026-11-08T18:00:00+00:00"),
+        dict(_art(2, "Gadi Eisenkot officiellement chargé de former le prochain gouvernement en Israël", "France 24"), publishedAt="2026-11-08T17:00:00+00:00"),
+    ]
+    clusters = build_clusters(arts)
+    quiz = build_quiz(arts, clusters, NOW)
+    angle = [q for q in quiz["pool"] if q["type"] == "angle"]
+    assert len(angle) == 1
+    q = angle[0]
+    assert set(q["options"]) == {a["title"] for a in arts}
+    assert q["coverage"] and q["coverage"][0]["title"] in q["options"]
+
+
+def test_opinion_excluded_from_quiz_and_une_but_linked_to_topics():
+    from declic.cluster import build_clusters, related_analyses
+    from declic.feed import select_une
+    from declic.quiz import build_quiz
+    now = datetime(2026, 11, 8, 19, tzinfo=timezone.utc)
+    arts = [
+        _art(1, "Gadi Eisenkot chargé de former le gouvernement en Israël", "Média A"),
+        _art(2, "Israël : Gadi Eisenkot reçoit la mission de former une coalition", "Média B"),
+        dict(_art(3, "Gadi Eisenkot peut-il réconcilier Israël ?", "Tribunes"), kind="opinion"),
+    ]
+    clusters = build_clusters(arts)
+    related_analyses(clusters, arts)
+    assert clusters and arts[2]["id"] in clusters[0]["analysisIds"]
+    assert arts[2]["id"] not in clusters[0]["articleIds"]
+    assert all(a["kind"] != "opinion" for a in select_une(arts, clusters, now))
+    quiz = build_quiz(arts, clusters, now)
+    assert all(q["articleId"] != arts[2]["id"] for q in quiz["questions"] + quiz["pool"])
