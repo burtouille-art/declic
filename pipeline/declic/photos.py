@@ -25,6 +25,7 @@ from .quiz import _find_country, candidate_entities, places_in
 from .sanitize import fold
 
 WIDTH = 800
+CACHE_VERSION = 2          # à incrémenter quand les critères de choix changent (le cache est alors ignoré)
 MAX_SUBJECTS = 90          # requêtes raisonnables à chaque collecte
 CACHE_DAYS = 14
 RECENT_HOURS = 72
@@ -35,6 +36,9 @@ SPARQL = "https://query.wikidata.org/sparql"
 # Licences acceptées (valeur « License » de Commons, normalisée) : domaine public, CC0, CC BY, CC BY-SA.
 _FREE = re.compile(r"^(pd|public domain|cc0|cc-zero|cc-by-(sa-)?\d(\.\d)?([-a-z]*)?)$")
 _BAD_FILE = re.compile(r"(logo|flag|drapeau|coat[_ ]of[_ ]arms|blason|armoiries|map|carte|locator|signature|\.svg$|\.gif$|\.tif)", re.I)
+# Pour une personne : pas une œuvre, une tombe, une plaque… ; pour un lieu : pas de scène de guerre ou de drame.
+_NOT_PORTRAIT = re.compile(r"(museum|musee|collection|untitled|statue|sculpture|painting|tableau|grave|tomb|tombe|plaque|memorial|signature|book|livre|poster|affiche)", re.I)
+_HARSH_PLACE = re.compile(r"(war|guerre|bomb|destr|ruin|attack|attaque|explosion|victim|dead|mort|funeral|refugee|missile|strike|fire|incendie|flood|inondation|earthquake|seisme)", re.I)
 _SINGLE_PLACE = re.compile(r"(?:^|[\s(])(?:à|au|aux|en)\s+([A-ZÉÈÀÂÎÔÛÇ][\w’'-]{3,})(?=[\s,.:;!?»)]|$)")
 
 
@@ -168,6 +172,19 @@ def _image_ext(body: bytes | None) -> str | None:
     return None
 
 
+def _portrait_of(subject: str, file: str) -> bool:
+    """La photo de référence d'une personne doit la nommer (évite œuvres, photos de groupe mal cadrées).
+    Exception : nom de fichier dans un autre alphabet (cyrillique, hébreu…), impossible à comparer."""
+    if _NOT_PORTRAIT.search(file):
+        return False
+    latin = sum(ch.isascii() and ch.isalpha() for ch in fold(file))
+    letters = sum(ch.isalpha() for ch in file)
+    if letters and latin / letters < 0.5:
+        return True
+    tokens = [w for w in re.findall(r"[a-z]+", fold(subject)) if len(w) >= 3]
+    return any(t in fold(file) for t in tokens)
+
+
 def _resolve(names: list[str], fetch_json) -> dict[str, dict | None]:
     """Nom cité -> photo vérifiée (ou None)."""
     result: dict[str, dict | None] = {n: None for n in names}
@@ -176,9 +193,14 @@ def _resolve(names: list[str], fetch_json) -> dict[str, dict | None]:
     candidates: dict[str, tuple[str, str]] = {}
     for name, (title, qid) in titles.items():
         f = facts.get(qid) or {}
-        if not f.get("file") or f.get("country") or not (f.get("human") or f.get("place")):
+        file = f.get("file")
+        if not file or f.get("country") or not (f.get("human") or f.get("place")):
             continue
-        candidates[name] = (title, f["file"])
+        if f.get("human") and not _portrait_of(title, file):
+            continue
+        if not f.get("human") and _HARSH_PLACE.search(file):
+            continue
+        candidates[name] = (title, file)
     licensed = _commons(sorted({file for _, file in candidates.values()}), fetch_json)
     for name, (title, file) in candidates.items():
         meta = licensed.get(file)
@@ -197,7 +219,8 @@ def attach_photos(
     importance: Callable | None = None,
 ) -> dict:
     """Ajoute une photo d'illustration aux titres récents qui n'en ont pas. Renvoie le cache mis à jour et des statistiques."""
-    cache_entries: dict[str, dict] = dict((cache or {}).get("entries") or {})
+    valid = (cache or {}).get("version") == CACHE_VERSION
+    cache_entries: dict[str, dict] = dict((cache or {}).get("entries") or {}) if valid else {}
     fresh_limit = (now - timedelta(days=CACHE_DAYS)).isoformat()
     recent_limit = (now - timedelta(hours=RECENT_HOURS)).isoformat()
     eligible = [a for a in articles if not a.get("image") and a.get("lang") == "fr" and a.get("kind", "news") in ("news", "institution")
@@ -265,4 +288,4 @@ def attach_photos(
     for f in img_dir.iterdir():
         if f.name not in used:
             f.unlink()
-    return {"cache": {"entries": keep}, "attached": attached, "queried": len(to_query), "images": len(used - {None})}
+    return {"cache": {"version": CACHE_VERSION, "entries": keep}, "attached": attached, "queried": len(to_query), "images": len(used - {None})}

@@ -457,3 +457,13 @@ def test_photo_subjects():
     from declic.photos import subjects_for
     assert subjects_for("Attentat à Cracovie : Donald Tusk en deuil", set(), set()) == ["Cracovie", "Donald Tusk"]
     assert subjects_for("Inondations en Espagne", set(), set()) == []
+
+
+def test_photo_portrait_and_place_filters():
+    from declic.photos import _HARSH_PLACE, _portrait_of
+    assert _portrait_of("Viktor Orbán", "President Donald Trump hosts lunch with Viktor Orban.2 (cropped).jpg")
+    assert _portrait_of("Vladimir Poutine", "Владимир Путин (08-03-2024).jpg")
+    assert not _portrait_of("Valérien Ismaël", "FC RB Salzburg gegen LASK (14. Februar 2020) 50.jpg")
+    assert not _portrait_of("Ruth Asawa", "Untitled, Ruth Asawa, De Young Museum Permanent Collection.jpg")
+    assert _HARSH_PLACE.search("Images of war 23-25 from Gaza.jpg")
+    assert not _HARSH_PLACE.search("Castle Square (22346p).jpg")

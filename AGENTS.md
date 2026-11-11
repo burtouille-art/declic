@@ -100,7 +100,7 @@ Un changement est **terminé** quand tout ceci passe :
 ```bash
 npm run typecheck                    # 0 erreur (TS strict, noUncheckedIndexedAccess)
 npm test                             # Vitest : contenus, logique, composants (33 tests)
-python3 -m pytest pipeline/tests -q  # pipeline (35 tests)
+python3 -m pytest pipeline/tests -q  # pipeline (36 tests)
 npm run build
 npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (38 tests)
 ```
@@ -149,10 +149,10 @@ Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
 
 ### 2026-11-11 — Claude (Opus) — photos d'illustration + agents de design
 - Demande de Quentin : « il manque des photos liées aux actus… sois un pro ; le design n'est pas bon ; crée un agent qui gère le design et un autre qui gère le code pour le design ».
-- `pipeline/declic/photos.py` : pour chaque titre d'information récent (72 h, FR), sujet cité (personne ou lieu) → page Wikipédia exacte (pas d'homonymie) → Wikidata (Q5 ou P625, pas un pays, image P18) → Commons (licence libre, auteur, pas de logo/drapeau/carte) → miniature 800 px téléchargée dans `public/data/img/`. Cache `photos.json` (14 jours, récupéré par le workflow comme les autres JSON). Une panne Wikimedia ne bloque jamais la collecte. Règle d'or n° 3 réécrite en conséquence.
+- `pipeline/declic/photos.py` : pour chaque titre d'information récent (72 h, FR), sujet cité (personne ou lieu) → page Wikipédia exacte (pas d'homonymie) → Wikidata (Q5 ou P625, pas un pays, image P18) → Commons (licence libre, auteur, pas de logo/drapeau/carte) → miniature 800 px téléchargée dans `public/data/img/`. Cache `photos.json` (14 jours, `CACHE_VERSION` à incrémenter si les critères changent). Filtres : une personne doit être nommée dans le nom du fichier (pas d'œuvre, de tombe, d'affiche) ; pas de scène de guerre ou de catastrophe pour un lieu. Première collecte : 78 articles illustrés, 42 images. Une panne Wikimedia ne bloque jamais la collecte. Règle d'or n° 3 réécrite en conséquence.
 - Site : schéma `image` étendu (URL locale, licence, liens, dimensions, `illustration`, `subject`) ; `PhotoCredit` affiche « Illustration : sujet · auteur, licence (lien), via Wikimedia Commons ».
 - Agents : `.claude/agents/directeur-artistique.md` (audit en captures, spec `design/DESIGN.md`, ne code pas) et `.claude/agents/dev-design.md` (implémente la spec, vérifie tests + captures). Outil de capture : `tools/screenshot.py`.
-- Tests : pytest 35/35, Vitest 33/33.
+- Tests : pytest 36/36, Vitest 33/33.
 
 ### 2026-11-08 — Claude (Opus) — v1.2 : quiz de l'actu, points de vue, analyses, thème clair
 - **Quiz de l'actu** (demande de Quentin : le quiz de culture générale « pas lié à l'actu » était inutile). `pipeline/declic/quiz.py` → `quiz.json` : 10 questions à partir des titres d'information des dernières 48 h — titres à trous (pays, nom, chiffre ; réponse = texte exact du titre, leurres du même type pris dans les titres du jour) et questions « angle » (quel titre a publié tel média). Le site l'utilise comme quiz par défaut (onglets Actu / Culture / Révisions), sur l'accueil et à l'écran 4 du Déclic (rappel d'un des trois titres). Correction : titre complet avec la réponse surlignée, média + pays, date, chapô du média, lien, « Ailleurs, le même sujet ». Repli automatique sur le quiz de culture si < 5 questions.
