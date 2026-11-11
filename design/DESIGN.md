@@ -596,3 +596,28 @@ Chaque tâche : faire, puis capturer (mobile 390 + desktop 1440, clair + sombre)
 4. **Crédit des vignettes derrière un bouton ⓘ** (un geste) plutôt qu'une légende visible sous chaque petite image : conforme à l'esprit des licences CC (« raisonnable selon le support ») et lisible sur mobile. Si Quentin préfère une légende toujours visible, prévoir une ligne `t-caption` sous chaque vignette (plus chargé).
 5. **Photos dans le Déclic écran 1** : utiles pour retenir (double codage), à condition qu'elles ne réapparaissent pas comme indice à l'écran 4. À valider par Quentin (expertise sciences cognitives).
 6. **Cartes de jeux unifiées** (fin du jaune, du noir et du gris pleins) : moins « ludique » en apparence, plus pro. Réversible.
+
+---
+
+## 13. Écarts d'implémentation (dev-design, 2026-11-11)
+
+État livré : **P1-1 à P1-9 faits**, plus quelques P2 voisins faits en passant (P2-3 partiel, P2-4, P2-5, P2-6, P2-7). Captures finales : `design/after/` (images de test synthétiques, comme l'audit).
+
+**Écarts**
+1. **theme-color** : une seule balise `#FFFFFF` (pas de 2e balise `media="(prefers-color-scheme: dark)"`) : le site est clair par défaut même quand le téléphone est en sombre ; une barre d'adresse noire au-dessus d'une page blanche serait fausse.
+2. **Anneau sur encre** (bouton « Déclic du jour » de l'en-tête, bouton central de la barre mobile) : `tone="vermilion"` mais piste `track="paper"` (et non `onDark`). En sombre, `bg-ink` devient clair : une piste blanche translucide y serait invisible ; la piste `paper` s'inverse avec le thème et reste lisible dans les deux. `tone="white" track="onDark"` est bien utilisé sur pétrole (DeclicStrip, DeclicCard, calendrier de Mon espace).
+3. **Cœur (favori)** : hors du flux, centré verticalement sur la ligne de métadonnées (`MetaRow`, `pr-10` sur la ligne), plutôt que `top-3 right-0` + `pr-11` sur le titre : le titre garde toute sa largeur et le cœur ne chevauche jamais la vignette.
+4. **Pastille de rubrique** : `min-h-6` (24 px) ajouté à `CategoryTag` pour la règle axe `target-size` (WCAG 2.2) maintenant que la ligne de métadonnées est sur une seule ligne.
+5. **« Un sujet, plusieurs regards »**, 1er sujet avec un portrait : vignette carrée 112 px avec bouton ⓘ, pas un médaillon 4:5 avec légende visible (pas la place pour la légende à côté de la ligne de diversité). Lieu → grande photo 16:9 comme prévu.
+6. **Actus mobile** : la phrase d'introduction est raccourcie (« Les titres tels que publiés, avec la source et l'heure. ») et le fil d'Ariane est masqué sur mobile pour « Actualités » (gardé pour une rubrique), afin de tenir l'objectif « 1er titre ≤ 360 px » (mesuré : 351 px). Le panneau « Filtres » est le même bloc que la barre desktop (un seul jeu de contrôles dans le DOM).
+7. **« Les plus récents »** : une seule grille `lg:grid-cols-2` dont les cellules suivent l'ordre chronologique (lecture en Z, une colonne dans l'ordre sur mobile) au lieu de deux colonnes pair/impair séparées (qui auraient cassé l'ordre sur mobile).
+8. **Médaillon (variante B)** : la légende est sous le bloc chapô + médaillon, pleine largeur, comme prévu ; le composant `ArticlePhoto` ne rend la légende que pour `hero` (le parent la place pour `medallion`).
+9. **Mesures « l'actualité d'abord »** (horloge 2026-11-08, données de démonstration) : mobile variante B, bas du titre de une à 523 px (≤ 640) ; variante A, 1re ligne à 530 px (≤ 700) ; desktop variante B, titre entier visible (bas à 618 px sur 900).
+
+**Reste à faire (P2 / P3)**
+- **P2-1** Déclic écran 1 éditorial avec photos, écran 2 sans aplat : **non fait** (cartes arrondies + gros chiffres encore présents).
+- **P2-2** Photo dans la correction du quiz (`ActuCorrection`, `article.image` déjà dans `quiz.json`) : **non fait**.
+- **P2-3** fait pour la vignette par sujet et l'encadré « Pour prendre du recul » (angles vifs, filet pétrole) ; le médaillon du 1er sujet suit l'écart 5.
+- P2-4 (Sciences : `ArticlePhoto` + légende sous l'image), P2-5 (cartes de jeux unifiées, carte « Le quiz de l'actu », SVG décoratif supprimé), P2-6 (`Choices` en `line-ui`), P2-7 (pied de page + Rubriques) : **faits**.
+- **P3** : skeletons d'Actus refaits en lignes **faits** ; parcours d'Apprendre en liste et séparateurs « Aujourd'hui / Hier » **non faits**.
+- Non vérifié en capture : variante « photo en erreur » de l'article principal (le code repasse en variante C via `onFail`, testé seulement pour les vignettes : rien ne reste à l'écran).

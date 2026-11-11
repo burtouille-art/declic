@@ -43,7 +43,7 @@ Ces règles priment sur toute demande d'« amélioration ». En cas de conflit, 
 | Changer le classement par rubrique | `pipeline/declic/classify.py` (rubrique du flux > chemin d'URL > mots-clés) |
 | Régler le rapprochement inter-médias | `pipeline/declic/cluster.py` (seuils volontairement stricts) |
 | Changer le flux RSS « À la une » (widget) | `pipeline/declic/feed.py` (+ `FeedCard` côté site) |
-| Photos d'illustration (choix, licences, cache) | `pipeline/declic/photos.py` (+ `public/data/photos.json`, cache 14 jours) ; affichage `Photo` / `PhotoCredit` dans `components/news/Story.tsx` |
+| Photos d'illustration (choix, licences, cache) | `pipeline/declic/photos.py` (+ `public/data/photos.json`, cache 14 jours) ; affichage `ArticlePhoto` / `PhotoCredit` (`components/news/ArticlePhoto.tsx`), choix et dédoublonnage `photoShape` / `pickPhotos` (`components/news/photo.ts`) |
 | Direction artistique / implémentation du design | agents `.claude/agents/directeur-artistique.md` (spec dans `design/DESIGN.md`) et `.claude/agents/dev-design.md` ; captures : `tools/screenshot.py` |
 | Changer le quiz de l'actu (types de questions, leurres) | `pipeline/declic/quiz.py` (+ `pipeline/data/countries.json`, copie synchronisée de `src/content/countries.ts`) ; côté site `actuQuiz()` dans `src/lib/daily.ts`, `ActuCorrection`, `QuizGame` |
 | Points de vue / analyses (accueil, actus) | `components/news/Perspectives.tsx`, `pages/home/Viewpoints.tsx`, `perspectiveClusters()` / `analysisFeed()` dans `src/lib/news.ts` |
@@ -99,10 +99,10 @@ Un changement est **terminé** quand tout ceci passe :
 
 ```bash
 npm run typecheck                    # 0 erreur (TS strict, noUncheckedIndexedAccess)
-npm test                             # Vitest : contenus, logique, composants (33 tests)
+npm test                             # Vitest : contenus, logique, composants (38 tests)
 python3 -m pytest pipeline/tests -q  # pipeline (36 tests)
 npm run build
-npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (38 tests)
+npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (40 tests)
 ```
 
 Pour l'e2e : `npx playwright install chromium` une fois. Les tests e2e tournent contre `vite preview` (le build doit exister).
@@ -114,8 +114,9 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 
 - **Signature : l'anneau Déclic** (`components/ui/DeclicRing.tsx`), 5 segments = 5 écrans du parcours. Logo, bouton central de la nav mobile, progression, calendrier, jauges. Ne pas le remplacer par une barre générique.
 - **Règle de forme** : *éditorial = angles vifs et filets* (on lit) ; *interactif = arrondi* (`rounded-full` pour les boutons, `rounded-[18–28px]` pour les surfaces de jeu) (on touche).
-- **Typo** : Newsreader (serif, axe `opsz` exploité) pour l'éditorial, DM Sans pour l'interface. Utilitaires : `t-display` (titre de une), `t-lead` (article principal), `t-h1`, `t-h2`, `t-h3`, `t-lede`, `t-body`, `t-meta`, `t-label`. Ne pas inventer de tailles ad hoc sans raison.
-- **Couleurs** : uniquement via les jetons (`bg-paper`, `text-ink-2`, `bg-petrol`, `text-vermilion-ink`…). Le vermillon `#EF6448` ne passe pas le contraste en texte sur ivoire : pour du texte, utiliser `text-vermilion-ink`. Sur fond pétrole, texte `text-on-petrol` à 90 % minimum.
+- **Typo** : Newsreader (serif, axe `opsz` exploité) pour l'éditorial, DM Sans pour l'interface. Utilitaires : `t-display` (titre de une sans grande photo, titres de pages), `t-lead` (titre de une avec grande photo), `t-h1`, `t-h2` (titres de section, via `SectionHeading`), `t-h3` (titres de liste), `t-h4` (titres compacts), `t-lede`, `t-body`, `t-meta`, `t-caption` (légendes photo), `t-label`. Ne pas inventer de tailles ad hoc sans raison.
+- **Couleurs** : uniquement via les jetons (`bg-paper`, `text-ink-2`, `bg-petrol`, `text-vermilion-ink`, `border-line-ui`, `text-ink-fixed`…). Une couleur = un rôle : vermillon = marque et une action principale, pétrole = parcours Déclic et quiz, jaune = surlignage ; pas de nouvel aplat de section. Texte vermillon : `text-vermilion-ink`. Sur pétrole : texte `text-on-petrol` à 90 % minimum, boutons `onPetrol`, anneau `tone="white" track="onDark"`. Bordures de contrôles : `border-line-ui` (3:1).
+- **Photos** : toujours via `ArticlePhoto` (grande photo pour un lieu ou une image NASA, médaillon pour un portrait, vignette dans les listes), choisies par `pickPhotos` (jamais deux fois la même sur une page, jamais pour une tribune, jamais avant la réponse d'un quiz). Légende sous l'image, jamais incrustée ; crédit des vignettes derrière le bouton ⓘ. Sans photo, mise en page typographique (pas de cadre vide).
 - **Rythme** : chaque section a sa composition propre ; éviter les grilles de cartes identiques.
 - **Mouvement** : rare, fonctionnel, toujours compatible `reduced-motion` (Motion est chargé seulement dans les pages qui l'utilisent).
 - **Textes** : français, tutoiement, casse de phrase, pas de libellés en MAJUSCULES, pas de « → » ajouté au texte des liens (icône Lucide à la place).
@@ -146,6 +147,16 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 ## 7. Journal des modifications
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
+
+### 2026-11-11 — dev-design — design v2 (P1 de `design/DESIGN.md`)
+- **Jetons** : papier blanc, nouvelle palette clair/sombre, `--line-ui` (bordures de contrôles 3:1), `--ink-fixed`, `--photo-edge` ; variante de bouton `onPetrol` (blanc constant) ; anneau `tone="white"` / `track="onDark"` sur pétrole.
+- **Typographie** : échelle §4 (graisses plus franches), `t-h4`, `t-caption`, `photo-edge`.
+- **Photos** : `components/news/photo.ts` (`photoShape` : `subjectKind` d'abord, puis ratio ; `pickPhotos` : une photo et un sujet une seule fois par page, jamais pour une tribune) et `ArticlePhoto.tsx` (grande photo / médaillon 4:5 / vignette 1:1 avec bouton ⓘ accessible, légende sous l'image, `onFail` → rien à l'écran). `StoryCard` supprimé.
+- **Article principal** en trois variantes (grande photo, portrait en médaillon, sans photo + carte de situation) ; cœur hors du flux (`MetaRow`) ; méta sur une ligne.
+- **Accueil** : la une en très grand corps, slogan rétrogradé en petit italique (toujours le `h1`), `DeclicStrip` (mobile) / `DeclicCard` resserrée (desktop), plan de page dédoublonné (photos et articles), `SectionHeading` partout, découverte sans aplat jaune, rubriques déplacées au pied de page.
+- **Actus** : filtres mobiles repliés (« Filtres · n »), rubriques sur une ligne, « Les plus récents » en lignes à vignettes sur 2 colonnes, « Pour comprendre » à filets. **Jouer** : cartes unifiées, carte « Le quiz de l'actu ». **Mon espace** : tableau aéré. **Découvrir** : disque « Surprends-moi » agrandi.
+- Écarts et reste à faire (P2-1, P2-2, P3) : `design/DESIGN.md` §13. Captures : `design/after/`.
+- Tests : typecheck OK, Vitest 38/38 (+5 : `photoShape`, `pickPhotos`, popover au clavier, médaillon), pytest 36/36, Playwright 40/40 (+1 : crédit ⓘ d'une vignette avec image générée dans le test, `Échap`, une seule occurrence de la photo).
 
 ### 2026-11-11 — Claude (Opus) — photos d'illustration + agents de design
 - Demande de Quentin : « il manque des photos liées aux actus… sois un pro ; le design n'est pas bon ; crée un agent qui gère le design et un autre qui gère le code pour le design ».

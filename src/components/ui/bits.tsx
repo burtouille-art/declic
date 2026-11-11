@@ -1,4 +1,4 @@
-import { AlertTriangle, Clock, ExternalLink, Heart, RotateCw } from 'lucide-react'
+import { AlertTriangle, ArrowRight, Clock, ExternalLink, Heart, RotateCw } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { CATEGORY_BY_ID, toneClasses } from '../../content/categories'
@@ -16,7 +16,7 @@ export function CategoryTag({ id, link = true, className = '' }: { id: CategoryI
       <span className={tone.text}>{meta.label}</span>
     </>
   )
-  const cls = `relative z-10 inline-flex items-center gap-1.5 font-sans text-[0.8125rem] font-semibold ${className}`
+  const cls = `relative z-10 inline-flex min-h-6 items-center gap-1.5 font-sans text-[0.8125rem] font-semibold ${className}`
   return link ? (
     <Link to={`/actus/${id}`} className={`${cls} hover:underline underline-offset-2`}>
       {inner}
@@ -104,17 +104,32 @@ export function FavoriteButton({ item, className = '' }: { item: Omit<SavedItem,
   )
 }
 
-export function SectionHeading({ title, kicker, action, id, className = '' }: { title: string; kicker?: string; action?: ReactNode; id?: string; className?: string }) {
+/**
+ * En-tête de section unique : filet de 2 px, titre t-h2, action optionnelle à droite, description optionnelle.
+ */
+export function SectionHeading({ title, kicker, description, action, id, className = '' }: { title: string; kicker?: ReactNode; description?: ReactNode; action?: ReactNode; id?: string; className?: string }) {
   return (
-    <div className={`flex items-end justify-between gap-4 ${className}`}>
-      <div>
-        {kicker && <p className="t-meta mb-1">{kicker}</p>}
-        <h2 id={id} className="t-h2">
-          {title}
-        </h2>
+    <div className={`border-t-2 border-ink pt-3 ${className}`}>
+      <div className="flex items-baseline justify-between gap-4">
+        <div className="min-w-0">
+          {kicker && <p className="t-meta mb-1">{kicker}</p>}
+          <h2 id={id} className="t-h2 text-balance">
+            {title}
+          </h2>
+        </div>
+        {action && <div className="shrink-0">{action}</div>}
       </div>
-      {action}
+      {description && <p className="t-meta mt-1 measure">{description}</p>}
     </div>
+  )
+}
+
+/** Lien d'action d'un en-tête de section (t-label + flèche). */
+export function SectionLink({ to, children }: { to: string; children: ReactNode }) {
+  return (
+    <Link to={to} className="inline-flex min-h-11 items-center gap-1 t-label hover:text-vermilion-ink">
+      {children} <ArrowRight size={16} aria-hidden />
+    </Link>
   )
 }
 

@@ -2,6 +2,7 @@ import { ArrowRight } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ActuCorrection } from '../../components/game/ActuCorrection'
+import { buttonClass } from '../../components/ui/Button'
 import { Choices, shuffleOptions } from '../../components/ui/Choices'
 import { actuQuiz, dailyQuiz } from '../../lib/daily'
 import { useNewsQuiz, type OnThisDay } from '../../lib/news'
@@ -23,10 +24,10 @@ export function QuizTeaser({ otd }: { otd: OnThisDay | null }) {
   if (!first || !q) return null
   const [before, after] = first.actu?.text?.split('……') ?? []
   return (
-    <section className="wrap mt-16 lg:mt-20" aria-labelledby="quiz-title">
-      <div className="grid gap-8 rounded-[28px] bg-petrol p-6 text-on-petrol sm:p-10 lg:grid-cols-12 lg:gap-12">
+    <section className="wrap mt-14 lg:mt-24" aria-labelledby="quiz-title">
+      <div className="grid gap-8 rounded-[20px] bg-petrol p-5 text-on-petrol sm:p-8 lg:grid-cols-12 lg:gap-12 lg:rounded-[28px] lg:p-10">
         <div className="lg:col-span-5">
-          <h2 id="quiz-title" className="t-h1">
+          <h2 id="quiz-title" className="t-h2">
             {isActu ? 'Le quiz de l’actu' : 'Le quiz du jour'}
           </h2>
           <p className="mt-3 text-[1.0625rem] text-on-petrol/90">
@@ -35,15 +36,15 @@ export function QuizTeaser({ otd }: { otd: OnThisDay | null }) {
               : 'Dix questions, une correction expliquée et sourcée à chaque réponse.'}
           </p>
           {best && <p className="mt-3 t-label text-on-petrol/90">Ton meilleur score : {best.best}/{best.total ?? quiz.length}</p>}
-          <Link to="/jouer/quiz" className="mt-6 inline-flex h-12 items-center gap-2 rounded-full bg-paper px-6 font-semibold text-ink hover:bg-paper/90">
-            {sel === null ? `Faire les ${quiz.length} questions` : 'Continuer le quiz'} <ArrowRight size={18} aria-hidden />
+          <Link to="/jouer/quiz" className={buttonClass('onPetrol', 'md', 'mt-6')}>
+            {sel === null ? `Faire les ${quiz.length} questions` : 'Continuer le quiz'} <ArrowRight size={17} aria-hidden />
           </Link>
         </div>
         <div className="lg:col-span-7">
           <p className="t-label text-on-petrol/90">
             {first.actu?.text ? first.prompt : `Question 1 sur ${quiz.length}`}
           </p>
-          <p className="mt-2 font-serif text-[1.5rem] leading-snug font-medium text-pretty" style={{ fontVariationSettings: "'opsz' 30" }}>
+          <p className="mt-2 t-h2 text-pretty">
             {first.actu?.text && after !== undefined ? (
               <>
                 {before}

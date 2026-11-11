@@ -8,8 +8,10 @@ type Props = {
   stroke?: number
   className?: string
   title?: string
-  tone?: 'vermilion' | 'paper' | 'petrol'
-  track?: 'rule' | 'paper' | 'transparent'
+  /** white : constant, pour les fonds pétrole ou encre (lisible en clair et en sombre) */
+  tone?: 'vermilion' | 'paper' | 'petrol' | 'white'
+  /** onDark : piste blanche translucide constante, sur pétrole ou encre */
+  track?: 'rule' | 'paper' | 'transparent' | 'onDark'
 }
 
 const SEGMENTS = 5
@@ -25,8 +27,8 @@ function arcPath(cx: number, cy: number, r: number, startDeg: number, endDeg: nu
   return `M ${sx.toFixed(2)} ${sy.toFixed(2)} A ${r} ${r} 0 ${large} 1 ${ex.toFixed(2)} ${ey.toFixed(2)}`
 }
 
-const toneVar = { vermilion: 'var(--vermilion)', paper: 'var(--paper)', petrol: 'var(--petrol)' }
-const trackVar = { rule: 'var(--rule)', paper: 'color-mix(in oklab, var(--paper) 42%, transparent)', transparent: 'transparent' }
+const toneVar = { vermilion: 'var(--vermilion)', paper: 'var(--paper)', petrol: 'var(--petrol)', white: '#ffffff' }
+const trackVar = { rule: 'var(--rule)', paper: 'color-mix(in oklab, var(--paper) 42%, transparent)', transparent: 'transparent', onDark: 'rgb(255 255 255 / 0.32)' }
 
 export function DeclicRing({ progress = 0, size = 28, stroke, className = '', title, tone = 'vermilion', track = 'rule' }: Props) {
   const sw = stroke ?? Math.max(2.5, size / 9)

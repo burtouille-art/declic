@@ -68,7 +68,7 @@ export default function TimelinePage() {
       </div>
 
       {activeEv && (
-        <div className="mt-4 hidden rounded-[22px] bg-sun p-5 text-[#171b1d] md:block" aria-live="polite">
+        <div className="mt-4 hidden rounded-[22px] bg-sun p-5 text-ink-fixed md:block" aria-live="polite">
           <p className="font-serif text-[1.8rem] leading-none">{fmt(activeEv.year)}</p>
           <p className="mt-1 t-h3">{activeEv.label}</p>
           <p className="mt-1">{activeEv.detail}</p>

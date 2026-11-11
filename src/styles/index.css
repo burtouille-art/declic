@@ -10,43 +10,47 @@
 ------------------------------------------------------------------- */
 
 :root {
-  --paper: #f7f5ef;
-  --paper-2: #eceae4;
-  --paper-3: #e2dfd6;
-  --ink: #171b1d;
-  --ink-2: #454c4f;
-  --ink-3: #626a6d;
-  --rule: #d6d2c7;
-  --vermilion: #ef6448;      /* aplats, formes, boutons (texte sombre dessus) */
-  --vermilion-ink: #b23e25;  /* texte et liens sur fond clair, 5,2:1 */
-  --petrol: #176b65;
+  --paper: #ffffff;          /* fond de page : papier blanc */
+  --paper-2: #f4f3f0;        /* surfaces : bandeaux, champs, puces */
+  --paper-3: #e9e7e2;        /* surfaces appuyées, survol */
+  --ink: #121416;            /* texte, filets forts, boutons primaires — 18,5:1 */
+  --ink-2: #3f4549;          /* texte secondaire — 9,7:1 */
+  --ink-3: #5f666b;          /* métadonnées, légendes — 5,8:1 sur blanc */
+  --rule: #e3e0da;           /* filets fins (décoratifs) */
+  --line-ui: #7a8186;        /* bordures des contrôles — 3,9:1 sur blanc */
+  --vermilion: #ef6448;      /* MARQUE : anneau, logo, une action principale */
+  --vermilion-ink: #b23e25;  /* texte/lien vermillon — 5,8:1 */
+  --petrol: #176b65;         /* PARCOURS : Déclic du jour, quiz */
   --petrol-ink: #145d58;
-  --on-petrol: #f7f5ef;
-  --sun: #f2d978;
+  --on-petrol: #f5f3ee;      /* texte sur pétrole — 5,7:1 */
+  --sun: #f2d978;            /* SURLIGNAGE : réponse, sélection */
   --sun-ink: #6b5400;
   --ok: #1d7a4a;
   --ok-bg: #dcefe3;
   --ko: #b23e25;
   --ko-bg: #f8dfd8;
   --focus: #176b65;
-  --shadow: 0 1px 0 rgb(23 27 29 / 0.06), 0 8px 24px -12px rgb(23 27 29 / 0.25);
+  --ink-fixed: #121416;      /* texte posé sur un aplat clair constant (vermillon, jaune, blanc sur pétrole) */
+  --photo-edge: rgb(18 20 22 / 0.06);
+  --shadow: 0 1px 2px rgb(18 20 22 / 0.06), 0 8px 24px -14px rgb(18 20 22 / 0.28);
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --paper: #111615;
-    --paper-2: #1a201f;
-    --paper-3: #242b2a;
-    --ink: #ece9e1;
-    --ink-2: #c0c2bc;
-    --ink-3: #969c97;
-    --rule: #2f3836;
+    --paper: #0e1113;
+    --paper-2: #171b1e;
+    --paper-3: #22272b;
+    --ink: #edebe6;
+    --ink-2: #c3c6c4;
+    --ink-3: #9aa09d;
+    --rule: #2b3134;
+    --line-ui: #737b80;
     --vermilion: #ff7a5e;
     --vermilion-ink: #ff9a82;
-    --petrol: #1f7d76;
+    --petrol: #1b6f69;
     --petrol-ink: #6cc6bc;
-    --on-petrol: #f7f5ef;
+    --on-petrol: #f5f3ee;
     --sun: #f2d978;
     --sun-ink: #f2d978;
     --ok: #7fd3a1;
@@ -54,24 +58,27 @@
     --ko: #ff9a82;
     --ko-bg: #3d211b;
     --focus: #6cc6bc;
+    --ink-fixed: #121416;
+    --photo-edge: rgb(255 255 255 / 0.08);
     --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'] {
-  --paper: #111615;
-  --paper-2: #1a201f;
-  --paper-3: #242b2a;
-  --ink: #ece9e1;
-  --ink-2: #c0c2bc;
-  --ink-3: #969c97;
-  --rule: #2f3836;
+  --paper: #0e1113;
+  --paper-2: #171b1e;
+  --paper-3: #22272b;
+  --ink: #edebe6;
+  --ink-2: #c3c6c4;
+  --ink-3: #9aa09d;
+  --rule: #2b3134;
+  --line-ui: #737b80;
   --vermilion: #ff7a5e;
   --vermilion-ink: #ff9a82;
-  --petrol: #1f7d76;
+  --petrol: #1b6f69;
   --petrol-ink: #6cc6bc;
-  --on-petrol: #f7f5ef;
+  --on-petrol: #f5f3ee;
   --sun: #f2d978;
   --sun-ink: #f2d978;
   --ok: #7fd3a1;
@@ -79,6 +86,8 @@
   --ko: #ff9a82;
   --ko-bg: #3d211b;
   --focus: #6cc6bc;
+  --ink-fixed: #121416;
+  --photo-edge: rgb(255 255 255 / 0.08);
   --shadow: 0 1px 0 rgb(0 0 0 / 0.3), 0 10px 30px -12px rgb(0 0 0 / 0.6);
   color-scheme: dark;
 }
@@ -102,6 +111,8 @@
   --color-ok-bg: var(--ok-bg);
   --color-ko: var(--ko);
   --color-ko-bg: var(--ko-bg);
+  --color-line-ui: var(--line-ui);
+  --color-ink-fixed: var(--ink-fixed);
   --font-serif: 'Newsreader Variable', 'Iowan Old Style', Georgia, serif;
   --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --shadow-lift: var(--shadow);
@@ -124,7 +135,7 @@
   }
   ::selection {
     background: var(--sun);
-    color: #171b1d;
+    color: var(--ink-fixed);
   }
   :focus-visible {
     outline: 3px solid var(--focus);
@@ -145,58 +156,72 @@
   }
 }
 
-/* Échelle typographique (rapport ~1,25 côté interface, plus ample côté titres) */
+/* Échelle typographique (spec design v2, §4) */
 @utility t-display {
+  /* titre de une sans grande photo ; titres de pages */
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 72;
-  font-weight: 480;
-  font-size: clamp(2.15rem, 1.2rem + 4.2vw, 4.9rem);
-  line-height: 0.98;
-  letter-spacing: -0.025em;
+  font-weight: 580;
+  font-size: clamp(2.125rem, 1.35rem + 3.4vw, 4rem);
+  line-height: 1.03;
+  letter-spacing: -0.022em;
+}
+@utility t-lead {
+  /* titre de une avec grande photo */
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 60;
+  font-weight: 570;
+  font-size: clamp(1.75rem, 1.3rem + 1.8vw, 2.75rem);
+  line-height: 1.07;
+  letter-spacing: -0.018em;
 }
 @utility t-h1 {
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 60;
-  font-weight: 500;
-  font-size: clamp(1.85rem, 1.25rem + 2.6vw, 3.4rem);
-  line-height: 1.03;
+  font-weight: 540;
+  font-size: clamp(1.875rem, 1.3rem + 2.4vw, 3.25rem);
+  line-height: 1.04;
   letter-spacing: -0.02em;
 }
-/* Titre de l'article principal : grand, mais toujours sous le titre de une */
-@utility t-lead {
-  font-family: var(--font-serif);
-  font-variation-settings: 'opsz' 48;
-  font-weight: 500;
-  font-size: clamp(1.6rem, 1.15rem + 1.5vw, 2.6rem);
-  line-height: 1.07;
-  letter-spacing: -0.018em;
-}
 @utility t-h2 {
+  /* titres de section */
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 36;
-  font-weight: 520;
-  font-size: clamp(1.45rem, 1.15rem + 1.1vw, 2.1rem);
+  font-weight: 550;
+  font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem);
   line-height: 1.12;
   letter-spacing: -0.012em;
 }
 @utility t-h3 {
+  /* titres d'articles dans les listes */
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 24;
+  font-weight: 560;
+  font-size: 1.1875rem;
+  line-height: 1.24;
+  letter-spacing: -0.006em;
+  @media (min-width: 1024px) {
+    font-size: 1.25rem;
+  }
+}
+@utility t-h4 {
+  /* titres compacts : « Ailleurs, le même sujet », regards, correction */
+  font-family: var(--font-serif);
+  font-variation-settings: 'opsz' 18;
   font-weight: 540;
-  font-size: 1.22rem;
-  line-height: 1.22;
-  letter-spacing: -0.005em;
+  font-size: 1.0625rem;
+  line-height: 1.3;
 }
 @utility t-lede {
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 16;
-  font-size: 1.14rem;
+  font-size: 1.125rem;
   line-height: 1.55;
 }
 @utility t-body {
   font-family: var(--font-serif);
   font-variation-settings: 'opsz' 14;
-  font-size: 1.09rem;
+  font-size: 1.0625rem;
   line-height: 1.65;
 }
 @utility t-meta {
@@ -205,6 +230,13 @@
   line-height: 1.35;
   color: var(--ink-3);
   font-variant-numeric: tabular-nums;
+}
+@utility t-caption {
+  /* légendes photo */
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--ink-3);
 }
 @utility t-label {
   font-family: var(--font-sans);
@@ -228,6 +260,11 @@
 
 @utility measure {
   max-width: 38rem;
+}
+
+@utility photo-edge {
+  outline: 1px solid var(--photo-edge);
+  outline-offset: -1px;
 }
 
 @utility no-scrollbar {
