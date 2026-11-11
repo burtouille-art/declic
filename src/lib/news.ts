@@ -8,6 +8,23 @@ import { CATEGORY_IDS, type CategoryId } from './store'
 
 const httpsUrl = z.string().url().refine((u) => /^https?:\/\//.test(u), 'URL http(s) attendue')
 
+const imageSchema = z
+  .object({
+    url: z.union([httpsUrl, z.string().regex(/^\.\/data\/img\/[0-9a-f]{16}\.(jpg|png|webp)$/)]),
+    credit: z.string(),
+    license: z.string().nullish(),
+    licenseUrl: httpsUrl.nullish(),
+    sourceUrl: httpsUrl.nullish(),
+    width: z.number().int().positive().nullish(),
+    height: z.number().int().positive().nullish(),
+    /** vrai : la photo montre la personne ou le lieu cité, pas l'événement */
+    illustration: z.boolean().optional(),
+    subject: z.string().nullish(),
+    /** personne (portrait : médaillon) ou lieu (photo large) */
+    subjectKind: z.enum(['person', 'place']).nullish(),
+  })
+  .nullable()
+
 export const articleSchema = z.object({
   id: z.string().min(4),
   title: z.string().min(1).max(400),
@@ -25,20 +42,7 @@ export const articleSchema = z.object({
    * Photo à droits vérifiés : NASA (URL https d'origine) ou illustration Wikimedia Commons
    * téléchargée par le pipeline et servie par le site (./data/img/…), avec auteur et licence.
    */
-  image: z
-    .object({
-      url: z.union([httpsUrl, z.string().regex(/^\.\/data\/img\/[0-9a-f]{16}\.(jpg|png|webp)$/)]),
-      credit: z.string(),
-      license: z.string().nullish(),
-      licenseUrl: httpsUrl.nullish(),
-      sourceUrl: httpsUrl.nullish(),
-      width: z.number().int().positive().nullish(),
-      height: z.number().int().positive().nullish(),
-      /** vrai : la photo montre la personne ou le lieu cité, pas l'événement */
-      illustration: z.boolean().optional(),
-      subject: z.string().nullish(),
-    })
-    .nullable(),
+  image: imageSchema,
   clusterId: z.string().nullable(),
 })
 export type Article = z.infer<typeof articleSchema> & { categories: CategoryId[] }
@@ -223,6 +227,7 @@ export const newsQuestionSchema = z.object({
     publishedAt: z.string(),
     summary: z.string().nullable().optional(),
     category: z.string(),
+    image: imageSchema.optional(),
   }),
   coverage: z.array(coverageSchema).default([]),
 })

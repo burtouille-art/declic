@@ -432,7 +432,7 @@ def test_photos_free_licence_attached_with_credit(tmp_path):
     fj, fb, calls = _fake_wikimedia()
     stats = attach_photos(arts, now, tmp_path, fj, fb)
     img = arts[0]["image"]
-    assert img and img["illustration"] and img["subject"] == "Gadi Eisenkot"
+    assert img and img["illustration"] and img["subject"] == "Gadi Eisenkot" and img["subjectKind"] == "person"
     assert img["credit"] == "IDF Spokesperson" and img["license"] == "CC BY-SA 4.0"
     assert img["url"].startswith("./data/img/") and (tmp_path / "img" / img["url"].rsplit("/", 1)[-1]).exists()
     assert stats["attached"] == 1

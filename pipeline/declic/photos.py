@@ -25,7 +25,7 @@ from .quiz import _find_country, candidate_entities, places_in
 from .sanitize import fold
 
 WIDTH = 800
-CACHE_VERSION = 2          # à incrémenter quand les critères de choix changent (le cache est alors ignoré)
+CACHE_VERSION = 3          # à incrémenter quand les critères de choix changent (le cache est alors ignoré)
 MAX_SUBJECTS = 90          # requêtes raisonnables à chaque collecte
 CACHE_DAYS = 14
 RECENT_HOURS = 72
@@ -190,7 +190,7 @@ def _resolve(names: list[str], fetch_json) -> dict[str, dict | None]:
     result: dict[str, dict | None] = {n: None for n in names}
     titles = _qids(names, fetch_json)
     facts = _wikidata(sorted({q for _, q in titles.values()}), fetch_json)
-    candidates: dict[str, tuple[str, str]] = {}
+    candidates: dict[str, tuple[str, str, str]] = {}
     for name, (title, qid) in titles.items():
         f = facts.get(qid) or {}
         file = f.get("file")
@@ -200,12 +200,12 @@ def _resolve(names: list[str], fetch_json) -> dict[str, dict | None]:
             continue
         if not f.get("human") and _HARSH_PLACE.search(file):
             continue
-        candidates[name] = (title, file)
-    licensed = _commons(sorted({file for _, file in candidates.values()}), fetch_json)
-    for name, (title, file) in candidates.items():
+        candidates[name] = (title, file, "person" if f.get("human") else "place")
+    licensed = _commons(sorted({file for _, file, _ in candidates.values()}), fetch_json)
+    for name, (title, file, kind) in candidates.items():
         meta = licensed.get(file)
         if meta:
-            result[name] = {**meta, "subject": title, "file": file}
+            result[name] = {**meta, "subject": title, "subjectKind": kind, "file": file}
     return result
 
 
@@ -279,6 +279,7 @@ def attach_photos(
                 "height": photo.get("height"),
                 "illustration": True,
                 "subject": photo["subject"],
+                "subjectKind": photo.get("subjectKind"),
             }
             attached += 1
             break

@@ -269,6 +269,8 @@ def _finalize(q: dict, art: dict, clusters_by_id: dict, by_id: dict) -> dict:
         "publishedAt": art["publishedAt"],
         "summary": art.get("summary"),
         "category": art["categories"][0],
+        # Photo d'illustration : le site ne l'affiche qu'après la réponse (sinon elle donnerait la solution).
+        "image": art.get("image"),
     }
     q["coverage"] = _coverage(art, clusters_by_id, by_id)
     return q
