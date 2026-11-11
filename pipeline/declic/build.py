@@ -12,8 +12,9 @@ from typing import Callable
 from .cluster import build_clusters, related_analyses
 from .feed import _importance, build_rss, select_une
 from .quiz import build_quiz
-from .fetch import FetchResult, fetch_feed, fetch_json
+from .fetch import FetchResult, fetch_bytes, fetch_feed, fetch_json
 from .normalize import normalize_entry
+from .photos import attach_photos
 from .onthisday import normalize_onthisday, questions_from_events
 from .sanitize import fold
 
@@ -102,6 +103,7 @@ def run(
     fetcher: Callable[[str], FetchResult] = fetch_feed,
     json_fetcher: Callable[[str], tuple[dict | None, str | None]] = fetch_json,
     site_url: str = "",
+    photo_fetchers: tuple[Callable, Callable] | None = None,
 ) -> dict:
     started = time.monotonic()
     now = now or datetime.now(timezone.utc)
@@ -162,6 +164,23 @@ def run(
     articles = articles[:TOTAL_MAX]
     clusters = build_clusters(articles)
     related_analyses(clusters, articles)
+
+    # Photos d'illustration à licence libre (Wikimedia Commons). Les images locales d'une collecte
+    # précédente ne sont pas republiées telles quelles : elles sont recherchées à nouveau.
+    for art in articles:
+        if (art.get("image") or {}).get("url", "").startswith("./"):
+            art["image"] = None
+    if photo_fetchers is None and seed is None:
+        photo_fetchers = (fetch_json, fetch_bytes)
+    photo_stats = None
+    if photo_fetchers:
+        prev_photos = _load_json(previous_dir / "photos.json" if previous_dir else None) or _load_json(out_dir / "photos.json")
+        cov = {c["id"]: c.get("sourceCount", 1) for c in clusters}
+        try:
+            photo_stats = attach_photos(articles, now, out_dir, *photo_fetchers, cache=prev_photos,
+                                        importance=lambda a: _importance(a, cov, now))
+        except Exception as exc:  # une panne de Wikimedia ne doit jamais bloquer la collecte
+            photo_stats = {"error": f"{type(exc).__name__}: {exc}"[:200]}
     for art in articles:
         art.pop("_specific", None)
         art.pop("canonicalUrl", None)
@@ -171,6 +190,9 @@ def run(
         # Collecte défaillante : on republie les dernières données valides.
         news = prev_news
         kept_previous = True
+        for art in news.get("articles", []):  # leurs photos locales ne sont plus publiées
+            if (art.get("image") or {}).get("url", "").startswith("./"):
+                art["image"] = None
     else:
         sources_meta = {}
         for src in config["sources"]:
@@ -232,6 +254,9 @@ def run(
 
     out_dir.mkdir(parents=True, exist_ok=True)
     _write_json(out_dir / "news.json", news)
+    if photo_stats and "cache" in photo_stats:
+        _write_json(out_dir / "photos.json", {"generatedAt": now.isoformat(timespec="seconds"), **photo_stats.pop("cache")})
+    status["photos"] = photo_stats
     _write_json(out_dir / "status.json", status)
     _write_json(out_dir / "onthisday.json", onthisday)
 

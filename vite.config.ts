@@ -62,6 +62,8 @@ export default defineConfig({
         // Le code, les polices, les fiches et les banques de questions sont pré-cachés :
         // ils restent consultables hors ligne.
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // Les photos d'illustration changent à chaque collecte : cache à l'usage, pas de pré-cache.
+        globIgnores: ['data/**'],
         navigateFallback: 'index.html',
         cleanupOutdatedCaches: true,
         runtimeCaching: [
@@ -76,7 +78,7 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: ({ url }) => /nasa\.gov$/.test(url.hostname),
+            urlPattern: ({ url }) => /nasa\.gov$/.test(url.hostname) || url.pathname.includes('/data/img/'),
             handler: 'CacheFirst',
             options: {
               cacheName: 'declic-images',

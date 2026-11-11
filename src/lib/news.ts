@@ -21,7 +21,24 @@ export const articleSchema = z.object({
   publishedAt: z.string(),
   summary: z.string().nullable(),
   categories: z.array(z.string()).min(1),
-  image: z.object({ url: httpsUrl, credit: z.string(), license: z.string().optional() }).nullable(),
+  /**
+   * Photo à droits vérifiés : NASA (URL https d'origine) ou illustration Wikimedia Commons
+   * téléchargée par le pipeline et servie par le site (./data/img/…), avec auteur et licence.
+   */
+  image: z
+    .object({
+      url: z.union([httpsUrl, z.string().regex(/^\.\/data\/img\/[0-9a-f]{16}\.(jpg|png|webp)$/)]),
+      credit: z.string(),
+      license: z.string().nullish(),
+      licenseUrl: httpsUrl.nullish(),
+      sourceUrl: httpsUrl.nullish(),
+      width: z.number().int().positive().nullish(),
+      height: z.number().int().positive().nullish(),
+      /** vrai : la photo montre la personne ou le lieu cité, pas l'événement */
+      illustration: z.boolean().optional(),
+      subject: z.string().nullish(),
+    })
+    .nullable(),
   clusterId: z.string().nullable(),
 })
 export type Article = z.infer<typeof articleSchema> & { categories: CategoryId[] }

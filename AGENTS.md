@@ -23,7 +23,7 @@ Ces règles priment sur toute demande d'« amélioration ». En cas de conflit, 
 
 1. **Aucune actualité inventée, aucun résumé généré.** On affiche le titre et le chapô *tels que fournis par le flux du média*, nettoyés (`pipeline/declic/normalize.py`). Si le chapô manque ou répète le titre → rien. Pas de réécriture, pas de traduction automatique, pas d'IA générative dans la chaîne d'actualité.
 2. **Chaque article affiche la source, la date et un lien vers l'original** (`target="_blank" rel="noopener noreferrer"`).
-3. **Aucune image sans droit de réutilisation identifié.** Seules les sources marquées `images.allowed: true` dans `pipeline/sources.json` (NASA, NASA/JPL) peuvent fournir une photo, et uniquement depuis les hôtes listés. Pas de photo de presse, pas d'image Wikimedia non vérifiée. À la place : typographie, couleur, pictogrammes maison (`ThemeGlyph`), cartes (`LocatorMap`).
+3. **Aucune image sans droit de réutilisation identifié.** Deux origines seulement : (a) les sources marquées `images.allowed: true` dans `pipeline/sources.json` (NASA, NASA/JPL), depuis les hôtes listés ; (b) les **illustrations Wikimedia Commons** choisies par `pipeline/declic/photos.py` : sujet du titre confirmé par Wikidata (personne Q5 ou lieu avec coordonnées, jamais un pays), licence libre vérifiée par l'API Commons (domaine public, CC0, CC BY, CC BY-SA), auteur connu, pas de logo/drapeau/carte. Elles sont servies par le site (`./data/img/`) et toujours affichées avec « Illustration : sujet », auteur, licence (lien) et lien vers la page Commons : elles montrent la personne ou le lieu, **pas l'événement**. Jamais de photo de presse (même présente dans le flux RSS), jamais d'image générée.
 4. **Ne pas contourner les paywalls.**
 5. **Aucune étiquette politique attribuée à un média**, ni par algorithme ni à la main. La vue « plusieurs médias » ne montre que les titres originaux.
 6. **Tout contenu pédagogique est sourcé** (question, affirmation, événement, découverte, fiche) avec une URL `https://` réelle. Ne pas ajouter de fait non vérifié. Les questions d'actualité ne sont générées **que** depuis des données structurées ou le texte exact des titres : année de l'éphéméride Wikipédia, nom du média, texte à trous dont la réponse est **mot pour mot** dans le titre publié (`pipeline/declic/quiz.py`). Jamais de reformulation ni de question « inventée » sur l'actualité.
@@ -43,6 +43,8 @@ Ces règles priment sur toute demande d'« amélioration ». En cas de conflit, 
 | Changer le classement par rubrique | `pipeline/declic/classify.py` (rubrique du flux > chemin d'URL > mots-clés) |
 | Régler le rapprochement inter-médias | `pipeline/declic/cluster.py` (seuils volontairement stricts) |
 | Changer le flux RSS « À la une » (widget) | `pipeline/declic/feed.py` (+ `FeedCard` côté site) |
+| Photos d'illustration (choix, licences, cache) | `pipeline/declic/photos.py` (+ `public/data/photos.json`, cache 14 jours) ; affichage `Photo` / `PhotoCredit` dans `components/news/Story.tsx` |
+| Direction artistique / implémentation du design | agents `.claude/agents/directeur-artistique.md` (spec dans `design/DESIGN.md`) et `.claude/agents/dev-design.md` ; captures : `tools/screenshot.py` |
 | Changer le quiz de l'actu (types de questions, leurres) | `pipeline/declic/quiz.py` (+ `pipeline/data/countries.json`, copie synchronisée de `src/content/countries.ts`) ; côté site `actuQuiz()` dans `src/lib/daily.ts`, `ActuCorrection`, `QuizGame` |
 | Points de vue / analyses (accueil, actus) | `components/news/Perspectives.tsx`, `pages/home/Viewpoints.tsx`, `perspectiveClusters()` / `analysisFeed()` dans `src/lib/news.ts` |
 | Ajouter des questions / vrai-faux / événements / pays | `src/content/questions.ts`, `statements.ts`, `events.ts`, `countries.ts` |
@@ -72,13 +74,14 @@ GitHub Actions (cron 17 */6 * * *, push main, manuel)
         → public/data/onthisday.json  éphéméride Wikipédia (aujourd'hui + demain)
         → public/data/une.xml         flux RSS « À la une » (widgets d'écran d'accueil)
         → public/data/quiz.json       quiz de l'actu (textes à trous + « angles »)
+        → public/data/img/*.jpg       illustrations Wikimedia Commons (licence vérifiée) + photos.json (cache)
   └─ npm test && npm run build → dist/ → GitHub Pages
 Navigateur : fetch('./data/news.json') → validation zod (src/lib/news.ts) → UI
 ```
 
 **Contrat de données** : la forme d'un article est définie **deux fois** et doit rester synchronisée :
 `validate_article()` + `normalize_entry()` (Python) ⇄ `articleSchema` (zod, `src/lib/news.ts`).
-Champs : `id, title, url, sourceId, sourceName, sourceHome, sourceCountry, lang ('fr'|'en'), kind ('news'|'analysis'|'opinion'|'institution'), publishedAt (ISO UTC), summary|null, categories[] (la 1re = principale), image {url, credit, license}|null, clusterId|null`.
+Champs : `id, title, url, sourceId, sourceName, sourceHome, sourceCountry, lang ('fr'|'en'), kind ('news'|'analysis'|'opinion'|'institution'), publishedAt (ISO UTC), summary|null, categories[] (la 1re = principale), image {url (https ou ./data/img/…), credit, license, licenseUrl, sourceUrl, width, height, illustration, subject}|null, clusterId|null`.
 Un article invalide est **écarté** côté site (jamais affiché à moitié).
 
 ---
@@ -97,7 +100,7 @@ Un changement est **terminé** quand tout ceci passe :
 ```bash
 npm run typecheck                    # 0 erreur (TS strict, noUncheckedIndexedAccess)
 npm test                             # Vitest : contenus, logique, composants (33 tests)
-python3 -m pytest pipeline/tests -q  # pipeline (32 tests)
+python3 -m pytest pipeline/tests -q  # pipeline (35 tests)
 npm run build
 npm run test:e2e                     # Playwright mobile + desktop, hors ligne, axe (38 tests)
 ```
@@ -143,6 +146,13 @@ Pour un changement visuel : faire des captures (mobile 390 px **et** desktop 144
 ## 7. Journal des modifications
 
 Format : date — auteur — résumé. Ajoute tes entrées **en haut**.
+
+### 2026-11-11 — Claude (Opus) — photos d'illustration + agents de design
+- Demande de Quentin : « il manque des photos liées aux actus… sois un pro ; le design n'est pas bon ; crée un agent qui gère le design et un autre qui gère le code pour le design ».
+- `pipeline/declic/photos.py` : pour chaque titre d'information récent (72 h, FR), sujet cité (personne ou lieu) → page Wikipédia exacte (pas d'homonymie) → Wikidata (Q5 ou P625, pas un pays, image P18) → Commons (licence libre, auteur, pas de logo/drapeau/carte) → miniature 800 px téléchargée dans `public/data/img/`. Cache `photos.json` (14 jours, récupéré par le workflow comme les autres JSON). Une panne Wikimedia ne bloque jamais la collecte. Règle d'or n° 3 réécrite en conséquence.
+- Site : schéma `image` étendu (URL locale, licence, liens, dimensions, `illustration`, `subject`) ; `PhotoCredit` affiche « Illustration : sujet · auteur, licence (lien), via Wikimedia Commons ».
+- Agents : `.claude/agents/directeur-artistique.md` (audit en captures, spec `design/DESIGN.md`, ne code pas) et `.claude/agents/dev-design.md` (implémente la spec, vérifie tests + captures). Outil de capture : `tools/screenshot.py`.
+- Tests : pytest 35/35, Vitest 33/33.
 
 ### 2026-11-08 — Claude (Opus) — v1.2 : quiz de l'actu, points de vue, analyses, thème clair
 - **Quiz de l'actu** (demande de Quentin : le quiz de culture générale « pas lié à l'actu » était inutile). `pipeline/declic/quiz.py` → `quiz.json` : 10 questions à partir des titres d'information des dernières 48 h — titres à trous (pays, nom, chiffre ; réponse = texte exact du titre, leurres du même type pris dans les titres du jour) et questions « angle » (quel titre a publié tel média). Le site l'utilise comme quiz par défaut (onglets Actu / Culture / Révisions), sur l'accueil et à l'écran 4 du Déclic (rappel d'un des trois titres). Correction : titre complet avec la réponse surlignée, média + pays, date, chapô du média, lien, « Ailleurs, le même sujet ». Repli automatique sur le quiz de culture si < 5 questions.

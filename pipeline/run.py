@@ -37,6 +37,8 @@ def main() -> int:
 
     print(f"Articles : {status['articleCount']} — rapprochements : {status['clusterCount']}")
     print(f"Flux « À la une » : {status.get('uneCount', 0)} titres — quiz de l'actu : {status.get('quizCount', 0)} questions")
+    ph = status.get("photos") or {}
+    print(f"Photos d'illustration : {ph.get('attached', 0)} articles, {ph.get('images', 0)} images ({ph.get('queried', 0)} sujets vérifiés)" + (f" — {ph['error']}" if ph.get("error") else ""))
     print(f"Sources OK : {status['sourcesOk']}/{status['sourcesTotal']}" + (" (données précédentes conservées)" if status["keptPreviousData"] else ""))
     for s in status["sources"]:
         flag = "OK " if s["ok"] else "ERR"

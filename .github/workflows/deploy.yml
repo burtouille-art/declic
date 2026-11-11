@@ -47,7 +47,7 @@ jobs:
       - name: Récupérer les dernières données publiées (filet de sécurité)
         run: |
           mkdir -p previous
-          for f in news.json status.json onthisday.json; do
+          for f in news.json status.json onthisday.json photos.json; do
             curl -fsSL --max-time 20 "${{ steps.pages.outputs.base_url || format('https://{0}.github.io/{1}', github.repository_owner, github.event.repository.name) }}/data/$f" -o "previous/$f" || rm -f "previous/$f"
           done
           ls -la previous

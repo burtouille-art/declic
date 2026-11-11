@@ -57,3 +57,12 @@ def fetch_json(url: str) -> tuple[dict | None, str | None]:
         return json.loads(body.decode("utf-8")), None
     except Exception as exc:
         return None, f"{type(exc).__name__}: {exc}"[:200]
+
+
+def fetch_bytes(url: str) -> tuple[bytes | None, str | None]:
+    """Téléchargement brut (photos d'illustration)."""
+    try:
+        _, body = _download(url)
+        return body, None
+    except Exception as exc:
+        return None, f"{type(exc).__name__}: {exc}"[:200]

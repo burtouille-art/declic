@@ -390,3 +390,70 @@ def test_quiz_distractors_are_unambiguous_and_same_shape():
     q = _entity_question(art, others)
     assert q and q["solution"] == "Gadi Eisenkot"
     assert "Gadi Eizenkot" not in q["options"] and "RC Lens" not in q["options"]
+
+
+def _fake_wikimedia(licence="cc-by-sa-4.0", human=True, country=False, file="Gadi Eisenkot 2 (cropped).jpg"):
+    import urllib.parse as up
+    calls = []
+
+    def fetch_json(url):
+        calls.append(url)
+        q = dict(up.parse_qsl(up.urlsplit(url).query))
+        if url.startswith("https://fr.wikipedia.org"):
+            pages = [{"title": t, "pageprops": {"wikibase_item": "Q796885"}} if t == "Gadi Eisenkot" else {"title": t, "missing": True}
+                     for t in q["titles"].split("|")]
+            return {"query": {"pages": pages}}, None
+        if url.startswith("https://query.wikidata.org"):
+            return {"results": {"bindings": [{
+                "item": {"value": "http://www.wikidata.org/entity/Q796885"},
+                "image": {"value": "http://commons.wikimedia.org/wiki/Special:FilePath/" + up.quote(file.replace(" ", "_"))},
+                "human": {"value": "true" if human else "false"}, "place": {"value": "false"},
+                "country": {"value": "true" if country else "false"}}]}}, None
+        if url.startswith("https://commons.wikimedia.org"):
+            return {"query": {"pages": [{"title": "File:" + file, "imageinfo": [{
+                "mime": "image/jpeg", "width": 1200, "height": 1500,
+                "thumburl": "https://upload.wikimedia.org/x/800px-g.jpg", "thumbwidth": 800, "thumbheight": 1000,
+                "descriptionurl": "https://commons.wikimedia.org/wiki/File:G.jpg",
+                "extmetadata": {"License": {"value": licence}, "LicenseShortName": {"value": "CC BY-SA 4.0"},
+                                "Artist": {"value": "<a href='x'>IDF Spokesperson</a>"},
+                                "LicenseUrl": {"value": "https://creativecommons.org/licenses/by-sa/4.0"}}}]}]}}, None
+        raise AssertionError(url)
+
+    def fetch_bytes(url):
+        return b"\xff\xd8\xff\xe0" + b"0" * 2000, None
+
+    return fetch_json, fetch_bytes, calls
+
+
+def test_photos_free_licence_attached_with_credit(tmp_path):
+    from declic.photos import attach_photos
+    now = datetime(2026, 11, 8, 19, tzinfo=timezone.utc)
+    arts = [dict(_art(1, "Israël : Gadi Eisenkot appelle à l'unité", "Média A"), publishedAt="2026-11-08T18:00:00+00:00")]
+    fj, fb, calls = _fake_wikimedia()
+    stats = attach_photos(arts, now, tmp_path, fj, fb)
+    img = arts[0]["image"]
+    assert img and img["illustration"] and img["subject"] == "Gadi Eisenkot"
+    assert img["credit"] == "IDF Spokesperson" and img["license"] == "CC BY-SA 4.0"
+    assert img["url"].startswith("./data/img/") and (tmp_path / "img" / img["url"].rsplit("/", 1)[-1]).exists()
+    assert stats["attached"] == 1
+    # Deuxième passage : le cache évite de réinterroger Wikimedia.
+    arts[0]["image"] = None
+    fj2, fb2, calls2 = _fake_wikimedia()
+    attach_photos(arts, now, tmp_path, fj2, fb2, cache=stats["cache"])
+    assert not calls2 and arts[0]["image"]
+
+
+def test_photos_rejects_non_free_country_and_logos(tmp_path):
+    from declic.photos import attach_photos
+    now = datetime(2026, 11, 8, 19, tzinfo=timezone.utc)
+    for kwargs in ({"licence": "fair use"}, {"country": True}, {"human": False}, {"file": "Logo Eisenkot.jpg"}):
+        arts = [dict(_art(1, "Israël : Gadi Eisenkot appelle à l'unité", "Média A"), publishedAt="2026-11-08T18:00:00+00:00")]
+        fj, fb, _ = _fake_wikimedia(**kwargs)
+        attach_photos(arts, now, tmp_path, fj, fb)
+        assert arts[0]["image"] is None, kwargs
+
+
+def test_photo_subjects():
+    from declic.photos import subjects_for
+    assert subjects_for("Attentat à Cracovie : Donald Tusk en deuil", set(), set()) == ["Cracovie", "Donald Tusk"]
+    assert subjects_for("Inondations en Espagne", set(), set()) == []

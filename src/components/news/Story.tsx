@@ -52,21 +52,54 @@ export function Meta({ article, showCategory = true, trailing }: { article: Arti
   )
 }
 
+/** Crédit complet d'une photo : sujet (si illustration), auteur, licence liée, page d'origine. */
+export function PhotoCredit({ image, className = '' }: { image: NonNullable<Article['image']>; className?: string }) {
+  return (
+    <figcaption className={`t-meta ${className}`}>
+      {image.illustration ? <>Illustration{image.subject ? ` : ${image.subject}` : ''} · </> : 'Photo : '}
+      {image.sourceUrl ? (
+        <a href={image.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline">
+          {image.credit}
+          <span className="sr-only"> (page de la photo, nouvel onglet)</span>
+        </a>
+      ) : (
+        image.credit
+      )}
+      {image.license && (
+        <>
+          {', '}
+          {image.licenseUrl ? (
+            <a href={image.licenseUrl} target="_blank" rel="noopener noreferrer" className="underline-offset-2 hover:underline">
+              {image.license}
+            </a>
+          ) : (
+            image.license
+          )}
+        </>
+      )}
+      {image.illustration && ', via Wikimedia Commons'}
+    </figcaption>
+  )
+}
+
 function Photo({ article, className = '' }: { article: Article; className?: string }) {
   const [failed, setFailed] = useState(false)
   if (!article.image || failed) return null
   return (
-    <figure className={className}>
+    <figure className={`relative z-10 ${className}`}>
       <img
         src={article.image.url}
-        alt=""
+        alt={article.image.subject ? `${article.image.subject} (photo d’illustration)` : ''}
+        width={article.image.width ?? undefined}
+        height={article.image.height ?? undefined}
         loading="lazy"
         decoding="async"
         referrerPolicy="no-referrer"
         onError={() => setFailed(true)}
-        className="aspect-[3/2] w-full bg-paper-2 object-cover"
+        // Portrait : on cadre vers le haut pour ne pas couper le visage.
+        className={`aspect-[3/2] w-full bg-paper-2 object-cover ${(article.image.height ?? 0) > (article.image.width ?? 0) ? 'object-[50%_20%]' : ''}`}
       />
-      <figcaption className="t-meta mt-1.5">Photo : {article.image.credit}</figcaption>
+      <PhotoCredit image={article.image} className="mt-1.5" />
     </figure>
   )
 }
