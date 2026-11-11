@@ -96,12 +96,12 @@ export default function MePage() {
         <h2 id="prog-title" className="sr-only">
           Ma progression
         </h2>
-        <div className="rounded-[26px] bg-petrol p-6 text-on-petrol lg:col-span-7">
+        <div className="rounded-[20px] bg-petrol p-6 text-on-petrol lg:col-span-7 lg:rounded-[28px]">
           <p className="t-label text-on-petrol/90">Mes 14 derniers jours de Déclic</p>
           <ol className="mt-4 grid grid-cols-7 gap-y-4" aria-label="Calendrier des Déclic">
             {last14.map((d) => (
               <li key={d.key} className="flex flex-col items-center gap-1">
-                <DeclicRing size={34} progress={d.v} tone="paper" track="paper" stroke={4.5} title={`${d.key} : ${d.v >= 5 ? 'terminé' : d.v ? `étape ${d.v} sur 5` : 'non commencé'}`} />
+                <DeclicRing size={34} progress={d.v} tone="white" track="onDark" stroke={4.5} title={`${d.key} : ${d.v >= 5 ? 'terminé' : d.v ? `étape ${d.v} sur 5` : 'non commencé'}`} />
                 <span className="text-[0.6875rem] text-on-petrol/90">{d.label}</span>
               </li>
             ))}
@@ -152,10 +152,10 @@ export default function MePage() {
         <table className="mt-4 w-full max-w-2xl text-left">
           <thead>
             <tr className="border-b border-ink t-meta">
-              <th scope="col" className="py-2 font-semibold">Jeu</th>
-              <th scope="col" className="py-2 text-right font-semibold">Record</th>
-              <th scope="col" className="py-2 text-right font-semibold">Dernier</th>
-              <th scope="col" className="py-2 text-right font-semibold">Parties</th>
+              <th scope="col" className="w-full py-2 font-semibold">Jeu</th>
+              <th scope="col" className="py-2 pl-4 text-right font-semibold tabular-nums sm:pl-6">Record</th>
+              <th scope="col" className="py-2 pl-4 text-right font-semibold tabular-nums sm:pl-6">Dernier</th>
+              <th scope="col" className="py-2 pl-4 text-right font-semibold tabular-nums sm:pl-6">Parties</th>
             </tr>
           </thead>
           <tbody>
@@ -164,9 +164,9 @@ export default function MePage() {
               return (
                 <tr key={g.id} className="border-b border-rule tabular-nums">
                   <th scope="row" className="py-2.5 font-medium">{g.label}</th>
-                  <td className="py-2.5 text-right">{s ? `${s.best}${g.max ? `/${g.max}` : ''}` : '—'}</td>
-                  <td className="py-2.5 text-right">{s ? s.last : '—'}</td>
-                  <td className="py-2.5 text-right">{s?.plays ?? 0}</td>
+                  <td className="py-2.5 pl-4 text-right whitespace-nowrap tabular-nums sm:pl-6">{s ? `${s.best}${g.max ? `/${g.max}` : ''}` : '—'}</td>
+                  <td className="py-2.5 pl-4 text-right tabular-nums sm:pl-6">{s ? s.last : '—'}</td>
+                  <td className="py-2.5 pl-4 text-right tabular-nums sm:pl-6">{s?.plays ?? 0}</td>
                 </tr>
               )
             })}
@@ -183,7 +183,7 @@ export default function MePage() {
           {BADGES.map((b) => {
             const got = state.badges[b.id]
             return (
-              <li key={b.id} className={`rounded-[20px] p-4 ${got ? 'bg-sun text-[#171b1d]' : 'border border-dashed border-rule text-ink-3'}`}>
+              <li key={b.id} className={`rounded-[20px] p-4 ${got ? 'bg-sun text-ink-fixed' : 'border border-dashed border-rule text-ink-3'}`}>
                 <DeclicRing size={28} progress={got ? 5 : 0} />
                 <p className={`mt-2 font-semibold ${got ? '' : 'text-ink-2'}`}>{b.title}</p>
                 <p className="mt-0.5 text-[0.8125rem]">{got ? `Obtenu le ${new Date(got).toLocaleDateString('fr-FR')}` : b.hint}</p>

@@ -17,7 +17,8 @@ test('accueil : promesse, une, sources et dates visibles', async ({ page }) => {
   await expect(link).toHaveAttribute('target', '_blank')
   await expect(link).toHaveAttribute('rel', /noopener/)
   await expect(page.getByText(/Actualisé .* articles de \d+ médias/)).toBeVisible()
-  await page.getByRole('link', { name: 'Comprendre en 5 minutes' }).click()
+  // Le Déclic du jour : bande compacte sur mobile, carte resserrée dans la colonne de droite sur ordinateur.
+  await page.getByRole('link', { name: 'Commencer', exact: true }).filter({ visible: true }).click()
   await expect(page).toHaveURL(/#\/declic$/)
 })
 
@@ -46,6 +47,12 @@ test('actualités : rubrique, recherche et filtre', async ({ page }) => {
   await expect.poll(async () => cards.count()).toBeLessThan(before)
   await expect(cards.first()).toContainText(/Pologne|Krakow|Cracovie/)
   await page.getByRole('button', { name: 'Effacer la recherche' }).click()
+  // Sur mobile, les filtres sont repliés derrière un bouton « Filtres ».
+  if (isMobile(page)) {
+    const toggle = page.getByRole('button', { name: /^Filtres/ })
+    await toggle.click()
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  }
   await page.getByRole('button', { name: 'En français seulement' }).click()
   await expect(page.locator('#news-results').getByText('EN', { exact: true })).toHaveCount(0)
   await page.goto('./#/actus/rubrique-inconnue')
@@ -131,7 +138,7 @@ test('clair par défaut, même si le téléphone est en mode sombre', async ({ p
   await page.emulateMedia({ colorScheme: 'dark' })
   await page.goto('./')
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'light')
-  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(247, 245, 239)')
+  await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 255, 255)')
 })
 
 test('accueil : un sujet, plusieurs regards', async ({ page }) => {
@@ -196,4 +203,32 @@ test('flux RSS « À la une » publié et proposé en widget', async ({ page, re
   await page.goto('./#/moi#widget')
   await expect(page.getByRole('heading', { name: /Les titres de DÉCLIC sur ton écran d'accueil/ })).toBeInViewport()
   await expect(page.getByLabel('Adresse du flux')).toHaveValue(/data\/une\.xml$/)
+})
+
+test('photos : vignette avec crédit accessible (ⓘ), jamais deux fois la même', async ({ page }) => {
+  // Image de test générée ici (PNG 1×1), servie à la place des fichiers de public/data/img/.
+  const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==', 'base64')
+  await page.route('**/data/img/**', (r) => r.fulfill({ status: 200, contentType: 'image/png', body: png }))
+  await page.route('**/data/news.json', async (route) => {
+    const res = await route.fetch()
+    const json = await res.json()
+    // Deux articles reçoivent la même illustration : elle ne doit s'afficher qu'une fois.
+    const fr = json.articles.filter((a: { lang: string; kind: string }) => a.lang === 'fr' && a.kind === 'news')
+    const image = { url: './data/img/00112233445566aa.jpg', credit: 'Auteur de test', license: 'CC BY-SA 4.0', licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/', sourceUrl: 'https://commons.wikimedia.org/wiki/File:Test.jpg', width: 960, height: 1125, illustration: true, subject: 'Sujet de test', subjectKind: 'person' }
+    for (const a of fr.slice(10, 12)) a.image = image
+    await route.fulfill({ response: res, json })
+  })
+  await page.goto('./#/actus')
+  const btn = page.getByRole('button', { name: 'Crédit de la photo : Sujet de test' })
+  await expect(btn).toHaveCount(1)
+  await btn.scrollIntoViewIfNeeded()
+  await btn.click()
+  await expect(btn).toHaveAttribute('aria-expanded', 'true')
+  const note = page.getByRole('note')
+  await expect(note).toBeVisible()
+  await expect(note).toContainText('Illustration : Sujet de test')
+  await expect(note.getByRole('link', { name: /Wikimedia Commons/ })).toHaveAttribute('target', '_blank')
+  await page.keyboard.press('Escape')
+  await expect(note).toBeHidden()
+  await expect(btn).toBeFocused()
 })

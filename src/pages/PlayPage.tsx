@@ -1,5 +1,9 @@
 import { ArrowRight, RefreshCw } from 'lucide-react'
+import { useMemo, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
+import { buttonClass } from '../components/ui/Button'
+import { actuQuiz } from '../lib/daily'
+import { useNewsQuiz } from '../lib/news'
 import { dueIds } from '../lib/srs'
 import { dayKey } from '../lib/random'
 import { useAppState } from '../lib/store'
@@ -15,7 +19,25 @@ function Score({ id, max }: { id: string; max?: number }) {
   )
 }
 
+/** Carte de jeu unifiée : même structure pour tous, la couleur seulement dans le pictogramme. */
+function GameCard({ to, title, text, score, children, className = '' }: { to: string; title: string; text: string; score: ReactNode; children: ReactNode; className?: string }) {
+  return (
+    <Link to={to} className={`group flex items-start gap-4 rounded-[20px] border border-rule bg-paper p-5 transition-colors hover:border-ink sm:gap-5 sm:p-6 lg:rounded-[28px] ${className}`}>
+      <span className="shrink-0">{children}</span>
+      <div className="min-w-0 flex-1">
+        <h2 className="t-h2">{title}</h2>
+        <p className="mt-1 text-ink-2">{text}</p>
+        <span className="mt-2 block">{score}</span>
+      </div>
+      <ArrowRight className="mt-2 hidden shrink-0 transition-transform group-hover:translate-x-1 sm:block" aria-hidden />
+    </Link>
+  )
+}
+
 export default function PlayPage() {
+  const newsQuiz = useNewsQuiz()
+  const actu = useMemo(() => actuQuiz(newsQuiz.data), [newsQuiz.data])
+  const isActu = actu.length > 0
   const srs = useAppState((s) => s.srs)
   const due = dueIds(srs).length
   const today = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })
@@ -27,84 +49,42 @@ export default function PlayPage() {
       </header>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-12">
-        {/* Quiz du jour : la pièce maîtresse */}
-        <Link to="/jouer/quiz" className="group relative flex min-h-72 flex-col justify-between overflow-hidden rounded-[28px] bg-petrol p-6 text-on-petrol sm:p-8 lg:col-span-7 lg:row-span-2">
+        {/* Le quiz (de l'actu quand les titres le permettent) : la pièce maîtresse, seule carte pétrole */}
+        <Link to="/jouer/quiz" className="group flex min-h-64 flex-col justify-between rounded-[20px] bg-petrol p-6 text-on-petrol sm:p-8 lg:col-span-7 lg:row-span-2 lg:rounded-[28px]">
           <div>
             <p className="t-label text-on-petrol/90">Quiz quotidien · {today}</p>
-            <h2 className="mt-2 font-serif text-[2.6rem] leading-[1] font-medium tracking-[-0.02em] sm:text-[3.4rem]" style={{ fontVariationSettings: "'opsz' 72" }}>
-              Le quiz du jour
-            </h2>
-            <p className="mt-3 max-w-md text-on-petrol/90">Dix questions de culture générale, dont des événements « ce jour-là » tirés de l'éphéméride. Les mêmes pour tout le monde.</p>
+            <h2 className="mt-2 t-h1">{isActu ? 'Le quiz de l’actu' : 'Le quiz du jour'}</h2>
+            <p className="mt-3 max-w-md text-on-petrol/90">
+              {isActu ? `${actu.length} vrais titres des dernières 48 heures, avec un mot qui manque.` : "Dix questions de culture générale, dont des événements « ce jour-là » tirés de l'éphéméride. Les mêmes pour tout le monde."}
+            </p>
           </div>
-          <svg viewBox="0 0 200 120" className="pointer-events-none absolute -right-6 -bottom-6 w-64 opacity-25 sm:w-80" aria-hidden>
-            {[0, 1, 2, 3].map((k) => (
-              <rect key={k} x={10} y={8 + k * 28} width={150 - k * 22} height={18} rx={9} fill="none" stroke="currentColor" strokeWidth="3" />
-            ))}
-          </svg>
-          <span className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-paper px-5 py-2.5 font-semibold text-ink group-hover:bg-paper/90">
-            Jouer <ArrowRight size={18} aria-hidden />
+          <span className={buttonClass('onPetrol', 'md', 'mt-6 w-fit')}>
+            Jouer <ArrowRight size={17} aria-hidden />
           </span>
         </Link>
 
-        <Link to="/jouer/vrai-faux" className="group flex flex-col justify-between rounded-[28px] bg-sun p-6 text-[#171b1d] lg:col-span-5">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h2 className="t-h1">Vrai ou faux ?</h2>
-              <p className="mt-2 text-[#3a3214]">Idées reçues, intuitions trompeuses : tranche, puis découvre pourquoi.</p>
-            </div>
-            <span className="font-serif text-[2.2rem] leading-none italic" aria-hidden>
-              V/F
-            </span>
-          </div>
-          <div className="mt-6 flex items-center justify-between">
-            <span className="text-[0.8125rem] [&_.t-meta]:text-[#3a3214]"><Score id="vrai-faux" max={10} /></span>
-            <ArrowRight className="transition-transform group-hover:translate-x-1" aria-hidden />
-          </div>
-        </Link>
-
-        <Link to="/jouer/chronologie" className="group flex flex-col justify-between rounded-[28px] border-[1.5px] border-ink p-6 lg:col-span-5">
-          <div>
-            <h2 className="t-h1">La chronologie</h2>
-            <p className="mt-2 text-ink-2">Remets cinq événements dans l'ordre, au doigt ou au clavier.</p>
-          </div>
-          <svg viewBox="0 0 300 30" className="mt-5 w-full" aria-hidden>
-            <line x1="4" x2="296" y1="15" y2="15" stroke="currentColor" strokeWidth="2" />
-            {[20, 70, 150, 200, 270].map((x, k) => (
-              <circle key={x} cx={x} cy="15" r={k === 2 ? 8 : 5} fill={k === 2 ? 'var(--vermilion)' : 'var(--paper)'} stroke="currentColor" strokeWidth="2" />
+        <GameCard to="/jouer/vrai-faux" title="Vrai ou faux ?" text="Idées reçues, intuitions trompeuses : tranche, puis découvre pourquoi." score={<Score id="vrai-faux" max={10} />} className="lg:col-span-5">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full bg-sun font-serif text-[1.2rem] text-ink-fixed italic">V/F</span>
+        </GameCard>
+        <GameCard to="/jouer/chronologie" title="La chronologie" text="Remets cinq événements dans l'ordre, au doigt ou au clavier." score={<Score id="chronologie" max={5} />} className="lg:col-span-5">
+          <svg viewBox="0 0 56 56" className="h-14 w-14 text-vermilion" aria-hidden>
+            <line x1="4" x2="52" y1="28" y2="28" stroke="currentColor" strokeWidth="2.5" />
+            {[10, 22, 34, 46].map((x, k) => (
+              <circle key={x} cx={x} cy="28" r={k === 2 ? 6 : 4} fill={k === 2 ? 'currentColor' : 'var(--paper)'} stroke="currentColor" strokeWidth="2.5" />
             ))}
           </svg>
-          <div className="mt-4 flex items-center justify-between">
-            <Score id="chronologie" max={5} />
-            <ArrowRight className="transition-transform group-hover:translate-x-1" aria-hidden />
-          </div>
-        </Link>
-
-        <Link to="/jouer/60-secondes" className="group flex items-center gap-5 rounded-[28px] bg-ink p-6 text-paper lg:col-span-6">
-          <span className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 border-vermilion font-serif text-[1.8rem] tabular-nums" aria-hidden>
-            60
-          </span>
-          <div className="flex-1">
-            <h2 className="t-h2">Le défi des 60 secondes</h2>
-            <p className="mt-1 text-paper/75">Le plus de bonnes réponses possible avant la fin du chrono.</p>
-            <span className="mt-2 block text-paper/70 [&_.t-meta]:text-paper/70"><Score id="60-secondes" /></span>
-          </div>
-          <ArrowRight className="shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
-        </Link>
-
-        <Link to="/jouer/voyage" className="group relative flex items-center gap-5 overflow-hidden rounded-[28px] bg-paper-2 p-6 lg:col-span-6">
-          <svg viewBox="0 0 80 80" className="h-20 w-20 shrink-0" aria-hidden>
-            <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="2.5" />
-            <ellipse cx="40" cy="40" rx="15" ry="34" fill="none" stroke="currentColor" strokeWidth="2" />
-            <line x1="6" x2="74" y1="40" y2="40" stroke="currentColor" strokeWidth="2" />
+        </GameCard>
+        <GameCard to="/jouer/60-secondes" title="Le défi des 60 secondes" text="Le plus de bonnes réponses possible avant la fin du chrono." score={<Score id="60-secondes" />} className="lg:col-span-6">
+          <span className="flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-ink font-serif text-[1.3rem] tabular-nums">60</span>
+        </GameCard>
+        <GameCard to="/jouer/voyage" title="Le grand voyage" text="Pays, capitales, repères : la géographie sur une vraie carte." score={<Score id="voyage" max={10} />} className="lg:col-span-6">
+          <svg viewBox="0 0 80 80" className="h-14 w-14 text-petrol-ink" aria-hidden>
+            <circle cx="40" cy="40" r="34" fill="none" stroke="currentColor" strokeWidth="3" />
+            <ellipse cx="40" cy="40" rx="15" ry="34" fill="none" stroke="currentColor" strokeWidth="2.5" />
+            <line x1="6" x2="74" y1="40" y2="40" stroke="currentColor" strokeWidth="2.5" />
             <circle cx="52" cy="28" r="6" fill="var(--vermilion)" />
           </svg>
-          <div className="flex-1">
-            <h2 className="t-h2">Le grand voyage</h2>
-            <p className="mt-1 text-ink-2">Pays, capitales, repères : la géographie sur une vraie carte.</p>
-            <span className="mt-2 block"><Score id="voyage" max={10} /></span>
-          </div>
-          <ArrowRight className="shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
-        </Link>
+        </GameCard>
       </div>
 
       <section className="mt-12 flex flex-col gap-4 border-y border-rule py-6 sm:flex-row sm:items-center sm:justify-between" aria-labelledby="rev-title">
@@ -119,7 +99,7 @@ export default function PlayPage() {
             </p>
           </div>
         </div>
-        <Link to="/jouer/quiz?mode=revisions" className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-ink/25 px-5 font-semibold hover:border-ink" key={dayKey()}>
+        <Link to="/jouer/quiz?mode=revisions" className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-line-ui px-5 font-semibold hover:border-ink" key={dayKey()}>
           Réviser maintenant
         </Link>
       </section>

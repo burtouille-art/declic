@@ -13,7 +13,7 @@ function Highlight({ title, part }: { title: string; part: string }) {
   return (
     <>
       {title.slice(0, i)}
-      <mark className="rounded-sm bg-sun px-0.5 text-[#171b1d]">{part}</mark>
+      <mark className="rounded-sm bg-sun px-0.5 text-ink-fixed">{part}</mark>
       {title.slice(i + part.length)}
     </>
   )

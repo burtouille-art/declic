@@ -53,13 +53,13 @@ export function PerspectiveList({
         <ul className="divide-y divide-rule border-y border-rule">
           {items.map((it) => (
             <li key={it.url} className={compact ? "py-2.5" : "py-3"}>
-              <p className="flex flex-wrap items-center gap-1.5 t-meta">
-                <span className="font-semibold text-ink-2">
+              <p className="flex flex-wrap items-center gap-1.5">
+                <span className="font-sans text-[0.8125rem] leading-tight font-semibold text-ink">
                   {it.sourceName}
                 </span>
                 <CountryTag country={it.sourceCountry} />
                 {it.lang === "en" && (
-                  <span className="rounded-sm border border-ink/25 px-1 text-[0.6875rem] font-semibold">
+                  <span className="rounded-[3px] border border-line-ui px-1 text-[0.6875rem] font-semibold text-ink-2">
                     EN
                   </span>
                 )}
@@ -69,7 +69,7 @@ export function PerspectiveList({
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => open(it.article)}
-                className={`mt-0.5 block font-serif leading-snug hover:underline ${compact ? "text-[1rem]" : "text-[1.08rem]"}`}
+                className="mt-0.5 block t-h4 text-pretty hover:underline"
               >
                 {it.title}
                 <span className="sr-only">
@@ -82,7 +82,7 @@ export function PerspectiveList({
         </ul>
       )}
       {analyses.length > 0 && (
-        <div className="mt-3 rounded-[16px] bg-petrol/8 p-3.5">
+        <div className="mt-3 border-l-2 border-petrol bg-petrol/8 py-3 pr-3 pl-4">
           <p className="flex items-center gap-1.5 t-label text-petrol-ink">
             <Lightbulb size={15} aria-hidden /> Pour prendre du recul
           </p>

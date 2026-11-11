@@ -57,14 +57,14 @@ export function Choices({ options, selected, correct, onSelect, legend, hotkeys 
               ? {
                   idle: 'border-on-petrol/35 text-on-petrol hover:border-on-petrol hover:bg-on-petrol/10',
                   correct: 'border-on-petrol bg-on-petrol text-petrol-ink',
-                  wrong: 'border-vermilion bg-vermilion text-[#171b1d]',
+                  wrong: 'border-vermilion bg-vermilion text-ink-fixed',
                   muted: 'border-on-petrol/20 text-on-petrol/60',
                 }
               : {
-                  idle: 'border-ink/20 bg-paper hover:border-ink hover:bg-paper-2',
+                  idle: 'border-line-ui bg-paper hover:border-ink hover:bg-paper-2',
                   correct: 'border-ok bg-ok-bg text-ink',
                   wrong: 'border-ko bg-ko-bg text-ink',
-                  muted: 'border-ink/10 text-ink-3',
+                  muted: 'border-rule text-ink-2 opacity-60',
                 }
           return (
             <li key={`${i}-${opt}`}>
@@ -78,7 +78,7 @@ export function Choices({ options, selected, correct, onSelect, legend, hotkeys 
                 <span
                   aria-hidden
                   className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-[0.8125rem] font-semibold ${
-                    state === 'idle' ? (tone === 'onDark' ? 'border-on-petrol/40' : 'border-ink/25') : 'border-transparent'
+                    state === 'idle' ? (tone === 'onDark' ? 'border-on-petrol/40' : 'border-line-ui') : 'border-transparent'
                   }`}
                 >
                   {state === 'correct' ? <Check size={18} strokeWidth={2.5} /> : state === 'wrong' ? <X size={18} strokeWidth={2.5} /> : i + 1}

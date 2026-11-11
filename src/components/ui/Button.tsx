@@ -1,7 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from 'react'
 import { Link, type LinkProps } from 'react-router-dom'
 
-type Variant = 'primary' | 'accent' | 'petrol' | 'outline' | 'quiet' | 'onDark'
+type Variant = 'primary' | 'accent' | 'petrol' | 'outline' | 'quiet' | 'onDark' | 'onPetrol'
 type Size = 'sm' | 'md' | 'lg'
 
 const base =
@@ -9,11 +9,13 @@ const base =
 
 const variants: Record<Variant, string> = {
   primary: 'bg-ink text-paper hover:bg-ink/85',
-  accent: 'bg-vermilion text-[#171b1d] hover:brightness-95 shadow-[inset_0_-2px_0_rgb(0_0_0/0.12)]',
+  accent: 'bg-vermilion text-ink-fixed hover:brightness-95 shadow-[inset_0_-2px_0_rgb(0_0_0/0.12)]',
   petrol: 'bg-petrol text-on-petrol hover:brightness-110',
-  outline: 'border border-ink/25 text-ink hover:border-ink hover:bg-ink/5',
+  outline: 'border border-line-ui text-ink hover:border-ink hover:bg-ink/5',
   quiet: 'text-ink-2 hover:text-ink hover:bg-ink/6',
   onDark: 'bg-paper text-ink hover:bg-paper/90',
+  /** Sur pétrole (Déclic, quiz, Mon espace) : blanc constant dans les deux thèmes. */
+  onPetrol: 'bg-white text-ink-fixed hover:bg-white/90',
 }
 const sizes: Record<Size, string> = {
   sm: 'h-9 px-3.5 text-[0.875rem]',

@@ -27,7 +27,7 @@ export function FeedCard() {
   return (
     <section className="rounded-[24px] border-[1.5px] border-ink/15 p-5 sm:p-7" aria-labelledby="feed-title">
       <div className="flex items-start gap-4">
-        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-vermilion text-[#171b1d]">
+        <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-vermilion text-ink-fixed">
           <Rss size={20} aria-hidden />
         </span>
         <div className="min-w-0 flex-1">

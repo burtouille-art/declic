@@ -1,10 +1,11 @@
-import { Layers, MapPin, Search, X } from 'lucide-react'
+import { Layers, MapPin, Search, SlidersHorizontal, X } from 'lucide-react'
 import { lazy, Suspense, useDeferredValue, useMemo, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { clusterAnalyses, clusterItems, diversityLine, PerspectiveList } from '../components/news/Perspectives'
 import { ClusterDialog } from '../components/news/ClusterDialog'
-import { LeadStory, StoryCard } from '../components/news/Story'
-import { EmptyState, ErrorState, Skeleton } from '../components/ui/bits'
+import { pickPhotos } from '../components/news/photo'
+import { LeadStory, StoryRow } from '../components/news/Story'
+import { EmptyState, ErrorState, SectionHeading, Skeleton } from '../components/ui/bits'
 import { CATEGORIES, CATEGORY_BY_ID, toneClasses } from '../content/categories'
 import { DISCOVERIES, FICHES } from '../content'
 import { relativeTime } from '../lib/format'
@@ -35,7 +36,7 @@ function Chip({ active, onClick, children, controls }: { active: boolean; onClic
       aria-pressed={active}
       aria-controls={controls}
       onClick={onClick}
-      className={`h-9 shrink-0 rounded-full border px-3.5 text-[0.875rem] font-semibold transition-colors ${active ? 'border-ink bg-ink text-paper' : 'border-ink/20 text-ink-2 hover:border-ink hover:text-ink'}`}
+      className={`h-9 shrink-0 rounded-full border px-3.5 text-[0.875rem] font-semibold transition-colors ${active ? 'border-ink bg-ink text-paper' : 'border-line-ui text-ink-2 hover:border-ink hover:text-ink'}`}
     >
       {children}
     </button>
@@ -109,6 +110,12 @@ export function NewsPage() {
     return (data?.clusters ?? []).filter((c) => c.articleIds.some((id) => ids.has(id))).slice(0, 6)
   }, [data, filtered])
 
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const activeFilters = (period !== '7j' ? 1 : 0) + (kind !== 'all' ? 1 : 0) + (lang !== prefLang ? 1 : 0)
+  const recent = useMemo(() => rest.slice(0, 60), [rest])
+  // Une photo n'apparaît qu'une fois par page (même image ou même sujet), dans l'ordre d'affichage.
+  const allowed = useMemo(() => pickPhotos(lead ? [lead, ...recent] : recent), [lead, recent])
+
   const meta = cat ? CATEGORY_BY_ID[cat] : null
   const explainers = useMemo(() => {
     const c = cat ?? lead?.categories[0]
@@ -120,41 +127,23 @@ export function NewsPage() {
   if (!valid) return <NotFound />
 
   return (
-    <div className="wrap pt-6 lg:pt-10">
-      <header className="border-b border-ink pb-5">
-        <nav aria-label="Fil d'Ariane" className="t-meta">
+    <div className="wrap pt-4 lg:pt-10">
+      <header className="border-b border-ink pb-3 lg:pb-5">
+        <nav aria-label="Fil d'Ariane" className={`t-meta ${cat ? '' : 'hidden sm:block'}`}>
           <Link to="/" className="hover:underline">Accueil</Link> / {cat ? <Link to="/actus" className="hover:underline">Actualités</Link> : 'Actualités'}
           {meta && ` / ${meta.label}`}
         </nav>
-        <div className="mt-2 flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <h1 className="t-display">{meta ? meta.label : 'Actualités'}</h1>
-            <p className="mt-2 t-lede text-ink-2">{meta ? meta.blurb : 'Les titres des médias, tels qu’ils les ont publiés, avec la source et l’heure. Clique pour lire l’article chez eux.'}</p>
+        <div className="mt-1 flex flex-wrap items-end justify-between gap-x-4 gap-y-1">
+          <div className="min-w-0">
+            <h1 className="t-h1">{meta ? meta.label : 'Actualités'}</h1>
+            <p className="mt-1 t-meta measure lg:t-lede lg:text-ink-2">{meta ? meta.blurb : 'Les titres tels que publiés, avec la source et l’heure.'}</p>
           </div>
-          {data && <p className="t-meta">Actualisé {relativeTime(data.generatedAt)}</p>}
+          {data && <p className="hidden t-meta sm:block">Actualisé {relativeTime(data.generatedAt)}</p>}
         </div>
       </header>
 
-      {/* Rubriques */}
-      <nav aria-label="Rubriques" className="no-scrollbar -mx-4 mt-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:px-0">
-        <Link to={{ pathname: '/actus', search: params.toString() }} className={`flex h-9 shrink-0 items-center rounded-full border px-3.5 text-[0.875rem] font-semibold ${!cat ? 'border-ink bg-ink text-paper' : 'border-ink/20 text-ink-2 hover:border-ink'}`} aria-current={!cat ? 'page' : undefined}>
-          Toutes
-        </Link>
-        {CATEGORIES.map((c) => (
-          <Link
-            key={c.id}
-            to={{ pathname: `/actus/${c.id}`, search: params.toString() }}
-            aria-current={cat === c.id ? 'page' : undefined}
-            className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[0.875rem] font-semibold ${cat === c.id ? 'border-ink bg-ink text-paper' : 'border-ink/20 text-ink-2 hover:border-ink'}`}
-          >
-            <span className={`h-2 w-2 rounded-[1px] ${toneClasses[c.tone].dot}`} aria-hidden />
-            {c.label}
-          </Link>
-        ))}
-      </nav>
-
-      {/* Recherche et filtres */}
-      <div className="mt-5 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+      {/* Recherche (+ filtres en ligne sur ordinateur) */}
+      <div className="mt-3 grid gap-3 lg:mt-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-4">
         <div className="relative">
           <Search size={18} className="pointer-events-none absolute top-1/2 left-4 -translate-y-1/2 text-ink-3" aria-hidden />
           <label htmlFor="news-search" className="sr-only">
@@ -166,15 +155,15 @@ export function NewsPage() {
             value={q}
             onChange={(e) => set('q', e.target.value)}
             placeholder="Rechercher un sujet, un lieu, un média…"
-            className="h-12 w-full rounded-full border border-ink/20 bg-paper pr-12 pl-11 text-[1rem] placeholder:text-ink-3 focus:border-ink"
+            className="h-11 w-full rounded-full border border-line-ui bg-paper pr-12 pl-11 text-[1rem] placeholder:text-ink-3 focus:border-ink"
           />
           {q && (
-            <button type="button" onClick={() => set('q', null)} className="absolute top-1/2 right-2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full hover:bg-ink/8" aria-label="Effacer la recherche">
+            <button type="button" onClick={() => set('q', null)} className="absolute top-1/2 right-1 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full hover:bg-ink/8" aria-label="Effacer la recherche">
               <X size={17} aria-hidden />
             </button>
           )}
         </div>
-        <div className="flex flex-wrap gap-x-5 gap-y-3">
+        <div id="news-filters" className={`${filtersOpen ? 'flex' : 'hidden'} order-last flex-wrap gap-x-5 gap-y-3 border-y border-rule py-3 lg:order-none lg:flex lg:border-0 lg:py-0`}>
           <fieldset className="flex items-center gap-1.5">
             <legend className="sr-only">Période</legend>
             {PERIODS.map((p) => (
@@ -191,7 +180,7 @@ export function NewsPage() {
           </fieldset>
           <label className="inline-flex items-center gap-2 text-[0.875rem]">
             <span className="text-ink-2">Type</span>
-            <select value={kind} onChange={(e) => set('type', e.target.value === 'all' ? null : e.target.value)} className="h-9 rounded-full border border-ink/20 bg-paper px-3 font-semibold">
+            <select value={kind} onChange={(e) => set('type', e.target.value === 'all' ? null : e.target.value)} className="h-9 rounded-full border border-line-ui bg-paper px-3 font-semibold">
               {KINDS.map((k) => (
                 <option key={k.id} value={k.id}>
                   {k.label}
@@ -200,25 +189,50 @@ export function NewsPage() {
             </select>
           </label>
         </div>
-      </div>
 
-      {/* Sujets */}
-      {topics.length > 0 && (
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="t-meta mr-1">Sujets du moment</span>
+        {/* Rubriques : une seule ligne qui défile */}
+        <nav aria-label="Rubriques" className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:col-span-2 lg:mx-0 lg:px-0">
+          <Link to={{ pathname: '/actus', search: params.toString() }} className={`flex h-9 shrink-0 items-center rounded-full border px-3.5 text-[0.875rem] font-semibold ${!cat ? 'border-ink bg-ink text-paper' : 'border-line-ui text-ink-2 hover:border-ink'}`} aria-current={!cat ? 'page' : undefined}>
+            Toutes
+          </Link>
+          {CATEGORIES.map((c) => (
+            <Link
+              key={c.id}
+              to={{ pathname: `/actus/${c.id}`, search: params.toString() }}
+              aria-current={cat === c.id ? 'page' : undefined}
+              className={`flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[0.875rem] font-semibold ${cat === c.id ? 'border-ink bg-ink text-paper' : 'border-line-ui text-ink-2 hover:border-ink'}`}
+            >
+              <span className={`h-2 w-2 rounded-[1px] ${toneClasses[c.tone].dot}`} aria-hidden />
+              {c.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Mobile : bouton Filtres + sujets du moment sur la même ligne défilante */}
+        <div className="no-scrollbar -mx-4 flex items-center gap-2 overflow-x-auto px-4 sm:-mx-6 sm:px-6 lg:col-span-2 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0">
+          <button
+            type="button"
+            aria-expanded={filtersOpen}
+            aria-controls="news-filters"
+            onClick={() => setFiltersOpen((o) => !o)}
+            className={`inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[0.875rem] font-semibold lg:hidden ${filtersOpen ? 'border-ink bg-ink text-paper' : 'border-line-ui text-ink-2'}`}
+          >
+            <SlidersHorizontal size={15} aria-hidden /> Filtres{activeFilters ? ` · ${activeFilters}` : ''}
+          </button>
+          {topics.length > 0 && <span className="mr-1 hidden t-meta lg:inline">Sujets du moment</span>}
           {topics.map((t) => (
             <button
               key={t.term}
               type="button"
               aria-pressed={q.toLowerCase() === t.term.toLowerCase()}
               onClick={() => set('q', q.toLowerCase() === t.term.toLowerCase() ? null : t.term)}
-              className={`rounded-full px-3 py-1 text-[0.8125rem] font-semibold ${q.toLowerCase() === t.term.toLowerCase() ? 'bg-vermilion text-[#171b1d]' : 'bg-paper-2 hover:bg-paper-3'}`}
+              className={`inline-flex h-9 shrink-0 items-center gap-1 rounded-full px-3 text-[0.8125rem] font-semibold ${q.toLowerCase() === t.term.toLowerCase() ? 'bg-vermilion text-ink-fixed' : 'bg-paper-2 hover:bg-paper-3'}`}
             >
-              {t.term} <span className="font-normal text-ink-3">{t.count}</span>
+              {t.term} <span className={`font-normal ${q.toLowerCase() === t.term.toLowerCase() ? '' : 'text-ink-3'}`}>{t.count}</span>
             </button>
           ))}
         </div>
-      )}
+      </div>
 
       {country && countryIndex.get(country) && (
         <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-3.5 py-1.5 text-[0.875rem] font-semibold text-paper">
@@ -229,15 +243,22 @@ export function NewsPage() {
         </p>
       )}
 
-      <section id="news-results" aria-live="polite" aria-busy={news.loading} className="mt-8">
+      <section id="news-results" aria-live="polite" aria-busy={news.loading} className="mt-4 lg:mt-8">
         <p className="sr-only">{filtered.length} articles</p>
         {news.loading && !data && (
-          <div className="grid gap-8 md:grid-cols-3">
-            {[0, 1, 2, 3, 4, 5].map((i) => (
-              <div key={i}>
-                <Skeleton className="h-3 w-28" />
-                <Skeleton className="mt-3 h-6 w-full" />
-                <Skeleton className="mt-2 h-16 w-full" />
+          <div className="grid gap-x-10 lg:grid-cols-2" role="status" aria-label="Chargement des actualités">
+            {[0, 1].map((col) => (
+              <div key={col} className="divide-y divide-rule border-t border-ink">
+                {[0, 1, 2, 3].map((i) => (
+                  <div key={i} className="grid grid-cols-[1fr_80px] gap-4 py-4">
+                    <div>
+                      <Skeleton className="h-3 w-[120px]" />
+                      <Skeleton className="mt-3 h-5 w-full" />
+                      <Skeleton className="mt-2 h-5 w-3/4" />
+                    </div>
+                    <Skeleton className="mt-6 h-20 w-20" />
+                  </div>
+                ))}
               </div>
             ))}
           </div>
@@ -251,43 +272,38 @@ export function NewsPage() {
         {lead && (
           <div className="grid gap-x-10 gap-y-10 lg:grid-cols-12">
             <div className="lg:col-span-8">
-              <LeadStory article={lead} byId={data?.byId} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
+              <LeadStory article={lead} byId={data?.byId} showPhoto={allowed.has(lead.id)} cluster={lead.clusterId ? clusters.get(lead.clusterId) : undefined} onCompare={() => lead.clusterId && setCompare(clusters.get(lead.clusterId) ?? null)} />
             </div>
-            <aside className="lg:col-span-4" aria-label="Pour comprendre">
-              {(explainers.fiches.length > 0 || explainers.discoveries.length > 0) && (
-                <div className="rounded-[22px] bg-paper-2 p-5">
-                  <p className="t-label">Pour comprendre</p>
-                  <ul className="mt-3 space-y-3">
-                    {explainers.fiches.map((f) => (
-                      <li key={f.id}>
-                        <Link to={`/apprendre/${f.id}`} className="group block">
-                          <span className="t-meta">Fiche</span>
-                          <span className="block font-serif text-[1.1rem] leading-snug group-hover:underline">{f.title}</span>
-                        </Link>
-                      </li>
-                    ))}
-                    {explainers.discoveries.map((d) => (
-                      <li key={d.id}>
-                        <Link to={`/decouvrir/${d.id}`} className="group block">
-                          <span className="t-meta">Découverte</span>
-                          <span className="block font-serif text-[1.1rem] leading-snug group-hover:underline">{d.title}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </aside>
+            {(explainers.fiches.length > 0 || explainers.discoveries.length > 0) && (
+              <aside className="border-t-2 border-ink pt-3 lg:col-span-4" aria-label="Pour comprendre">
+                <p className="t-label">Pour comprendre</p>
+                <ul className="mt-1 divide-y divide-rule">
+                  {explainers.fiches.map((f) => (
+                    <li key={f.id}>
+                      <Link to={`/apprendre/${f.id}`} className="group block py-3">
+                        <span className="t-meta block">Fiche</span>
+                        <span className="mt-0.5 block t-h4 group-hover:underline">{f.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                  {explainers.discoveries.map((d) => (
+                    <li key={d.id}>
+                      <Link to={`/decouvrir/${d.id}`} className="group block py-3">
+                        <span className="t-meta block">Découverte</span>
+                        <span className="mt-0.5 block t-h4 group-hover:underline">{d.title}</span>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </aside>
+            )}
           </div>
         )}
 
         {visibleClusters.length > 0 && (
-          <section className="mt-12" aria-labelledby="clusters-title">
-            <h2 id="clusters-title" className="flex items-center gap-2 t-h2">
-              <Layers size={22} aria-hidden /> Vu par plusieurs médias
-            </h2>
-            <p className="mt-1 t-meta">Les mêmes événements, avec les titres de chaque média tels qu’ils les ont publiés.</p>
-            <ul className="mt-4 grid gap-x-8 gap-y-8 md:grid-cols-2">
+          <section className="mt-14 lg:mt-16" aria-labelledby="clusters-title">
+            <SectionHeading id="clusters-title" title="Vu par plusieurs médias" description="Les mêmes événements, avec les titres de chaque média tels qu’ils les ont publiés." />
+            <ul className="mt-5 grid gap-x-10 gap-y-10 md:grid-cols-2 lg:mt-6">
               {visibleClusters.map((c) => {
                 const items = clusterItems(c, data!.byId)
                 return (
@@ -296,7 +312,7 @@ export function NewsPage() {
                     <div className="mt-2">
                       <PerspectiveList compact items={items.slice(0, 3)} analyses={clusterAnalyses(c, data!.byId)} />
                     </div>
-                    <button type="button" onClick={() => setCompare(c)} className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-paper-2 px-3 py-1.5 text-[0.8125rem] font-semibold hover:bg-paper-3">
+                    <button type="button" onClick={() => setCompare(c)} className="mt-3 inline-flex h-9 items-center gap-1.5 rounded-full bg-paper-2 px-3.5 text-[0.8125rem] font-semibold hover:bg-paper-3">
                       <Layers size={14} aria-hidden /> Comparer {items.length > 3 ? `les ${items.length} titres` : 'les titres'}
                     </button>
                   </li>
@@ -307,12 +323,9 @@ export function NewsPage() {
         )}
 
         {showMap && countryIndex.size > 0 && (
-          <section className="mt-12" aria-labelledby="map-title">
-            <h2 id="map-title" className="flex items-center gap-2 t-h2">
-              <MapPin size={22} aria-hidden /> Où se passe l'actualité ?
-            </h2>
-            <p className="mt-1 t-meta">Pays explicitement cités dans les titres et chapôs de la sélection. Choisis-en un pour filtrer.</p>
-            <div className="mt-4 grid gap-6 lg:grid-cols-12">
+          <section className="mt-14 lg:mt-16" aria-labelledby="map-title">
+            <SectionHeading id="map-title" title="Où se passe l'actualité ?" description="Pays explicitement cités dans les titres et chapôs de la sélection. Choisis-en un pour filtrer." />
+            <div className="mt-5 grid gap-6 lg:mt-6 lg:grid-cols-12">
               <div className="lg:col-span-8">
                 <Suspense fallback={<Skeleton className="h-72 w-full" />}>
                   <WorldMap
@@ -338,13 +351,14 @@ export function NewsPage() {
         )}
 
         {rest.length > 0 && (
-          <section className="mt-12" aria-labelledby="recent-title">
-            <h2 id="recent-title" className="t-h2">
-              Les plus récents
-            </h2>
-            <div className="mt-5 grid gap-x-8 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-              {rest.slice(0, 60).map((a) => (
-                <StoryCard key={a.id} article={a} cluster={a.clusterId ? clusters.get(a.clusterId) : undefined} onCompare={() => a.clusterId && setCompare(clusters.get(a.clusterId) ?? null)} />
+          <section className="mt-14 lg:mt-16" aria-labelledby="recent-title">
+            <SectionHeading id="recent-title" title="Les plus récents" />
+            {/* Deux colonnes en alternance (pair / impair) : l'ordre chronologique se lit en Z ; une seule colonne sur mobile. */}
+            <div className="mt-1 grid gap-x-10 lg:grid-cols-2">
+              {recent.map((a, k) => (
+                <div key={a.id} className={k === 0 ? '' : k === 1 ? 'border-t border-rule lg:border-t-0' : 'border-t border-rule'}>
+                  <StoryRow article={a} summary showPhoto={allowed.has(a.id)} cluster={a.clusterId ? clusters.get(a.clusterId) : undefined} onCompare={() => a.clusterId && setCompare(clusters.get(a.clusterId) ?? null)} />
+                </div>
               ))}
             </div>
             {rest.length > 60 && <p className="mt-8 t-meta">Encore {rest.length - 60} articles plus anciens : affine avec la recherche ou une période plus courte.</p>}

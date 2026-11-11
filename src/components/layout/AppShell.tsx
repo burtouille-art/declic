@@ -1,6 +1,7 @@
 import { BookOpen, Compass, Gamepad2, Home, Menu, Moon, Newspaper, Sun, Timer, UserRound, X } from 'lucide-react'
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
+import { CATEGORIES } from '../../content/categories'
 import { dayKey } from '../../lib/random'
 import { earnedBadgeIds } from '../../lib/badges'
 import { actions, getState, useAppState } from '../../lib/store'
@@ -59,11 +60,11 @@ function Header() {
           ))}
         </nav>
         <div className="ml-auto flex items-center gap-1">
-          <Link to="/2-minutes" className="hidden h-10 items-center gap-1.5 rounded-full border border-ink/20 px-3.5 text-[0.875rem] font-semibold hover:border-ink sm:inline-flex">
+          <Link to="/2-minutes" className="hidden h-10 items-center gap-1.5 rounded-full border border-line-ui px-3.5 text-[0.875rem] font-semibold hover:border-ink sm:inline-flex">
             <Timer size={16} aria-hidden /> Je n'ai que 2 minutes
           </Link>
           <Link to="/declic" className="hidden h-10 items-center gap-2 rounded-full bg-ink pr-4 pl-2.5 text-[0.875rem] font-semibold text-paper hover:bg-ink/85 lg:inline-flex">
-            <DeclicRing size={22} progress={progress} track="paper" /> Déclic du jour
+            <DeclicRing size={22} progress={progress} tone="vermilion" track="paper" /> Déclic du jour
           </Link>
           <ThemeToggle />
           <NavLink to="/moi" className={({ isActive }) => `inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-ink/6 ${isActive ? 'bg-ink/8 text-ink' : 'text-ink-2'}`} aria-label="Mon espace">
@@ -106,7 +107,7 @@ function MenuSheet({ onClose }: { onClose: () => void }) {
     <div id="menu-sheet" ref={ref} className="border-t border-rule bg-paper lg:hidden">
       <nav aria-label="Menu" className="wrap grid grid-cols-2 gap-x-6 py-4">
         {links.map((l) => (
-          <Link key={l.to} to={l.to} className="border-b border-rule py-3 font-serif text-[1.2rem] hover:text-vermilion-ink">
+          <Link key={l.to} to={l.to} className="border-b border-rule py-3 t-h3 hover:text-vermilion-ink">
             {l.label}
           </Link>
         ))}
@@ -144,7 +145,7 @@ function BottomNav() {
                     </span>
                   ) : (
                     <span className="-mt-5 flex h-13 w-13 items-center justify-center rounded-full bg-ink shadow-lift">
-                      <DeclicRing size={30} progress={progress} track="paper" />
+                      <DeclicRing size={30} progress={progress} tone="vermilion" track="paper" />
                     </span>
                   )}
                   {it.label}
@@ -161,13 +162,26 @@ function BottomNav() {
 function Footer() {
   return (
     <footer className="mt-24 border-t border-ink bg-paper pb-28 lg:pb-12">
-      <div className="wrap grid gap-8 pt-10 md:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="wrap grid gap-8 pt-10 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
           <Logo />
-          <p className="mt-3 max-w-sm text-[0.9375rem] text-ink-2">
+          <p className="mt-3 max-w-sm font-serif text-[1.0625rem] text-ink-2 italic">Aujourd'hui, le monde a encore des choses à t'apprendre.</p>
+          <p className="mt-2 max-w-sm text-[0.9375rem] text-ink-2">
             Cinq minutes par jour pour comprendre le monde, apprendre quelque chose et se faire plaisir. Gratuit, sans compte, sans publicité.
           </p>
         </div>
+        <nav aria-label="Rubriques">
+          <p className="t-label">Rubriques</p>
+          <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1.5 text-[0.9375rem]">
+            {CATEGORIES.map((c) => (
+              <li key={c.id}>
+                <Link className="link-ed" to={`/actus/${c.id}`}>
+                  {c.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <div>
           <p className="t-label">Comment ça marche</p>
           <ul className="mt-2 space-y-1.5 text-[0.9375rem] text-ink-2">

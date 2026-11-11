@@ -2,7 +2,7 @@ import { ArrowRight, ExternalLink } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../../components/ui/Button'
-import { Skeleton } from '../../components/ui/bits'
+import { SectionHeading, Skeleton } from '../../components/ui/bits'
 import { otdForDate } from '../../lib/daily'
 import type { OnThisDay } from '../../lib/news'
 
@@ -23,14 +23,12 @@ export function GuessTheYear({ otd, loading, error }: { otd: OnThisDay | null; l
   }, [k])
 
   return (
-    <section className="mt-16 border-y border-ink lg:mt-24" aria-labelledby="otd-title">
-      <div className="wrap grid gap-8 py-12 lg:grid-cols-12 lg:py-16">
+    <section className="wrap mt-14 lg:mt-24" aria-labelledby="otd-title">
+      <SectionHeading id="otd-title" title="Ce jour-là" />
+      <div className="mt-5 grid gap-x-10 gap-y-6 lg:mt-6 lg:grid-cols-12">
         <div className="lg:col-span-4">
-          <h2 id="otd-title" className="t-h1">
-            Ce jour-là
-          </h2>
-          <p className="mt-3 text-ink-2">Un événement survenu un {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}. Place le curseur sur l'année que tu crois juste.</p>
-          <Link to="/apprendre/frise" className="mt-4 inline-flex items-center gap-1 t-label hover:text-vermilion-ink">
+          <p className="measure text-ink-2">Un événement survenu un {new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' })}. Place le curseur sur l'année que tu crois juste.</p>
+          <Link to="/apprendre/frise" className="mt-2 inline-flex min-h-11 items-center gap-1 t-label hover:text-vermilion-ink">
             Explorer la frise du temps <ArrowRight size={16} aria-hidden />
           </Link>
         </div>
@@ -41,7 +39,7 @@ export function GuessTheYear({ otd, loading, error }: { otd: OnThisDay | null; l
           )}
           {ev && (
             <div>
-              <p className="font-serif text-[1.6rem] leading-snug font-medium text-balance sm:text-[2rem]" style={{ fontVariationSettings: "'opsz' 40" }}>
+              <p className="t-h2 text-balance">
                 « {ev.text.charAt(0).toUpperCase() + ev.text.slice(1)} »
               </p>
               <div className="mt-6">
@@ -70,7 +68,7 @@ export function GuessTheYear({ otd, loading, error }: { otd: OnThisDay | null; l
                   Révéler l'année
                 </Button>
               ) : (
-                <div className="mt-4 rounded-2xl bg-paper-2 p-5" aria-live="polite">
+                <div className="mt-4 border-l-4 border-petrol bg-paper-2 py-4 pr-4 pl-5" aria-live="polite">
                   <p className="t-h2">
                     C'était en {ev.year}.{' '}
                     <span className="text-ink-2">

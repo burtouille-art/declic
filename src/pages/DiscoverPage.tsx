@@ -39,10 +39,10 @@ export default function DiscoverPage() {
               type="button"
               onClick={surprise}
               whileTap={{ scale: 0.94, rotate: -6 }}
-              className="group flex h-40 w-40 flex-col items-center justify-center rounded-full bg-vermilion text-[#171b1d] shadow-lift transition-[filter] hover:brightness-95 sm:h-48 sm:w-48"
+              className="group flex h-44 w-44 flex-col items-center justify-center rounded-full bg-vermilion text-ink-fixed shadow-lift transition-[filter] hover:brightness-95 sm:h-52 sm:w-52"
             >
               <Sparkles size={30} aria-hidden className="transition-transform group-hover:rotate-12" />
-              <span className="mt-2 font-serif text-[1.5rem] leading-tight font-semibold" style={{ fontVariationSettings: "'opsz' 36" }}>
+              <span className="mt-2 px-5 text-center font-serif text-[1.25rem] leading-tight font-semibold sm:text-[1.4rem]" style={{ fontVariationSettings: "'opsz' 36" }}>
                 Surprends-moi
               </span>
             </motion.button>
